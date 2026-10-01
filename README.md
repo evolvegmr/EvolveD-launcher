@@ -1,53 +1,378 @@
-CS Launcher Plus
+# 🚀 EvolveD Launcher
 
-CS Launcher Plus is a powerful Minecraft launcher focused on performance, customisation, and a smooth user experience.
+<p align="center">
+  <strong>Faster. Smoother. More Customisable.</strong>
+</p>
 
-Features
+<p align="center">
+  A modern Minecraft launcher focused on performance, customisation, mod-loader support, and a smooth user experience.
+</p>
 
-Modern & Redesigned UI
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#screenshots">Screenshots</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#supported-loaders">Supported Loaders</a> •
+  <a href="#downloads">Downloads</a>
+</p>
 
-A major redesign has been made across the launcher. Almost every UI component has been improved for a cleaner and more polished experience.
+<p align="center">
 
-Control Customisation
+![GitHub release](https://img.shields.io/github/v/release/evolvegmr/EvolveD-Launcher?style=for-the-badge\&logo=github)
+![GitHub downloads](https://img.shields.io/github/downloads/evolvegmr/EvolveD-Launcher/total?style=for-the-badge\&logo=github)
+![GitHub stars](https://img.shields.io/github/stars/evolvegmr/EvolveD-Launcher?style=for-the-badge\&logo=github)
+![GitHub issues](https://img.shields.io/github/issues/evolvegmr/EvolveD-Launcher?style=for-the-badge\&logo=github)
+![License](https://img.shields.io/github/license/evolvegmr/EvolveD-Launcher?style=for-the-badge)
 
-Fully customise your in-game controls.
-
-- Move control buttons freely around the screen
-- Resize controls according to your preference
-- Add custom images to control buttons
-- Create a more personalised control layout
-
-Custom Settings Button
-
-The Control Customisation Settings Button has additional customisation options.
-
-- Add a custom image
-- Change its size
-- Move it anywhere on the screen
-
-Performance Improvements
-
-CS Launcher Plus includes major performance and optimisation improvements for a faster, smoother, and more responsive experience.
-
-Bug Fixes
-
-A large number of bugs and stability issues have been fixed in this release.
-
-Download
-
-Download the latest version of CS Launcher Plus from GitHub Releases:
-
-"Download the Latest Release" (https://github.com/craftstudioteam/CS-LAUNCHER-PLUS/releases)
-
-Latest Release
-
-Check the Releases section for the latest version, changelog, and available downloads.
-
-Community
-
-Stay updated with CS Launcher Plus and follow the project for future updates, improvements, and new features.
+</p>
 
 ---
 
-CS Launcher Plus
-Faster. Smoother. More Customisable.
+## 📖 About
+
+**EvolveD Launcher** is a Minecraft launcher designed to provide a fast, flexible, and highly customisable Minecraft experience.
+
+The launcher combines a redesigned interface with custom controls, performance improvements, mod-loader support, resource-pack management, shader support, and a streamlined installation experience.
+
+Whether you want a simple Minecraft setup or a heavily customised modded instance, EvolveD Launcher is designed to make managing your game easier.
+
+---
+
+## ✨ Features
+
+| Feature                    | Description                                                      |
+| -------------------------- | ---------------------------------------------------------------- |
+| 🎨 Modern UI               | Redesigned interface with a cleaner and more polished experience |
+| 🎮 Custom Controls         | Move, resize, and customise in-game controls                     |
+| 🖼️ Custom Control Images  | Add your own images to control buttons                           |
+| ⚙️ Custom Settings Button  | Resize, move, and customise the control-settings button          |
+| ⚡ Performance Optimisation | Improvements focused on responsiveness and smoother gameplay     |
+| 🧩 Mod Support             | Manage Minecraft installations with mods                         |
+| 📦 Modpack Support         | Support for custom modpack-based installations                   |
+| 🧱 Resource Packs          | Install and manage resource packs                                |
+| 🌈 Shader Support          | Manage shader-enabled Minecraft configurations                   |
+| 🔧 Loader Support          | Designed around multiple Minecraft mod-loader ecosystems         |
+| 🐛 Bug Fixes               | Continuous stability and compatibility improvements              |
+| 📱 Touch-Friendly Controls | Customisable controls suitable for mobile gameplay               |
+| 🔄 Version Management      | Manage different Minecraft versions and configurations           |
+| 💾 Instance Management     | Keep different Minecraft setups organised                        |
+
+---
+
+## 🎮 Control Customisation
+
+EvolveD Launcher gives players more control over their Minecraft interface.
+
+### Control Layout
+
+* Move buttons freely around the screen
+* Resize individual controls
+* Create personalised control layouts
+* Adjust controls to suit different play styles
+* Save custom layouts
+
+### Custom Images
+
+Control buttons can use custom images to create a more personalised interface.
+
+### Settings Button
+
+The control-customisation settings button can also be customised:
+
+* Change its position
+* Change its size
+* Use a custom image
+* Adjust its appearance to match your layout
+
+---
+
+## ⚡ Performance
+
+EvolveD Launcher is built with performance and responsiveness in mind.
+
+Performance-focused improvements include:
+
+* Reduced unnecessary UI overhead
+* Smoother interaction
+* Improved launcher responsiveness
+* Optimised control handling
+* Stability improvements
+* Better management of Minecraft installations
+
+> **Note:** Actual Minecraft FPS depends on the device, Minecraft version, mods, shaders, render distance, and other configuration factors.
+
+---
+
+# 📸 Screenshots
+
+> Add your real screenshots to `assets/screenshots/` and replace the filenames below.
+
+### 🏠 Main Launcher
+
+<p align="center">
+  <img src="assets/screenshots/home.png" alt="EvolveD Launcher Home Screen" width="800">
+</p>
+
+### 🎮 Control Customisation
+
+<p align="center">
+  <img src="assets/screenshots/controls.png" alt="EvolveD Launcher Control Customisation" width="800">
+</p>
+
+### ⚙️ Settings
+
+<p align="center">
+  <img src="assets/screenshots/settings.png" alt="EvolveD Launcher Settings" width="800">
+</p>
+
+### 📦 Mod / Instance Management
+
+<p align="center">
+  <img src="assets/screenshots/mods.png" alt="EvolveD Launcher Mod Management" width="800">
+</p>
+
+### 🌈 Resource Packs & Shaders
+
+<p align="center">
+  <img src="assets/screenshots/resource-packs.png" alt="EvolveD Launcher Resource Packs" width="800">
+</p>
+
+---
+
+# 🧩 Supported Loaders
+
+EvolveD Launcher is designed to support Minecraft installations using multiple major mod-loader ecosystems.
+
+| Loader            | Support     |
+| ----------------- | ----------- |
+| 🟦 Fabric         | ✅ Supported |
+| 🟩 Forge          | ✅ Supported |
+| 🟢 NeoForge       | ✅ Supported |
+| 🟨 Quilt          | ✅ Supported |
+| 📦 Vanilla        | ✅ Supported |
+| 🧰 Modpacks       | ✅ Supported |
+| 📁 Custom Mods    | ✅ Supported |
+| 🎨 Resource Packs | ✅ Supported |
+| 🌈 Shaders        | ✅ Supported |
+
+> Loader and Minecraft-version compatibility may vary depending on the specific launcher release and game version.
+
+---
+
+# 📥 Installation
+
+## Android
+
+1. Download the latest Android APK from the **Releases** section.
+2. Install the APK on your Android device.
+3. Open **EvolveD Launcher**.
+4. Configure your Minecraft version.
+5. Select or create an instance.
+6. Configure your controls.
+7. Add mods, resource packs, or shaders if required.
+8. Launch Minecraft.
+
+### APK
+
+The Android build is distributed as an `.apk` release package.
+
+---
+
+## 💻 Desktop
+
+If a desktop build is provided for your release:
+
+1. Download the appropriate package from **Releases**.
+2. Extract the archive if necessary.
+3. Start EvolveD Launcher.
+4. Select your Minecraft version.
+5. Configure your installation.
+6. Launch the game.
+
+---
+
+# 📦 Mod Installation
+
+EvolveD Launcher is designed to make customised Minecraft installations easier to manage.
+
+A typical setup can contain:
+
+```text
+Minecraft Instance
+├── Mods
+├── Resource Packs
+├── Shader Packs
+├── Config
+├── Saves
+└── Screenshots
+```
+
+You can use separate instances for different Minecraft versions, modpacks, or configurations.
+
+---
+
+# 🎨 Resource Packs
+
+Resource packs can be added to supported Minecraft installations.
+
+Typical workflow:
+
+```text
+Instance
+   ↓
+Resource Packs
+   ↓
+Add Resource Pack
+   ↓
+Select Pack
+   ↓
+Launch Minecraft
+```
+
+---
+
+# 🌈 Shaders
+
+For Minecraft versions and configurations that support shaders, EvolveD Launcher can be used alongside compatible shader configurations.
+
+> Shader performance depends heavily on the device GPU, Minecraft version, shader pack, render distance, and other settings.
+
+---
+
+# 🛠️ Configuration
+
+EvolveD Launcher is designed around configurable Minecraft instances.
+
+You can organise installations by:
+
+* Minecraft version
+* Mod loader
+* Modpack
+* Mods
+* Resource packs
+* Shader configuration
+* Control layout
+
+Example:
+
+```text
+EvolveD Launcher
+│
+├── Vanilla
+│
+├── Fabric
+│   ├── Mods
+│   ├── Resource Packs
+│   └── Shaders
+│
+├── Forge
+│   ├── Mods
+│   └── Resource Packs
+│
+├── NeoForge
+│   └── Mods
+│
+└── Quilt
+    └── Mods
+```
+
+---
+
+# 🐛 Bug Reports
+
+Found a problem?
+
+Please open a GitHub Issue and include:
+
+* EvolveD Launcher version
+* Minecraft version
+* Mod loader
+* Device / operating system
+* Steps to reproduce the issue
+* Crash log or launcher log
+* Screenshots or screen recordings when useful
+
+Please avoid posting sensitive personal information in issue reports.
+
+---
+
+# 💡 Feature Requests
+
+Have an idea for EvolveD Launcher?
+
+Open a feature request and describe:
+
+1. What you want to add
+2. Why it would be useful
+3. How you expect it to work
+4. Any relevant screenshots or examples
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+### Basic workflow
+
+```bash
+git clone https://github.com/evolvegmr/EvolveD-Launcher.git
+cd EvolveD-Launcher
+```
+
+Create a branch for your changes:
+
+```bash
+git checkout -b feature/your-feature
+```
+
+After making your changes:
+
+```bash
+git add .
+git commit -m "Add your feature"
+git push origin feature/your-feature
+```
+
+Then open a Pull Request.
+
+---
+
+# 📥 Downloads
+
+Download the latest version from:
+
+**[GitHub Releases](https://github.com/evolvegmr/EvolveD-Launcher/releases)**
+
+---
+
+# 🌐 Community
+
+Follow the project on GitHub for:
+
+* New releases
+* Development updates
+* Bug fixes
+* Feature announcements
+* Documentation
+* Community contributions
+
+---
+
+## ⭐ Support the Project
+
+If you find EvolveD Launcher useful, consider giving the repository a ⭐ on GitHub.
+
+Every star helps the project gain visibility and motivates continued development.
+
+---
+
+<p align="center">
+
+### 🚀 EvolveD Launcher
+
+**Faster. Smoother. More Customisable.**
+
+Made with ❤️ for the Minecraft community.
+
+</p>
