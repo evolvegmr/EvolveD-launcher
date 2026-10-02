@@ -56,7 +56,7 @@ public class CsFirebaseMessagingService extends FirebaseMessagingService {
                     "Launcher Updates",
                     NotificationManager.IMPORTANCE_HIGH
             );
-            updatesChannel.setDescription("Notifications for CS LAUNCHER PLUS application updates");
+            updatesChannel.setDescription("Notifications for EvolveD Launcher application updates");
 
             NotificationChannel announcementsChannel = new NotificationChannel(
                     CHANNEL_ANNOUNCEMENTS_ID,
@@ -219,7 +219,7 @@ public class CsFirebaseMessagingService extends FirebaseMessagingService {
             message = notif.getBody();
         }
         if (title == null || title.trim().isEmpty()) {
-            title = "CS LAUNCHER PLUS";
+            title = "EvolveD Launcher";
         }
         if (message == null) {
             message = "";

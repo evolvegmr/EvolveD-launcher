@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- App name part -->
-    <string name="app_name" translatable="false">CS Launcher Plus</string>
+    <string name="app_name" translatable="false">EvolveD Launcher</string>
 
     <!-- Action bar part -->
 
@@ -21,7 +21,7 @@
     <string name="alerttitle_installmod">Select a mod installer</string>
 
     <!-- Error messages -->
-    <string name="error_fatal">CS LAUNCHER PLUS has unexpectedly crashed</string>
+    <string name="error_fatal">EvolveD Launcher has unexpectedly crashed</string>
     <string name="error_no_version">No version!</string>
     <string name="error_show_more">Show more</string>
     <string name="error_show_less">Show less</string>
@@ -263,7 +263,7 @@
     <string name="color_default_hex" translatable="false">FFFF0000</string>
     <string name="notif_channel_name">General</string>
     <string name="notif_channel_id" translatable="false">channel_id</string>
-    <string name="lazy_service_default_title">CS LAUNCHER PLUS Foreground Service</string>
+    <string name="lazy_service_default_title">EvolveD Launcher Foreground Service</string>
     <string name="mcl_setting_veroption_installed">Installed</string>
     <string name="use_global_default">(Use global default)</string>
     <string name="default_control">Default controlmap</string>
@@ -313,20 +313,20 @@
     <string name="cs_navtip_settings">Settings</string>
 
     <!-- ── Launch screen: black stage + optional user GIF (video removed) ── -->
-    <string name="cs_about_title">About CS LAUNCHER PLUS</string>
+    <string name="cs_about_title">About EvolveD Launcher</string>
     <string name="cs_launch_color_set">Launch color set</string>
     <string name="cs_launch_color_reset">Launch color reset to black</string>
-    <string name="cs_about_name">CS LAUNCHER PLUS</string>
+    <string name="cs_about_name">EvolveD Launcher</string>
     <string name="cs_about_tagline">YOUR MINECRAFT. REIMAGINED.</string>
     <string name="cs_about_made_for">MADE WITH ❤ FOR MINECRAFT: JAVA EDITION ON ANDROID</string>
     <string name="cs_about_credits_heading">Built on Legends</string>
     <string name="cs_about_credit_badge">CREDIT</string>
     <string name="cs_about_pojav_name">PojavLauncher</string>
     <string name="cs_about_pojav_role">THE ENGINE THAT STARTED IT ALL</string>
-    <string name="cs_about_pojav_desc">PojavLauncher is the legendary open-source Minecraft: Java Edition launcher for Android — the very engine that proved Java Edition can run beautifully on phones. Almost every mobile launcher today stands on the shoulders of this project, and CS LAUNCHER PLUS is honoured to carry its spirit forward. Based on the original Boardwalk concept by zhuowei, PojavLauncher brought the dream of portable Java Edition to millions of players.</string>
+    <string name="cs_about_pojav_desc">PojavLauncher is the legendary open-source Minecraft: Java Edition launcher for Android — the very engine that proved Java Edition can run beautifully on phones. Almost every mobile launcher today stands on the shoulders of this project, and EvolveD Launcher is honoured to carry its spirit forward. Based on the original Boardwalk concept by zhuowei, PojavLauncher brought the dream of portable Java Edition to millions of players.</string>
     <string name="cs_about_amethyst_name">Amethyst</string>
     <string name="cs_about_amethyst_role">THE UPSTREAM WE GREW FROM</string>
-    <string name="cs_about_amethyst_desc">Amethyst is the modern, polished fork of PojavLauncher that gave CS LAUNCHER PLUS its direct DNA — its architecture, its renderer stack and its commitment to performance. From Amethyst we inherited the rock-solid launch pipeline and the multi-renderer engine (GL4ES, Zink, MobileGlues and more), and then we rebuilt the whole experience on top of it. Thank you, Amethyst team.</string>
+    <string name="cs_about_amethyst_desc">Amethyst is the modern, polished fork of PojavLauncher that gave EvolveD Launcher its direct DNA — its architecture, its renderer stack and its commitment to performance. From Amethyst we inherited the rock-solid launch pipeline and the multi-renderer engine (GL4ES, Zink, MobileGlues and more), and then we rebuilt the whole experience on top of it. Thank you, Amethyst team.</string>
     <string name="cs_about_links_heading">Find Us</string>
     <string name="cs_about_discord_title">Discord Community</string>
     <string name="cs_about_discord_sub">Join the server — help, mods, builds &amp; friends</string>
@@ -335,9 +335,9 @@
     <string name="cs_about_github_title">GitHub</string>
     <string name="cs_about_github_sub">craftstudioteam — open source, free forever</string>
     <string name="cs_about_legal_heading">Legal Notice</string>
-    <string name="cs_about_legal_text">CS LAUNCHER PLUS is free, open-source software released under the GNU General Public License v3.0 (GPL v3). It is a fork of Amethyst (AngelAuraMC/Amethyst-Android), which itself builds upon PojavLauncher (PojavLauncherTeam/PojavLauncher) and the original Boardwalk by zhuowei. We are deeply grateful to all of these projects and their contributors.
+    <string name="cs_about_legal_text">EvolveD Launcher is a rebranded adaptation of the existing Android launcher codebase, built as a fork of the original launcher ecosystem and released under the applicable open-source licenses. This project preserves existing functionality while updating the user-facing identity and documentation for EvolveD.
 
-Minecraft is a trademark of Mojang Synergies AB / Microsoft Corporation. CS LAUNCHER PLUS is an independent community project and is NOT affiliated with, endorsed by, or sponsored by Mojang or Microsoft. All Minecraft assets and content belong to their respective owners. To play online you need a legitimate Minecraft: Java Edition account.
+Minecraft is a trademark of Mojang Synergies AB / Microsoft Corporation. This project is an independent community project and is NOT affiliated with, endorsed by, or sponsored by Mojang or Microsoft. All Minecraft assets and content belong to their respective owners. To play online you need a legitimate Minecraft: Java Edition account.
 
 Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SDL, and more) remain under their own respective licenses. See the NOTICE and LICENSE files inside the repository for full details.</string>
     <string name="cs_about_footer">CRAFT STUDIO • FREE FOREVER • MADE WITH PASSION</string>
@@ -366,7 +366,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="download_console_cancelled_clean">Stopped by user</string>
     <!-- Shortcut boot — premium "Opening Game…" interstitial -->
     <string name="sg_opening_game">Opening Game…</string>
-    <string name="sg_boot_eyebrow">CS LAUNCHER PLUS</string>
+    <string name="sg_boot_eyebrow">EvolveD Launcher</string>
     <string name="sg_resolving_profile">Resolving profile…</string>
     <string name="sg_preparing">Preparing your game…</string>
     <string name="sg_verifying">Verifying game files…</string>
@@ -412,8 +412,8 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="pt_neoforge_desc">Next-generation Forge</string>
     <string name="pt_modpack_name">Install Modpack</string>
     <string name="pt_modpack_desc">CurseForge, Modrinth or import a zip</string>
-    <string name="pt_bta_name">CS CLIENT</string>
-    <string name="pt_bta_desc">CS Client • Fabric • Build your profile</string>
+    <string name="pt_bta_name">Client</string>
+    <string name="pt_bta_desc">Fabric • Build your profile</string>
     <string name="notification_terminate">Terminate</string>
     <string name="notification_game_runs">The game is running!</string>
     <string name="folder_dialog_create">Create</string>
@@ -439,7 +439,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="preference_gyro_sample_rate_title">Gyroscope sampling rate</string>
     <string name="preference_gyro_sample_rate_description">If you have performance issues with gyroscope controls, increase this.</string>
     <string name="microsoft_login_retry_later">Too many requests, please try again later.</string>
-    <string name="storage_required">CS Launcher Plus requires external storage to be attached. Please reconnect it and restart the app.</string>
+    <string name="storage_required">EvolveD Launcher requires external storage to be attached. Please reconnect it and restart the app.</string>
     <string name="mcl_setting_title_buttonallcaps">Only use capital letters in button labels</string>
     <string name="mcl_setting_subtitle_buttonallcaps">Disable this if you want to use lowercase letters in your controls.</string>
     <string name="create_profile">Create new profile</string>
@@ -560,7 +560,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="preference_category_miscellaneous">Miscellaneous settings</string>
     <string name="preference_category_video">Video settings</string>
     <string name="notification_permission_dialog_title">Permission request</string>
-    <string name="notification_permission_dialog_text">CS Launcher Plus requires a permission to post notifications to prevent game/modpack downloads from stopping when you leave the app. Without this permission, Android may shut down your downloads when you put CS Launcher Plus in background mode.</string>
+    <string name="notification_permission_dialog_text">EvolveD Launcher requires a permission to post notifications to prevent game/modpack downloads from stopping when you leave the app. Without this permission, Android may shut down your downloads when you put EvolveD Launcher in background mode.</string>
     <string name="notification_permission_toast">You can always change your mind later by going into Settings</string>
     <string name="preference_ask_for_notification_title">Allow notifications</string>
     <string name="preference_ask_for_notification_description">Click to re-request the notification permission, required for game/modpack background downloads to work properly.</string>
@@ -581,7 +581,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="log_view_button_scroll_on">SCROLL</string>
     <string name="log_view_button_output_off">LOG</string>
     <string name="log_view_button_output_on">LOG</string>
-    <string name="log_view_label_log_output">CS LAUNCHER PLUS • LIVE GAME LOG</string>
+    <string name="log_view_label_log_output">EVOLVED LAUNCHER • LIVE GAME LOG</string>
     <string name="cs_cli_ascii_logo" translatable="false">   ██████╗ ███████╗\n  ██╔════╝ ██╔════╝\n  ██║      ███████╗\n  ╚██████╗ ███████║\n   ╚═════╝ ╚══════╝</string>
     <string name="execute_jar_failed_to_read_file">Failed to read the .jar file</string>
     <string name="execute_jar_incompatible_runtime">Execute .jar feature is not compatible with Java %d</string>
@@ -673,7 +673,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="mg_renderer_summary_computeShaderext">May help with shaderpack glitches. Disable if not needed, can cause crashes.</string>
     <string name="mg_renderer_title_multidrawCompute">Use Compute Multidraw Emulation</string>
     <string name="mg_renderer_summary_multidrawCompute">Uses compute shaders for multidraw emulation</string>
-    <string name="app_short_name" translatable="false">CS LAUNCHER PLUS</string>
+    <string name="app_short_name" translatable="false">EvolveD Launcher</string>
     <string name="demo_versions_supported">Only Vanilla 1.3.1 and above are supported on demo accounts</string>
     <string name="demo_unsupported">Demo Profile not supported</string>
     <string name="change_account">Please change accounts to use this function</string>
@@ -726,7 +726,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="mod_deps_install_without">Install without deps</string>
 
     <!-- Launcher Landscape Layout Strings -->
-    <string name="cs_launcher_title">CS LAUNCHER PLUS</string>
+    <string name="cs_launcher_title">EvolveD Launcher</string>
     <string name="cs_launcher_subtitle">YOUR MINECRAFT. YOUR WAY.</string>
     <string name="cs_welcome_back_label">· WELCOME BACK,</string>
     <string name="cs_welcome_username">STEVE</string>
@@ -938,13 +938,13 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="shortcut_remove">Remove</string>
     <string name="shortcut_remove_confirm">Remove “%1$s”? The icon will stop working, and you may need to drag it off your home screen manually.</string>
     <string name="shortcut_remove_all">Remove all</string>
-    <string name="shortcut_remove_all_confirm">Remove every shortcut created by CS LAUNCHER PLUS? This cannot be undone.</string>
+    <string name="shortcut_remove_all_confirm">Remove every shortcut created by EvolveD Launcher? This cannot be undone.</string>
     <string name="shortcut_removed">Shortcut removed</string>
 
     <!-- Shortcut states -->
     <string name="shortcut_already_exists">A shortcut for this action already exists. Creating another copy.</string>
     <string name="shortcut_pin_unsupported">Your home screen app does not support pinned shortcuts, so this shortcut cannot be created.</string>
-    <string name="shortcut_disabled_message">This shortcut was removed in CS LAUNCHER PLUS.</string>
+    <string name="shortcut_disabled_message">This shortcut was removed in EvolveD Launcher.</string>
     <string name="shortcut_profile_missing">That profile no longer exists. The shortcut has been removed.</string>
     <string name="shortcut_folder_missing">This profile\'s game folder could not be found.</string>
 

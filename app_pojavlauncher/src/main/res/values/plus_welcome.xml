@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- CS LAUNCHER PLUS — first-launch welcome popup copy (Phase 10: split into
-     readable rows; the old single 700-character paragraph is gone). -->
+<!-- EvolveD Launcher — first-launch welcome popup copy. -->
 <resources>
-    <string name="plus_welcome_title">CS LAUNCHER PLUS</string>
-    <string name="plus_welcome_subtitle">MADE IN INDIA  ·  FOR MOBILE</string>
-    <string name="plus_welcome_hero">Thank you for choosing\nCS Launcher Plus!</string>
+    <string name="plus_welcome_title">EvolveD Launcher</string>
+    <string name="plus_welcome_subtitle">PREMIUM MOBILE MINECRAFT</string>
+    <string name="plus_welcome_hero">Thank you for choosing\nEvolveD Launcher!</string>
     <string name="plus_welcome_intro">Your launcher is ready. Here is everything you need to know before you play.</string>
     <string name="plus_welcome_kicker">BEFORE YOU PLAY</string>
     <string name="plus_welcome_cancel">Cancel</string>

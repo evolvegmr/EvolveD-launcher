@@ -1,6 +1,22 @@
 plugins {
     id 'com.android.application' version '8.7.2'
-    id 'com.google.gms.google-services'
+}
+
+static def hasGoogleServicesConfig(Project project) {
+    def candidates = [
+        new File(project.projectDir, 'google-services.json'),
+        new File(project.projectDir, 'src/debug/google-services.json'),
+        new File(project.projectDir, 'src/release/google-services.json'),
+        new File(project.projectDir, 'src/google-services.json')
+    ]
+    return candidates.any { it.exists() }
+}
+
+if (hasGoogleServicesConfig(project)) {
+    apply plugin: 'com.google.gms.google-services'
+    logger.lifecycle('BUILD: Firebase Google Services config detected; optional Firebase features enabled.')
+} else {
+    logger.lifecycle('BUILD: No google-services.json detected; Firebase remains optional and disabled.')
 }
 
 static def getDate() { return new Date().format('yyyyMMdd') }
@@ -114,8 +130,8 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.customDebug
-            resValue "string", "app_name", "CS Launcher Plus"
-            resValue "string", "app_short_name", "CS Launcher Plus"
+            resValue "string", "app_name", "EvolveD Launcher"
+            resValue "string", "app_short_name", "EvolveD Launcher"
             resValue 'string', 'application_package', 'com.cslaucher.plus.debug'
             resValue 'string', 'storageProviderAuthorities', 'com.cslaucher.plus.scoped.gamefolder.debug'
             resValue 'string', 'shareProviderAuthority', 'com.cslaucher.plus.scoped.controlfolder.debug'
@@ -138,8 +154,8 @@ android {
             // defaultConfig already set
             // multiDexEnabled = true
             signingConfig signingConfigs.release
-            resValue "string", "app_name", "CS Launcher Plus"
-            resValue "string", "app_short_name", "CS Launcher Plus"
+            resValue "string", "app_name", "EvolveD Launcher"
+            resValue "string", "app_short_name", "EvolveD Launcher"
             resValue 'string', 'storageProviderAuthorities', 'com.cslaucher.plus.gamefolder'
             resValue 'string', 'application_package', 'com.cslaucher.plus'
         }

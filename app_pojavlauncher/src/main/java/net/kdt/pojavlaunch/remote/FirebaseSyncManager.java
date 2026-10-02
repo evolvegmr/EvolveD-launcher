@@ -100,15 +100,11 @@ public final class FirebaseSyncManager {
         });
     }
 
-    /** The database URL: settings override, else google-services.json value. */
+    /** Optional Firebase capability: without a valid project config, the launcher stays offline and local-only. */
     public static String effectiveDbUrl(Context ctx) {
         String custom = dbUrlFromPrefs(ctx);
         if (!custom.isEmpty()) return custom;
-        try {
-            String res = ctx.getString(R.string.firebase_database_url);
-            if (res != null && res.startsWith("https://")) return res;
-        } catch (Throwable ignored) {}
-        return "https://cs-launcher-v3-default-rtdb.asia-southeast1.firebasedatabase.app";
+        return "";
     }
 
     public static boolean isConfigured(Context ctx) {
