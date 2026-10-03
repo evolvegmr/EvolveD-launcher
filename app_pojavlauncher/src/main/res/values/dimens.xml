@@ -32,7 +32,7 @@
     <!-- Misc paddings -->
     <dimen name="profile_editor_image_padding">@dimen/padding_small</dimen>
 
-    <!-- Launcher Home "Stage" — compact defaults tuned for 360dp-height landscape. -->
+    <!-- Launcher Home — compact mobile-landscape stage metrics. -->
     <dimen name="lh_dock_width">142dp</dimen>
     <dimen name="lh_dock_icon">44dp</dimen>
     <dimen name="lh_dock_icon_inner">22dp</dimen>
@@ -42,7 +42,7 @@
     <dimen name="lh_player_h">172dp</dimen>
     <dimen name="lh_card_width">178dp</dimen>
     <dimen name="lh_card_height">108dp</dimen>
-    <dimen name="lh_carousel_height">72dp</dimen>
+    <dimen name="lh_carousel_height">58dp</dimen>
     <dimen name="lh_launch_button_h">56dp</dimen>
-    <dimen name="lh_bottom_nav_height">68dp</dimen>
+    <dimen name="lh_bottom_nav_height">56dp</dimen>
 </resources>

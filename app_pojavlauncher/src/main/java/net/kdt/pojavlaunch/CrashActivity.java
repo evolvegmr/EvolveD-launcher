@@ -169,7 +169,7 @@ public class CrashActivity extends AppCompatActivity {
     }
 
     private String buildShareText(String url) {
-        return "CS LAUNCHER PLUS crash analysis\nReason: " + mAnalysis.title
+        return "EvolveD Launcher crash analysis\nReason: " + mAnalysis.title
                 + "\nCategory: " + mAnalysis.category
                 + (mAnalysis.culprit == null ? "" : "\nPossible culprit: " + mAnalysis.culprit)
                 + "\nFull filtered log: " + url;
@@ -190,9 +190,9 @@ public class CrashActivity extends AppCompatActivity {
         conn.setDoOutput(true);
         conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
         conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("User-Agent", "CSLauncher/" + BuildConfig.VERSION_NAME);
+        conn.setRequestProperty("User-Agent", "EvolveDLauncher/" + BuildConfig.VERSION_NAME);
         JSONObject payload = new JSONObject();
-        payload.put("content", content); payload.put("source", "CS LAUNCHER PLUS");
+        payload.put("content", content); payload.put("source", "EvolveD Launcher");
         JSONArray metadata = new JSONArray();
         metadata.put(meta("launcher_version", BuildConfig.VERSION_NAME, "Launcher Version"));
         metadata.put(meta("android_version", android.os.Build.VERSION.RELEASE, "Android"));

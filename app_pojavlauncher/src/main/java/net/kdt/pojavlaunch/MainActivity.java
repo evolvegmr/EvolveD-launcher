@@ -929,7 +929,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         } catch (NumberFormatException e) { folder.mkdir(); }
 
         if (hasMods("sodium"))
-            Logger.appendToLog("WARNING: Sodium is being used. CS LAUNCHER PLUS supports it, but if you encounter visual glitches or crashes, report them in our community!");
+            Logger.appendToLog("WARNING: Sodium is being used. EvolveD Launcher supports it, but if you encounter visual glitches or crashes, report them in our community!");
         Tools.printLauncherInfo(versionId, Tools.isValidString(minecraftProfile.javaArgs) ? minecraftProfile.javaArgs : LauncherPreferences.PREF_CUSTOM_JAVA_ARGS, Tools.getTotalDeviceMemory(this));
         if(Tools.LOCAL_RENDERER.equals("opengles_mobileglues")) {
             try {
@@ -950,7 +950,8 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         // boundary. Re-reading async SharedPreferences here could select a stale
         // local account and wrongly enable the offline skin injector.
         MinecraftAccount minecraftAccount = PojavProfile.getCurrentProfileContent(this, mLaunchAccountName);
-        try { if(net.kdt.pojavlaunch.csclient.CsClientManagedFiles.ensureForProfile(this,minecraftProfile)) Log.i("CSClient","Bundled managed core verified before launch"); } catch(Exception updateError){ throw new RuntimeException("Unable to verify bundled CS Client",updateError); }
+        // The EvolveD launch flow stays focused on the selected Minecraft profile and
+        // does not inject the legacy CS Client managed bundle during launch.
         JREUtils.redirectAndPrintJRELog();
         LauncherProfiles.load();
         int requiredJavaVersion = 8;

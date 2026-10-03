@@ -338,7 +338,7 @@ public class LoggerView extends ConstraintLayout {
         }
         Intent send = new Intent(Intent.ACTION_SEND);
         send.setType("text/plain");
-        send.putExtra(Intent.EXTRA_SUBJECT, "CS LAUNCHER PLUS — Game Log");
+        send.putExtra(Intent.EXTRA_SUBJECT, "EvolveD Launcher — Game Log");
         send.putExtra(Intent.EXTRA_TEXT, text);
         try {
             getContext().startActivity(Intent.createChooser(send,
@@ -597,7 +597,7 @@ public class LoggerView extends ConstraintLayout {
         if (mCliIntroFinished) return;
         mCliIntroFinished = true;
         if (mCliAnimationRunnable != null) removeCallbacks(mCliAnimationRunnable);
-        appendSmartImportant("[SYSTEM] CS LAUNCHER PLUS bootstrap complete");
+        appendSmartImportant("[SYSTEM] EvolveD Launcher bootstrap complete");
         while (!mSmartImportantBuffer.isEmpty()) {
             appendSmartImportant(mSmartImportantBuffer.poll());
         }

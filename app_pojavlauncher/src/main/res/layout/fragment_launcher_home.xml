@@ -19,7 +19,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0B0713">
+    android:background="#0B0907">
 
     <!-- Background artwork (two layers for a crossfade when the primary changes) -->
     <ImageView
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
+            app:layout_constraintGuide_percent="0.43" />
 
         <!-- ═══ BRAND CLUSTER (top-left, Phase 8) ═══
              Launcher mark + name, then two community pills: YouTube (red)
@@ -109,7 +109,7 @@
                     android:ellipsize="end"
                     android:text="EvolveD"
                     android:textSize="11sp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#FFD54A"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText,Deprecated" />
 
@@ -151,6 +151,7 @@
                 android:layout_width="1dp"
                 android:layout_height="22dp"
                 android:layout_marginEnd="8dp"
+                android:visibility="gone"
                 android:background="#2EFFFFFF" />
 
             <LinearLayout
@@ -245,7 +246,7 @@
                 android:background="@drawable/bg_lh_card_icon"
                 android:padding="2dp"
                 android:src="@drawable/ic_profile_player"
-                app:tint="#8B5CF6"
+                app:tint="#FFD54A"
                 android:contentDescription="Account" />
 
             <TextView
@@ -274,7 +275,7 @@
                 android:letterSpacing="0.06"
                 android:paddingHorizontal="7dp"
                 android:paddingVertical="3dp"
-                android:background="@drawable/bg_hd_badge_purple"
+                android:background="@drawable/bg_lh_account_badge"
                 android:includeFontPadding="false" />
 
             <ImageView
@@ -282,7 +283,7 @@
                 android:layout_height="13dp"
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_chevron_down"
-                app:tint="#9A91B5"
+                app:tint="#D8B95A"
                 android:contentDescription="@null" />
         </LinearLayout>
 
@@ -306,9 +307,9 @@
             android:id="@+id/lh_hero_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:maxWidth="230dp"
             android:singleLine="true"
             android:ellipsize="end"
@@ -325,8 +326,8 @@
             android:shadowDy="1"
             android:shadowRadius="6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lh_account_chip" />
+            app:layout_constraintEnd_toStartOf="@id/lh_center_guide"
+            app:layout_constraintTop_toBottomOf="@id/lh_brand_cluster" />
 
         <!-- 3D player. IMPORTANT: this GLSurfaceView has setZOrderOnTop(true),
              so it is drawn ABOVE every sibling view. Its top is therefore
@@ -466,9 +467,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginStart="18dp"
-            android:layout_marginEnd="22dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            app:layout_constraintStart_toStartOf="@id/lh_center_guide"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/lh_launch_specs"
             android:layout_marginBottom="6dp">
@@ -493,7 +494,7 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@drawable/ic_play_arrow"
-                        app:tint="#0E0E11"
+                        app:tint="#FFFFFF"
                         android:contentDescription="@null" />
 
                     <TextView
@@ -502,7 +503,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:text="LAUNCH"
-                        android:textColor="#0E0E11"
+                        android:textColor="#FFFFFF"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.12"
@@ -524,7 +525,7 @@
                     android:layout_height="17dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_edit_profile"
-                    app:tint="#C9C4D8"
+                    app:tint="#E7C45A"
                     android:contentDescription="Edit profile" />
             </FrameLayout>
         </LinearLayout>
@@ -539,17 +540,17 @@
             android:background="@drawable/bg_lh_specs_pill"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintStart_toStartOf="@id/lh_center_guide"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/lh_library">
+            app:layout_constraintBottom_toTopOf="@id/lh_quick_actions">
 
             <ImageView
                 android:id="@+id/lh_spec_java_icon"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:src="@drawable/ic_settings_java"
-                app:tint="#9DA3B4"
+                app:tint="#A8A39A"
                 android:contentDescription="@null" />
 
             <TextView
@@ -558,7 +559,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="Java 21"
-                android:textColor="#C5C8D4"
+                android:textColor="#E0DCD4"
                 android:textSize="11sp"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false" />
@@ -574,7 +575,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:src="@drawable/ic_settings_performance"
-                app:tint="#9DA3B4"
+                app:tint="#A8A39A"
                 android:contentDescription="@null" />
 
             <TextView
@@ -583,20 +584,100 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="4096 MB RAM"
-                android:textColor="#C5C8D4"
+                android:textColor="#E0DCD4"
                 android:textSize="11sp"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false" />
         </LinearLayout>
 
-        <!-- ═══ INSTANCE LIBRARY CAROUSEL (bottom, clear of the dock) ═══ -->
+        <TextView
+            android:id="@+id/lh_instance_version"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="5dp"
+            android:ellipsize="middle"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="Minecraft version"
+            android:textColor="#F3E9D0"
+            android:textSize="13sp"
+            android:includeFontPadding="false"
+            app:layout_constraintStart_toStartOf="@id/lh_center_guide"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/lh_launch_row" />
+
+        <LinearLayout
+            android:id="@+id/lh_quick_actions"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="6dp"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/lh_center_guide"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/lh_library">
+
+            <FrameLayout
+                android:id="@+id/lh_quick_mods"
+                style="@style/EvolveDQuickAction"
+                android:contentDescription="Open mods">
+                <ImageView
+                    style="@style/EvolveDQuickActionIcon"
+                    android:src="@drawable/ic_nav_mods"
+                    app:tint="#E8C45B"
+                    android:contentDescription="@null" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/lh_quick_playtime"
+                style="@style/EvolveDQuickAction"
+                android:layout_marginStart="7dp"
+                android:contentDescription="Open playtime">
+                <ImageView
+                    style="@style/EvolveDQuickActionIcon"
+                    android:src="@drawable/ic_clock_history"
+                    app:tint="#9A9AAA"
+                    android:contentDescription="@null" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/lh_quick_cleaner"
+                style="@style/EvolveDQuickAction"
+                android:layout_marginStart="7dp"
+                android:contentDescription="Open cleaner">
+                <ImageView
+                    style="@style/EvolveDQuickActionIcon"
+                    android:src="@drawable/ic_menu_delete_forever"
+                    app:tint="#7DAD9A"
+                    android:contentDescription="@null" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/lh_quick_settings"
+                style="@style/EvolveDQuickAction"
+                android:layout_marginStart="7dp"
+                android:contentDescription="Open settings">
+                <ImageView
+                    style="@style/EvolveDQuickActionIcon"
+                    android:src="@drawable/ic_menu_settings"
+                    app:tint="#B2A0B9"
+                    android:contentDescription="@null" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- ═══ INSTANCE LIBRARY CAROUSEL (above the persistent bottom nav) ═══ -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lh_library"
             android:layout_width="0dp"
-            android:layout_height="@dimen/lh_carousel_height"
+            android:layout_height="58dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="6dp"
             android:clipToPadding="false"
             android:overScrollMode="never"
             app:layout_constraintStart_toStartOf="parent"

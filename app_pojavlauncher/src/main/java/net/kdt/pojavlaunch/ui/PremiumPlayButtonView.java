@@ -23,8 +23,8 @@ import net.kdt.pojavlaunch.progresskeeper.TaskCountListener;
 /**
  * Premium launch button used by profile cards / FastClient home.
  *
- * Idle: platinum capsule + a slow diagonal sheen.
- * Launching: horizontal progress wave, violet edge glow, particle burst and a
+ * Idle: warm gold-to-amber button + a slow diagonal sheen.
+ * Launching: horizontal progress wave, warm edge glow, particle burst and a
  * subtle morph pulse — visually distinct from the normal "download" spinner.
  *
  * Perf notes:
@@ -108,7 +108,8 @@ public class PremiumPlayButtonView extends FrameLayout implements TaskCountListe
         super.onSizeChanged(w, h, oldw, oldh);
         mRect.set(0.5f, 0.5f, w - 0.5f, h - 0.5f);
         mRoundPath.reset();
-        mRoundPath.addRoundRect(mRect, h / 2f, h / 2f, Path.Direction.CW);
+        float radius = Math.min(dp(10f), h / 2f);
+        mRoundPath.addRoundRect(mRect, radius, radius, Path.Direction.CW);
 
         mBaseGradient = new LinearGradient(0, 0, w, h,
                 new int[]{0xFFFFD54A, 0xFFFF9800, 0xFFFF6A00},
@@ -339,11 +340,11 @@ public class PremiumPlayButtonView extends FrameLayout implements TaskCountListe
         // Glow + edge highlight above content.
         if (mLaunching) {
             float pulse = 0.5f + 0.5f * (float) Math.sin(mLaunchFraction * Math.PI * 2.0);
-            mStrokePaint.setColor(0x55D0D0D0);
+            mStrokePaint.setColor(0x66FFC04A);
             mStrokePaint.setStrokeWidth(dp(4.5f + pulse * 1.3f));
             canvas.drawPath(mRoundPath, mStrokePaint);
         }
-        mStrokePaint.setColor(mStopMode ? 0xFFFFA0A7 : mLaunching ? 0x99F3F3F7 : 0x66FFFFFF);
+        mStrokePaint.setColor(mStopMode ? 0xFFFFA0A7 : mLaunching ? 0x99FFF0C2 : 0x66FFD98A);
         mStrokePaint.setStrokeWidth(dp(1.15f));
         canvas.drawPath(mRoundPath, mStrokePaint);
 

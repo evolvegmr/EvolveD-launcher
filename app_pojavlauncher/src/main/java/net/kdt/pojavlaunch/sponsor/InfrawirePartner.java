@@ -24,9 +24,9 @@ public final class InfrawirePartner {
 
     public static final String NAME = "Infrawire";
     public static final String TAGLINE = "High-Performance VPS & Cloud Hosting";
-    public static final String SUB_TEXT = "Official Cloud Hosting Partner of CS LAUNCHER PLUS";
+    public static final String SUB_TEXT = "Official Cloud Hosting Partner of EvolveD Launcher";
     public static final String DESCRIPTION =
-            "Infrawire is the Official Hosting Partner of CS LAUNCHER PLUS, providing "
+            "Infrawire is the Official Hosting Partner of EvolveD Launcher, providing "
                     + "high-performance VPS and cloud infrastructure on latest-generation "
                     + "hardware with NVMe storage, DDR4 memory and a 10 Gbps global network.";
 

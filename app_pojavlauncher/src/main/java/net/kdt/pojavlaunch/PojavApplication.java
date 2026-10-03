@@ -71,7 +71,7 @@ public class PojavApplication extends Application {
 					File dir = new File(getFilesDir(), "crash");
 					File note = new File(dir.isDirectory() ? dir : getFilesDir(), "latestcrash.txt");
 					java.io.PrintWriter w = new java.io.PrintWriter(note);
-					w.println("CS LAUNCHER PLUS crash report");
+					w.println("EvolveD Launcher crash report");
 					w.println(" - Time: " + DateFormat.getDateTimeInstance().format(new Date()));
 					w.println(" - Suspected NATIVE crash: previous session died without any Java exception.");
 					w.println(" - GL phase at death: " + phase);
@@ -120,7 +120,7 @@ public class PojavApplication extends Application {
 				crashFile = new File(root, "latestcrash.txt");
 				FileUtils.ensureParentDirectory(crashFile);
 				PrintStream crashStream = new PrintStream(crashFile);
-				crashStream.append("CS LAUNCHER PLUS crash report\n");
+				crashStream.append("EvolveD Launcher crash report\n");
 				crashStream.append(" - Time: ").append(DateFormat.getDateTimeInstance().format(new Date())).append("\n");
 				crashStream.append(" - Device: ").append(Build.PRODUCT).append(" ").append(Build.MODEL).append("\n");
 				crashStream.append(" - Android version: ").append(Build.VERSION.RELEASE).append("\n");

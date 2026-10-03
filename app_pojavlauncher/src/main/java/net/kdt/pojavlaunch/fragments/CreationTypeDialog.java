@@ -24,15 +24,14 @@ import net.kdt.pojavlaunch.UiMotion;
  * Creation-type chooser — the single popup behind the floating "+" button.
  *
  *   Normal Version → {@link VersionCreateFragment} (full-screen guided creation)
- *   Client         → {@link CsClientVersionsFragment} (existing CS Client flow)
  *   Mod Pack       → {@link ModpackCreateFragment} (existing browse/import flow)
  *
  * Presentation: a centred graphite card, 460dp wide max and ≈300dp tall, so all
- * three options are always on screen in landscape while staying comfortably
+ * remaining options are always visible in landscape while staying comfortably
  * tappable (64dp rows). Motion follows an anime.js-style timeline:
  * card outBack scale-in → rows stagger(70) from the right with outExpo →
- * medallion icons outElastic pop → FEATURED badge pop → footer fade. Picking a
- * row scales it up while the others recede, then the card exits with inBack.
+ * medallion icons outElastic pop → footer fade. Picking a row scales it up
+ * while the others recede, then the card exits with inBack.
  *
  * Stays inside the right pane when launched from {@link MainMenuFragment},
  * otherwise swaps the activity's main container — identical routing rules to
@@ -76,26 +75,22 @@ public class CreationTypeDialog extends DialogFragment {
 
         mSheet = dialog.findViewById(R.id.creation_sheet);
         final View optNormal  = dialog.findViewById(R.id.creation_opt_normal);
-        final View optClient  = dialog.findViewById(R.id.creation_opt_client);
         final View optModpack = dialog.findViewById(R.id.creation_opt_modpack);
         final View close      = dialog.findViewById(R.id.creation_close);
-        final View badge      = dialog.findViewById(R.id.creation_featured_badge);
-        final View ring       = dialog.findViewById(R.id.creation_ring);
         final View footer     = dialog.findViewById(R.id.creation_footer);
         final View title      = dialog.findViewById(R.id.creation_title);
         final View[] icons = {
                 dialog.findViewById(R.id.creation_icon_normal),
-                dialog.findViewById(R.id.creation_icon_client),
                 dialog.findViewById(R.id.creation_icon_modpack)};
 
-        UiMotion.pressFeedback(optNormal, optClient, optModpack, close);
+        UiMotion.pressFeedback(optNormal, optModpack, close);
 
         // ── timeline ───────────────────────────────────────────────────────
         // t=0     card: scale .9→1, y 24→0, outBack
         Anime.in(mSheet, Anime.Fx.SCALE_IN, 0, 380, Anime.OUT_BACK);
         if (title instanceof android.widget.TextView) Anime.tightenTitle((android.widget.TextView) title, 60);
         // t=120   rows: stagger(70) from the right, outExpo
-        final View[] rows = {optNormal, optClient, optModpack};
+        final View[] rows = {optNormal, optModpack};
         for (int i = 0; i < rows.length; i++) Anime.in(rows[i], Anime.Fx.FADE_LEFT, 120 + i * 70L, 560, Anime.OUT_EXPO);
         // t=260   medallion icons: outElastic pop, same stagger
         for (int i = 0; i < icons.length; i++) {
@@ -106,10 +101,6 @@ public class CreationTypeDialog extends DialogFragment {
                     .setStartDelay(260 + i * 70L).setDuration(620)
                     .setInterpolator(Anime.OUT_ELASTIC).start();
         }
-        // t=520   FEATURED badge pops; ring starts breathing; footer fades in
-        if (badge != null) badge.postDelayed(() -> Anime.pop(badge), 520);
-        if (ring != null) { ring.setAlpha(0f); ring.animate().alpha(0.6f).setStartDelay(600).setDuration(400)
-                .withEndAction(() -> Anime.breathe(ring, 0.25f, 0.85f, 1400)).start(); }
         Anime.in(footer, Anime.Fx.FADE_UP, 640, 480, Anime.OUT_EXPO);
         if (close != null) Anime.in(close, Anime.Fx.POP, 300, 420, Anime.OUT_BACK);
 
@@ -118,9 +109,6 @@ public class CreationTypeDialog extends DialogFragment {
 
         if (optNormal != null) optNormal.setOnClickListener(v -> pickAndGo(v, rows, () ->
                 navigate(VersionCreateFragment.class, VersionCreateFragment.TAG)));
-
-        if (optClient != null) optClient.setOnClickListener(v -> pickAndGo(v, rows, () ->
-                navigate(CsClientVersionsFragment.class, CsClientVersionsFragment.TAG)));
 
         if (optModpack != null) optModpack.setOnClickListener(v -> pickAndGo(v, rows, () -> {
             if (!Tools.hasOnlineProfile()) {

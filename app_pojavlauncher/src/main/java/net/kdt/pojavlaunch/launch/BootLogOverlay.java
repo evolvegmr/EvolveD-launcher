@@ -203,7 +203,7 @@ public class BootLogOverlay extends FrameLayout {
         setTranslationX(-24f * getResources().getDisplayMetrics().density);
         animate().alpha(1f).translationX(0f).setDuration(420)
                 .setInterpolator(new DecelerateInterpolator(1.8f)).start();
-        appendStyled(colour("› cs launcher plus · boot log", 0xFF9AA0AC));
+        appendStyled(colour("› EvolveD Launcher · boot log", 0xFF9AA0AC));
         appendStyled(colour("› starting java runtime…", 0xFFD2D6DE));
         Logger.addLogListener(mListener);
         mPresentBaseline = FpsCounter.getTotalPresents();

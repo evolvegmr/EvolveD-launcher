@@ -213,7 +213,7 @@ public class CallbackBridge {
                         // Notifies SDL of native surface res which is needed for proper input handling
                         SDLActivity.getSDLSurface().surfaceChanged();
                     }
-                    Logger.appendToLog("CS LAUNCHER PLUS: SDL support enabled!");
+                    Logger.appendToLog("EvolveD Launcher: SDL support enabled!");
                     return true;
                 }
         }

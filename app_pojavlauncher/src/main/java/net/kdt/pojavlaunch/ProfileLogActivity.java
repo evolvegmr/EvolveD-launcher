@@ -114,7 +114,7 @@ public class ProfileLogActivity extends AppCompatActivity {
                         }
                         out.append(line).append('\n'); lines++;
                     }
-                    if (truncated) out.append("\n[CS LAUNCHER PLUS] Display truncated at the mclo.gs safety limit.\n");
+                    if (truncated) out.append("\n[EvolveD Launcher] Display truncated at the mclo.gs safety limit.\n");
                     content = out.toString();
                 } catch (Exception e) {
                     content = "Unable to read this profile log:\n" + e.getMessage();
@@ -208,9 +208,9 @@ public class ProfileLogActivity extends AppCompatActivity {
         conn.setDoOutput(true);
         conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
         conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("User-Agent", "CSLauncher/" + BuildConfig.VERSION_NAME);
+        conn.setRequestProperty("User-Agent", "EvolveDLauncher/" + BuildConfig.VERSION_NAME);
         JSONObject body = new JSONObject();
-        body.put("content", content); body.put("source", "CS LAUNCHER PLUS");
+        body.put("content", content); body.put("source", "EvolveD Launcher");
         JSONArray metadata = new JSONArray();
         metadata.put(meta("profile", mProfileName, "Profile"));
         metadata.put(meta("minecraft_version", mVersion, "Minecraft Version"));

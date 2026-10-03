@@ -574,7 +574,7 @@ public class LauncherPreferenceFragment extends Fragment {
             case "Miscellaneous":
                 return "Verification, capes, and extra compatibility switches that support special cases.";
             case "Sponsors":
-                return "Official partners who keep CS LAUNCHER PLUS fast, free, and professionally backed.";
+                return "Official partners who keep EvolveD Launcher fast, free, and professionally backed.";
             case "Performance":
                 return "Live FPS, memory telemetry and low-pause runtime tuning for steadier gameplay.";
             default:
@@ -1100,10 +1100,10 @@ public class LauncherPreferenceFragment extends Fragment {
                     }
                     sponsorItems.add(new SettingItem("infrawire_partner_info", SettingItem.TYPE_INFO,
                             "Infrawire — Official Hosting Partner",
-                            "High-Performance VPS & Cloud Hosting • Official Cloud Hosting Partner of CS LAUNCHER PLUS", null));
+                            "High-Performance VPS & Cloud Hosting • Official Cloud Hosting Partner of EvolveD Launcher", null));
                     sponsorItems.add(new SettingItem("infrawire_about_info", SettingItem.TYPE_INFO,
                             "Official Sponsor",
-                            "Infrawire powers CS LAUNCHER PLUS with latest-generation VPS & cloud infrastructure — NVMe SSD storage, DDR4 memory, a 10 Gbps independent global network, multi-layer Anti-DDoS protection, hourly billing from €0.007/hour and 24/7 expert support.", null));
+                            "Infrawire powers EvolveD Launcher with latest-generation VPS & cloud infrastructure — NVMe SSD storage, DDR4 memory, a 10 Gbps independent global network, multi-layer Anti-DDoS protection, hourly billing from €0.007/hour and 24/7 expert support.", null));
                     sponsorItems.add(new SettingItem("infrawire_view_partner_page", SettingItem.TYPE_ACTION,
                             "View Partner Page", "Plans, benefits, and promotions — inside the launcher", null)
                             .setAction(() -> Tools.swapFragment(requireActivity(),

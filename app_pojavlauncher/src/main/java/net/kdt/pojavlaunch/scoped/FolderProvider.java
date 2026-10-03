@@ -82,8 +82,8 @@ public class FolderProvider extends DocumentsProvider {
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_ROOT_PROJECTION);
         final String applicationName = getContext().getString(R.string.app_short_name);
 
-        // Show "CS LAUNCHER PLUS Build x.x.x" — no debug/development branding
-        String summary = "CS LAUNCHER PLUS Build " + BuildConfig.VERSION_NAME;
+        // Show "EvolveD Launcher Build x.x.x" — no debug/development branding
+        String summary = "EvolveD Launcher Build " + BuildConfig.VERSION_NAME;
 
         final MatrixCursor.RowBuilder row = result.newRow();
         row.add(Root.COLUMN_ROOT_ID, getDocIdForFile(BASE_DIR));

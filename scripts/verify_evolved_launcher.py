@@ -13,6 +13,7 @@ FILES = {
     "build": read("app_pojavlauncher/build.gradle"),
     "activity": read("app_pojavlauncher/src/main/res/layout/activity_pojav_launcher.xml"),
     "port_activity": read("app_pojavlauncher/src/main/res/layout-port/activity_pojav_launcher.xml"),
+    "land_activity": read("app_pojavlauncher/src/main/res/layout-land/activity_pojav_launcher.xml"),
     "bottom_nav": read("app_pojavlauncher/src/main/res/layout/include_lh_bottom_nav.xml"),
     "dock": read("app_pojavlauncher/src/main/res/layout/include_lh_dock.xml"),
     "home": read("app_pojavlauncher/src/main/res/layout/fragment_launcher_home.xml"),
@@ -34,6 +35,7 @@ FILES = {
 XML_FILES = [
     ROOT / "app_pojavlauncher/src/main/res/layout/activity_pojav_launcher.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout-port/activity_pojav_launcher.xml",
+    ROOT / "app_pojavlauncher/src/main/res/layout-land/activity_pojav_launcher.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout/include_lh_bottom_nav.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout/include_lh_dock.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout/dialog_launcher_update.xml",
@@ -66,6 +68,14 @@ def assertions():
         assert android_ns + "screenOrientation" not in activities[name].attrib
     assert 'setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)' not in FILES["launcher_activity"]
     assert 'lh_nav_home' in FILES["bottom_nav"] and 'lh_nav_versions' in FILES["bottom_nav"]
+    assert 'layout="@layout/include_lh_bottom_nav"' in FILES["land_activity"]
+    assert 'app:layout_constraintBottom_toTopOf="@+id/lh_dock"' in FILES["land_activity"]
+    assert 'include_lh_dock' not in FILES["land_activity"]
+    assert 'app:layout_constraintGuide_percent="0.43"' in h
+    assert all(action in h for action in (
+        'lh_instance_version', 'lh_quick_mods', 'lh_quick_playtime',
+        'lh_quick_cleaner', 'lh_quick_settings'))
+    assert 'android:layout_height="48dp"' in h
     assert 'android:layout_width="0dp"' in h and 'android:layout_weight="1"' in h
     assert 'HomeTutorial.maybeStart' not in lh and 'PlusWelcomeDialog.maybeShow' not in lh
     assert 'https://api.github.com/repos/evolvegmr/EvolveD-launcher/releases/latest' in u

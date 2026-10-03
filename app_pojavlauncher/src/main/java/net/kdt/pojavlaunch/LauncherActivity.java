@@ -484,6 +484,19 @@ public class LauncherActivity extends BaseActivity {
         if (v == null) return;
         boolean was = v.isSelected();
         v.setSelected(selected);
+        if (v instanceof ViewGroup) {
+            ViewGroup item = (ViewGroup) v;
+            int iconColor = selected ? 0xFFFFD54A : 0xFFC7C1B8;
+            int labelColor = selected ? 0xFFFFE8A6 : 0xFFB8B3AA;
+            for (int i = 0; i < item.getChildCount(); i++) {
+                View child = item.getChildAt(i);
+                if (child instanceof ImageView) {
+                    ((ImageView) child).setColorFilter(iconColor);
+                } else if (child instanceof TextView) {
+                    ((TextView) child).setTextColor(labelColor);
+                }
+            }
+        }
         if (selected && !was
                 && net.kdt.pojavlaunch.utils.animation.MotionSpeed.isEnabled()) {
             v.animate().cancel();

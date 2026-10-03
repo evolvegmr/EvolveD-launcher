@@ -103,6 +103,7 @@ public class LauncherHomeFragment extends Fragment {
     // Stage
     private TextView mLaunchLabel;
     private TextView mHeroName;
+    private TextView mInstanceVersion;
     private PremiumPlayButtonView mLaunchButton;
     private View mLaunchSpecs;
     private TextView mSpecJavaText;
@@ -148,6 +149,7 @@ public class LauncherHomeFragment extends Fragment {
         mBgB = view.findViewById(R.id.lh_bg_b);
         mLaunchButton = view.findViewById(R.id.lh_launch_button);
         mLaunchLabel = view.findViewById(R.id.lh_launch_label);
+        mInstanceVersion = view.findViewById(R.id.lh_instance_version);
         mLaunchSpecs = view.findViewById(R.id.lh_launch_specs);
         mSpecJavaText = view.findViewById(R.id.lh_spec_java_text);
         mSpecRamText = view.findViewById(R.id.lh_spec_ram_text);
@@ -218,11 +220,13 @@ public class LauncherHomeFragment extends Fragment {
                     }).show());
         }
 
-        // Reference-dashboard quick actions use the same real destinations as the right rail.
+        // Home quick actions use the same real destinations as persistent navigation.
         View qMods = view.findViewById(R.id.lh_quick_mods);
         View qPacks = view.findViewById(R.id.lh_quick_modpacks);
         View qAccounts = view.findViewById(R.id.lh_quick_accounts);
         View qCleaner = view.findViewById(R.id.lh_quick_cleaner);
+        View qPlaytime = view.findViewById(R.id.lh_quick_playtime);
+        View qSettings = view.findViewById(R.id.lh_quick_settings);
         if (qMods != null) qMods.setOnClickListener(v -> {
             Bundle a = new Bundle();
             if (mPrimaryKey != null) a.putString(ManageModsFragment.BUNDLE_PROFILE_KEY, mPrimaryKey);
@@ -233,6 +237,12 @@ public class LauncherHomeFragment extends Fragment {
         if (qAccounts != null) qAccounts.setOnClickListener(v -> switchAccount());
         if (qCleaner != null) qCleaner.setOnClickListener(v ->
                 Tools.swapFragment(requireActivity(), CleanerFragment.class, "CLEANER", null));
+        if (qPlaytime != null) qPlaytime.setOnClickListener(v ->
+                Tools.swapFragment(requireActivity(), PlaytimeFragment.class, "PLAYTIME", null));
+        if (qSettings != null) qSettings.setOnClickListener(v ->
+                Tools.swapFragment(requireActivity(),
+                        net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class,
+                        "SETTINGS_FRAGMENT", null));
 
         // ── Brand cluster (top-left, Phase 8): YouTube red / Discord blurple.
         //    Slides in from the left while the account chip lands on the right;
@@ -955,12 +965,19 @@ public class LauncherHomeFragment extends Fragment {
         if (mKeys.isEmpty()) {
             mPrimaryKey = null;
             mLaunchLabel.setText("CREATE");
+            if (mInstanceVersion != null) mInstanceVersion.setVisibility(View.GONE);
             crossfadeBackground(null);
             if (mLaunchSpecs != null) mLaunchSpecs.setVisibility(View.GONE);
             return;
         }
         mPrimaryKey = mKeys.get(0);
         MinecraftProfile p = mProfiles.get(0);
+        if (mInstanceVersion != null) {
+            String versionId = p.lastVersionId;
+            mInstanceVersion.setText(versionId == null || versionId.trim().isEmpty()
+                    ? "Minecraft version not set" : "Minecraft " + versionId);
+            mInstanceVersion.setVisibility(View.VISIBLE);
+        }
         mLaunchLabel.setText("LAUNCH");
         mLaunchButton.setContentDescription("Launch " + (p.name != null ? p.name : "instance"));
 
