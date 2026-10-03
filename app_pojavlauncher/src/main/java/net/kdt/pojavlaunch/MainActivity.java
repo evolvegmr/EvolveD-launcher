@@ -162,6 +162,11 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
                     LauncherPreferences.PREF_KEY_CURRENT_PROFILE, "default");
         }
         net.kdt.pojavlaunch.profiles.ProfileLogStore.setActiveProfileKey(launchProfileKey);
+        net.kdt.pojavlaunch.performance.PlaytimeStore.start(
+                this,
+                launchProfileKey,
+                mLaunchAccountName
+        );
 
         String gameDirPath = Tools.getGameDirPath(minecraftProfile).getAbsolutePath();
         MCOptionUtils.load(gameDirPath);
@@ -466,6 +471,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     protected void onDestroy() {
         super.onDestroy();
         net.kdt.pojavlaunch.performance.GameSessionState.clear();
+        net.kdt.pojavlaunch.performance.PlaytimeStore.stop(this);
         Tools.MAIN_HANDLER.removeCallbacks(mFirstFrameWatcher);
         net.kdt.pojavlaunch.performance.PerformanceEngine.onSessionEnd(this);
         stopFpsTicker(); // CS Perf

@@ -1,100 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ═══ SHARED LEFT NAVIGATION DOCK — included by the launcher activity so it
-     stays persistent (and correctly highlighted) across every page. ═══ -->
-    <!-- ═══ LEFT DOCK (edge-aligned, vertically centered) ═══ -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lh_dock_scroll"
+    android:layout_width="232dp"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    android:clipToPadding="false"
+    android:paddingVertical="10dp">
+
+    <LinearLayout
         android:id="@+id/lh_dock"
-        android:layout_width="@dimen/lh_dock_width"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="0dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:background="@drawable/bg_lh_glass"
-        android:paddingVertical="@dimen/lh_dock_pad_v"
-        android:layout_marginStart="10dp">
+        android:background="@drawable/bg_lh_dock"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="8dp">
 
-        <FrameLayout
-        android:id="@+id/lh_nav_home"
-        android:layout_width="@dimen/lh_dock_icon"
-        android:layout_height="@dimen/lh_dock_icon"
-        android:background="@drawable/bg_hd_sidebar_item"
-        android:clickable="true"
-        android:focusable="true">
-        <ImageView
-            android:layout_width="@dimen/lh_dock_icon_inner"
-            android:layout_height="@dimen/lh_dock_icon_inner"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_menu_home"
-            app:tint="#FFFFFF"
-            android:contentDescription="Home" />
-        </FrameLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="9dp"
+            android:text="EvolveD"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:includeFontPadding="false" />
 
-        <FrameLayout
-        android:id="@+id/lh_nav_cursor"
-        android:layout_width="@dimen/lh_dock_icon"
-        android:layout_height="@dimen/lh_dock_icon"
-        android:layout_marginTop="@dimen/lh_dock_gap"
-        android:background="@drawable/bg_hd_sidebar_item"
-        android:clickable="true"
-        android:focusable="true">
-        <ImageView
-            android:layout_width="@dimen/lh_dock_icon_inner"
-            android:layout_height="@dimen/lh_dock_icon_inner"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_mouse_pointer"
-            app:tint="#C7C1DA"
-            android:contentDescription="Cursor" />
-        </FrameLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="9dp"
+            android:text="LAUNCHER"
+            android:textColor="#FF9D00"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.16"
+            android:includeFontPadding="false" />
 
-        <FrameLayout
-        android:id="@+id/lh_nav_controls"
-        android:layout_width="@dimen/lh_dock_icon"
-        android:layout_height="@dimen/lh_dock_icon"
-        android:layout_marginTop="@dimen/lh_dock_gap"
-        android:background="@drawable/bg_hd_sidebar_item"
-        android:clickable="true"
-        android:focusable="true">
-        <ImageView
-            android:layout_width="@dimen/lh_dock_icon_inner"
-            android:layout_height="@dimen/lh_dock_icon_inner"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_menu_custom_controls"
-            app:tint="#C7C1DA"
-            android:contentDescription="Controls" />
-        </FrameLayout>
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#22FFFFFF" android:layout_marginBottom="8dp" />
 
-        <FrameLayout
-        android:id="@+id/lh_nav_about"
-        android:layout_width="@dimen/lh_dock_icon"
-        android:layout_height="@dimen/lh_dock_icon"
-        android:layout_marginTop="@dimen/lh_dock_gap"
-        android:background="@drawable/bg_hd_sidebar_item"
-        android:clickable="true"
-        android:focusable="true">
-        <ImageView
-            android:layout_width="@dimen/lh_dock_icon_inner"
-            android:layout_height="@dimen/lh_dock_icon_inner"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_info"
-            app:tint="#C7C1DA"
-            android:contentDescription="About" />
-        </FrameLayout>
+        <!-- Each item is a real navigation target where the existing launcher already provides one. -->
+        <LinearLayout android:id="@+id/lh_nav_home" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_menu_home" app:tint="#FFFFFF" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Home" />
+        </LinearLayout>
 
-        <FrameLayout
-        android:id="@+id/lh_nav_settings"
-        android:layout_width="@dimen/lh_dock_icon"
-        android:layout_height="@dimen/lh_dock_icon"
-        android:layout_marginTop="@dimen/lh_dock_gap"
-        android:background="@drawable/bg_hd_sidebar_item"
-        android:clickable="true"
-        android:focusable="true">
-        <ImageView
-            android:layout_width="@dimen/lh_dock_icon_inner"
-            android:layout_height="@dimen/lh_dock_icon_inner"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_menu_settings"
-            app:tint="#C7C1DA"
-            android:contentDescription="Settings" />
-        </FrameLayout>
+        <LinearLayout android:id="@+id/lh_nav_versions" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_nav_runtime" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Versions" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/lh_nav_accounts" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_menu_accounts" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Accounts" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/lh_nav_mods" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_nav_mods" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Mods" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/lh_nav_modpacks" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_cs_modpack" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Modpacks" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/lh_nav_resources" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_nav_rpacks" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Resource Packs" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/lh_nav_shaders" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_nav_shaders" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Shaders" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/lh_nav_playtime" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_clock_history" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Playtime" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/lh_nav_cleaner" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_menu_delete_forever" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Cleaner" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#22FFFFFF" android:layout_marginVertical="6dp" />
+
+        <LinearLayout android:id="@+id/lh_nav_settings" style="@style/EvolveDNavItem">
+            <ImageView style="@style/EvolveDNavIcon" android:src="@drawable/ic_menu_settings" app:tint="#C7C1DA" />
+            <TextView style="@style/EvolveDNavLabel" android:text="Settings" />
+        </LinearLayout>
+
     </LinearLayout>
-
+</ScrollView>

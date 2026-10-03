@@ -1,0 +1,21 @@
+EvolveD Launcher 1.0.0 fixed pass
+
+- Launcher version fixed to 1.0.0 / versionCode 1000000.
+- Persistent navigation moved from left to the RIGHT rail.
+- Right rail uses black/orange EvolveD styling and real existing actions.
+- First-launch CS tutorial/welcome chain removed from Home; no demo cards are started.
+- Launch button changed to orange/yellow reference palette.
+- EvolveD home branding replaces the old CS Launcher Plus branding.
+- GitHub Releases updater checks evolvegmr/EvolveD-launcher and uses explicit UPDATE/EXIT UI.
+- Updater does not permanently dismiss a newer release; EXIT closes the launcher.
+- Cleaner only scans app cache/external app cache. Minecraft worlds, server files, storage, versions, mods, modpacks and runtimes are not scanned or deleted.
+- Mods browser auto-uses the selected profile's Minecraft version and loader as compatibility filters.
+- Existing Fabric / Forge / NeoForge / Quilt installation flows and Modrinth / CurseForge modpack APIs remain wired.
+- Existing Microsoft / Ely.by / Local account flows remain wired.
+- Existing real skin resolver + 3D skin renderer remain used; no fake account skin was hard-coded.
+- Static verification: 100 repeated assertion passes; all 1,623 XML files parsed successfully.
+
+Build note:
+The supplied environment could not download Gradle 8.13 because external network access was unavailable, so an APK build could not be truthfully claimed here. Run:
+  ./gradlew :app_pojavlauncher:assembleDebug
+in a network-enabled Android/Gradle environment.

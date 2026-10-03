@@ -33,6 +33,11 @@ import net.kdt.pojavlaunch.PojavProfile;
 
 import net.kdt.pojavlaunch.CustomControlsActivity;
 import net.kdt.pojavlaunch.PojavApplication;
+import net.kdt.pojavlaunch.fragments.ManageModsFragment;
+import net.kdt.pojavlaunch.fragments.ModpackCreateFragment;
+import net.kdt.pojavlaunch.fragments.CleanerFragment;
+import net.kdt.pojavlaunch.fragments.InstancePickerFragment;
+import net.kdt.pojavlaunch.fragments.ModsSearchFragment;
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.UiMotion;
@@ -43,8 +48,6 @@ import net.kdt.pojavlaunch.multirt.MultiRTUtils;
 import net.kdt.pojavlaunch.multirt.Runtime;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.profiles.ProfileIconCache;
-import net.kdt.pojavlaunch.tutorial.DragTutorialHost;
-import net.kdt.pojavlaunch.tutorial.HomeTutorial;
 import net.kdt.pojavlaunch.ui.PremiumPlayButtonView;
 import net.kdt.pojavlaunch.ui.SkinGLRenderer;
 import net.kdt.pojavlaunch.value.MinecraftAccount;
@@ -84,7 +87,7 @@ import java.util.Map;
  *  crossfades). Long-press → drag reorder. ⋮ → contextual action sheet.
  * ═══════════════════════════════════════════════════════════════════════════
  */
-public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
+public class LauncherHomeFragment extends Fragment {
 
     public static final String TAG = "LauncherHomeFragment";
 
@@ -124,12 +127,6 @@ public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
     private InstanceLibraryAdapter mAdapter;
     private ItemTouchHelper mTouchHelper;
     private boolean mLibraryIntroduced = false;
-
-    // ── Drag tutorial host (transient demo cards, never persisted) ──
-    private static final String DEMO_KEY_STEVE = "\0tutorial.demo.steve";
-    private static final String DEMO_KEY_ALEX  = "\0tutorial.demo.alex";
-    @Nullable private DragTutorialHost.DemoPracticeListener mDemoPracticeListener;
-    private boolean mPracticeMovedThisGesture = false;
 
     // ── Compact download progress pill ──
     private View mDlPill;
@@ -204,6 +201,39 @@ public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
 
         mAccountChip.setOnClickListener(v -> switchAccount());
 
+        View searchBar = view.findViewById(R.id.lh_search_bar);
+        if (searchBar != null) {
+            searchBar.setOnClickListener(v -> new android.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Search")
+                    .setItems(new String[]{"Mods", "Versions", "Modpacks"}, (d, which) -> {
+                        if (which == 0) {
+                            Bundle a = new Bundle();
+                            if (mPrimaryKey != null) a.putString(ManageModsFragment.BUNDLE_PROFILE_KEY, mPrimaryKey);
+                            Tools.swapFragment(requireActivity(), ModsSearchFragment.class, ModsSearchFragment.TAG, a);
+                        } else if (which == 1) {
+                            Tools.swapFragment(requireActivity(), InstancePickerFragment.class, "VERSIONS", null);
+                        } else {
+                            Tools.swapFragment(requireActivity(), ModpackCreateFragment.class, "MODPACKS", null);
+                        }
+                    }).show());
+        }
+
+        // Reference-dashboard quick actions use the same real destinations as the right rail.
+        View qMods = view.findViewById(R.id.lh_quick_mods);
+        View qPacks = view.findViewById(R.id.lh_quick_modpacks);
+        View qAccounts = view.findViewById(R.id.lh_quick_accounts);
+        View qCleaner = view.findViewById(R.id.lh_quick_cleaner);
+        if (qMods != null) qMods.setOnClickListener(v -> {
+            Bundle a = new Bundle();
+            if (mPrimaryKey != null) a.putString(ManageModsFragment.BUNDLE_PROFILE_KEY, mPrimaryKey);
+            Tools.swapFragment(requireActivity(), ManageModsFragment.class, ManageModsFragment.TAG, a);
+        });
+        if (qPacks != null) qPacks.setOnClickListener(v ->
+                Tools.swapFragment(requireActivity(), ModpackCreateFragment.class, "MODPACKS", null));
+        if (qAccounts != null) qAccounts.setOnClickListener(v -> switchAccount());
+        if (qCleaner != null) qCleaner.setOnClickListener(v ->
+                Tools.swapFragment(requireActivity(), CleanerFragment.class, "CLEANER", null));
+
         // ── Brand cluster (top-left, Phase 8): YouTube red / Discord blurple.
         //    Slides in from the left while the account chip lands on the right;
         //    the pills pop one after another (anime stagger). ──
@@ -269,18 +299,8 @@ public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
         // Real account switches (spinner pick / add / remove) refresh Home instantly.
         ExtraCore.addExtraListener(ExtraConstants.ACCOUNT_CHANGED, mAccountChangedListener);
 
-        // Expose the drag-tutorial host before the tutorial may start.
-        DragTutorialHost.Registry.register(this);
-
-        // First-launch chain: runtime installer → PLUS thank-you popup → Home
-        // tutorial. The popup gates the tour (shown exactly once); once it has
-        // been seen the tutorial auto-starts here as before.
-        // Deferred one frame so every target view is measured first.
-        view.post(() -> {
-            if (!isAdded() || getActivity() == null) return;
-            if (PlusWelcomeDialog.maybeShow(getActivity())) return;
-            HomeTutorial.maybeStart(getActivity());
-        });
+        // EvolveD Launcher opens directly to the real home experience; no
+        // onboarding tutorial is registered on startup.
     }
 
     /**
@@ -873,17 +893,6 @@ public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
         if (mPlayer != null) mPlayer.onResume();
         startPoseDriver();
         registerDlListeners();
-        // Covers returning to Home later + activity recreation: the manager
-        // itself dedupes (completed flag + already-showing guard). The Plus
-        // popup also re-checks itself — once seen it never returns here.
-        final View root = getView();
-        if (root != null) {
-            root.post(() -> {
-                if (!isAdded() || getActivity() == null) return;
-                if (PlusWelcomeDialog.maybeShow(getActivity())) return;
-                HomeTutorial.maybeStart(getActivity());
-            });
-        }
     }
 
     @Override
@@ -898,8 +907,6 @@ public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
 
     @Override
     public void onDestroyView() {
-        DragTutorialHost.Registry.unregister(this);
-        mDemoPracticeListener = null;
         stopPoseDriver();
         ExtraCore.removeExtraListenerFromValue(ExtraConstants.ACCOUNT_CHANGED, mAccountChangedListener);
         if (mMenu != null) { mMenu.dismiss(); mMenu = null; }
@@ -1071,14 +1078,6 @@ public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
              */
             @Override public boolean isLongPressDragEnabled() { return true; }
             @Override public boolean isItemViewSwipeEnabled() { return false; }
-            /** Tutorial practice signal: a REAL long-press matured into drag state. */
-            @Override public void onSelectedChanged(@Nullable RecyclerView.ViewHolder vh, int actionState) {
-                super.onSelectedChanged(vh, actionState);
-                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                    mPracticeMovedThisGesture = false;
-                    if (mDemoPracticeListener != null) mDemoPracticeListener.onPracticeDragStart();
-                }
-            }
             @Override public int getMovementFlags(@NonNull RecyclerView rv,
                                                   @NonNull RecyclerView.ViewHolder vh) {
                 if (vh instanceof InstanceLibraryAdapter.CreateHolder) return 0;
@@ -1094,12 +1093,6 @@ public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
                     from.itemView.setElevation(10f * getResources().getDisplayMetrics().density);
                     from.itemView.setScaleX(1.05f);
                     from.itemView.setScaleY(1.05f);
-                    // Tutorial practice signal: while holding, the card truly
-                    // crossed another slot (a real reorder, not a wiggle).
-                    if (f != t) {
-                        mPracticeMovedThisGesture = true;
-                        if (mDemoPracticeListener != null) mDemoPracticeListener.onPracticeDragMoved();
-                    }
                 }
                 return moved;
             }
@@ -1111,148 +1104,9 @@ public class LauncherHomeFragment extends Fragment implements DragTutorialHost {
                 vh.itemView.setScaleY(1f);
                 vh.itemView.setElevation(0f);
                 if (mAdapter != null) mAdapter.dispatchOrderChanged();
-                // Tutorial practice completes ONLY on release after a real reorder.
-                if (mPracticeMovedThisGesture) {
-                    mPracticeMovedThisGesture = false;
-                    if (mDemoPracticeListener != null) mDemoPracticeListener.onPracticeComplete();
-                }
             }
         });
         mTouchHelper.attachToRecyclerView(mLibrary);
-    }
-
-    // ── DragTutorialHost implementation ─────────────────────────────────────
-
-    private static MinecraftProfile buildDemoProfile(String displayName) {
-        MinecraftProfile p = new MinecraftProfile();
-        p.name = displayName;
-        p.type = "custom";
-        p.lastVersionId = MinecraftProfile.DEFAULT_VERSION;
-        p.icon = "default";
-        // No banner fetch for demo cards (transient + offline friendly).
-        p.background = null;
-        p.favorite = false;
-        return p;
-    }
-
-    @Override
-    public boolean beginDragDemo() {
-        if (!isAdded() || getView() == null || mAdapter == null || mLibrary == null) return false;
-        int realCount = mAdapter.getRealCount();
-        if (realCount <= 0) {
-            // No real instances yet: seed TWO demo cards so "the front" exists
-            // and a physical reorder is possible during practice.
-            mAdapter.insertDemoItem(DEMO_KEY_ALEX, buildDemoProfile("Alex"), 0);
-            mAdapter.insertDemoItem(DEMO_KEY_STEVE, buildDemoProfile("Steve"), 1);
-        } else {
-            // Real primary owns slot 0; Steve sits beside it, ready to be
-            // dragged to the front.
-            MinecraftProfile steve = buildDemoProfile("Steve");
-            if (realCount == 1 && mProfiles != null && !mProfiles.isEmpty()
-                    && mProfiles.get(0).favorite) {
-                // Keep the demo inside the same favorite group so holding and
-                // dragging Steve past the only real card stays a legal move.
-                steve.favorite = true;
-            }
-            mAdapter.insertDemoItem(DEMO_KEY_STEVE, steve, 1);
-        }
-        if (mEmptyHint != null) mEmptyHint.setVisibility(View.GONE);
-        mLibrary.setVisibility(View.VISIBLE);
-        mLibrary.stopScroll();
-        mLibrary.scrollToPosition(0);
-        return true;
-    }
-
-    @Override
-    public boolean hasRealProfiles() {
-        return getRealProfileCount() > 0;
-    }
-
-    @Override
-    public int getRealProfileCount() {
-        if (mAdapter != null) return mAdapter.getRealCount();
-        return mKeys != null ? mKeys.size() : 0;
-    }
-
-    @Nullable
-    private RecyclerView.ViewHolder holderForKey(String key) {
-        if (mAdapter == null || mLibrary == null) return null;
-        int pos = mAdapter.indexOfKey(key);
-        if (pos < 0) return null;
-        return mLibrary.findViewHolderForAdapterPosition(pos);
-    }
-
-    @Nullable
-    private static Rect viewRectOnScreen(@Nullable View v) {
-        if (v == null || v.getWidth() <= 0 || v.getHeight() <= 0) return null;
-        int[] l = new int[2];
-        v.getLocationOnScreen(l);
-        return new Rect(l[0], l[1], l[0] + v.getWidth(), l[1] + v.getHeight());
-    }
-
-    @Override
-    @Nullable
-    public View getDemoCardView() {
-        RecyclerView.ViewHolder vh = holderForKey(DEMO_KEY_STEVE);
-        return vh != null ? vh.itemView : null;
-    }
-
-    @Override
-    @Nullable
-    public Rect getDemoCardScreenRect() {
-        return viewRectOnScreen(getDemoCardView());
-    }
-
-    @Override
-    @Nullable
-    public Rect getFrontSlotScreenRect() {
-        if (mAdapter == null || mLibrary == null) return null;
-        RecyclerView.ViewHolder vh0 = mLibrary.findViewHolderForAdapterPosition(0);
-        Rect r = vh0 != null ? viewRectOnScreen(vh0.itemView) : null;
-        if (r != null) return r;
-        return viewRectOnScreen(mLibrary);
-    }
-
-    @Override
-    public void resetDemoCardTransform() {
-        View card = getDemoCardView();
-        if (card == null) return;
-        card.animate().cancel();
-        card.setTranslationX(0f);
-        card.setTranslationY(0f);
-        card.setScaleX(1f);
-        card.setScaleY(1f);
-        card.setElevation(0f);
-    }
-
-    @Override
-    public void removeDemoCardsAfterDemo(boolean keepSteveForPractice) {
-        if (mAdapter == null) return;
-        resetDemoCardTransform();
-        mAdapter.removeDemoItem(DEMO_KEY_ALEX);
-        if (!keepSteveForPractice) {
-            mAdapter.removeDemoItem(DEMO_KEY_STEVE);
-        }
-    }
-
-    @Override
-    public void setDemoPracticeListener(@Nullable DragTutorialHost.DemoPracticeListener listener) {
-        mDemoPracticeListener = listener;
-    }
-
-    @Override
-    public void endDragTutorial() {
-        mDemoPracticeListener = null;
-        mPracticeMovedThisGesture = false;
-        if (mAdapter != null) {
-            resetDemoCardTransform();
-            mAdapter.removeDemoItems();
-        }
-        // Restore the truthful library state (empty hint / binding) from storage.
-        View v = getView();
-        if (isAdded() && v != null) {
-            v.post(() -> { if (isAdded()) loadData(); });
-        }
     }
 
     /** Reorder so `key` leads its favorite group → becomes the primary instance. */

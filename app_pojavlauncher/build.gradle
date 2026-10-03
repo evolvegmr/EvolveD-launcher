@@ -22,29 +22,9 @@ if (hasGoogleServicesConfig(project)) {
 static def getDate() { return new Date().format('yyyyMMdd') }
 
 def getVersionName = {
-    // Show clean "CS Launcher Plus v3.1" style version names.
-    String semVer = "3.1.0"
-    
-    // Try to get a git tag for the full version
-    ByteArrayOutputStream TAG = new ByteArrayOutputStream()
-    exec {
-        try {
-            commandLine 'git', 'describe', '--tags'
-            ignoreExitValue true
-            standardOutput = TAG
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    String tagStr = TAG.toString().trim()
-    if (!tagStr.isEmpty()) {
-        if (tagStr ==~ /^v?\d+(?:\.\d+)*.*/) {
-            return tagStr
-        }
-    }
-    
-    return "v" + semVer
+    // EvolveD Launcher public release line. Keep this stable so GitHub
+    // Releases can be compared against exactly 1.0.0 without git metadata.
+    return "1.0.0"
 }
 
 def getCFApiKey = {
@@ -101,7 +81,7 @@ android {
         applicationId "com.cslaucher.plus"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 10010000
+        versionCode 1000000
         versionName getVersionName()
         multiDexEnabled true //important
         resValue 'string', 'curseforge_api_key', getCFApiKey()

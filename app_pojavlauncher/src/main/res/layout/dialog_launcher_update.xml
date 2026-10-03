@@ -31,7 +31,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="UPDATE"
+                android:text="EVOLVED LAUNCHER UPDATE"
                 android:textColor="#FFFFFF"
                 android:textSize="17sp"
                 android:textStyle="bold"
@@ -44,7 +44,7 @@
             android:id="@+id/tv_update_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New version available"
+            android:text="A newer EvolveD Launcher release is available"
             android:textColor="#D0D0D0"
             android:textSize="13.5sp"
             android:textStyle="bold"
@@ -71,7 +71,7 @@
                 android:textColor="#EDEDF2"
                 android:textSize="13sp"
                 android:lineSpacingExtra="3dp"
-                android:text="New features / changes" />
+                android:text="Release notes" />
 
         </ScrollView>
 
@@ -118,7 +118,7 @@
                 android:layout_width="0dp"
                 android:layout_height="42dp"
                 android:layout_weight="1"
-                android:text="Later"
+                android:text="EXIT"
                 android:textColor="#D0D0D0"
                 android:textSize="13.5sp"
                 android:textStyle="bold"

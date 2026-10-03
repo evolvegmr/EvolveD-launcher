@@ -25,7 +25,7 @@
     <color name="cs_glass_stroke">#26FFFFFF</color>
     <color name="cs_glass_stroke_soft">#1AFFFFFF</color>
 
-    <!-- Primary accent — platinum silver (the CS Launcher identity) -->
+    <!-- Primary accent — platinum silver (the EvolveD Launcher identity) -->
     <color name="cs_accent">#FFFFFF</color>
     <color name="cs_accent_deep">#D0D0D0</color>
     <color name="cs_accent_light">#F4F4F8</color>

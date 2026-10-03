@@ -1,0 +1,26 @@
+EvolveD Launcher 1.0.0 - UI / STORAGE UPDATE
+
+Implemented from the supplied reference UI:
+- Landscape launcher navigation rail moved to the RIGHT side.
+- Dark black + orange glass styling used for the launcher shell and rail.
+- Landscape Home dashboard now includes a reference-style top search entry, hero stage, launch area, quick action cards, and instance library band.
+- Quick action cards are wired to the existing Mods, Modpacks, Accounts and Cleaner flows.
+- Search entry is functional: it opens real Mods / Versions / Modpacks destinations.
+- Existing 3D skin renderer, account chip, launch button, profile editing and instance library IDs were preserved.
+- No startup welcome/tutorial/runtime wizard is invoked by LauncherActivity 1.0.0.
+
+Storage isolation:
+- Android 10+ storage root: app external-files/EvolveD/
+- Older Android storage root: /games/EvolveD/
+- Minecraft data remains under the EvolveD root's .minecraft directory.
+- Existing Amethyst-prefixed profile paths remain readable for compatibility; new generated paths use evolved://.
+
+Cleaner safety:
+- CleanerFragment only scans Android app cache and external app cache.
+- It does not scan or delete worlds, saves, versions, mods, modpacks, shaders, resource packs, runtimes, libraries, accounts, screenshots or configs.
+
+Verification performed in this environment:
+- All 1,627 XML resource files parsed successfully.
+- New UI IDs referenced by Java were checked against resources.
+- Startup tutorial/welcome call sites were checked and are no longer invoked.
+- Gradle compilation could not be completed here because the Gradle wrapper attempted to download Gradle 8.13 and this environment has no network access. No claim of a successful APK build is made.

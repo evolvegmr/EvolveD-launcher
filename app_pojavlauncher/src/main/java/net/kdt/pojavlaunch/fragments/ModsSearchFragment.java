@@ -221,6 +221,7 @@ public class ModsSearchFragment extends Fragment {
         View poweredBadge=view.findViewById(R.id.infrawire_powered_badge);if(poweredBadge!=null)poweredBadge.setVisibility(View.GONE);
 
         mSearchEditText.setHint(getString(R.string.browse_search_hint_typed, "mods"));
+        applyProfileFiltersFromSelection();
         updateFilterDot();
 
         // Wire up click listeners — handles fragment creation and recreation
@@ -540,6 +541,33 @@ public class ModsSearchFragment extends Fragment {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setWindowAnimations(R.style.DialogFadeScale);
         }
+    }
+
+    /**
+     * Use the active instance as the default compatibility filter. This means
+     * opening Mods immediately queries the selected Minecraft version and its
+     * loader instead of showing incompatible versions first. The user can still
+     * override both filters from the filter sheet.
+     */
+    private void applyProfileFiltersFromSelection() {
+        MinecraftProfile profile = resolveActiveProfile();
+        if (profile == null) return;
+        try {
+            String version = profile.lastVersionId;
+            if (version != null && !version.trim().isEmpty()) {
+                mSearchFilters.mcVersion = version.trim();
+            }
+        } catch (Throwable ignored) {}
+        try {
+            String loader = profile.lastVersionId;
+            if (loader != null && !loader.trim().isEmpty()) {
+                String l = loader.toLowerCase(java.util.Locale.US);
+                if (l.contains("fabric")) mSearchFilters.modLoader = "fabric";
+                else if (l.contains("neoforge")) mSearchFilters.modLoader = "neoforge";
+                else if (l.contains("quilt")) mSearchFilters.modLoader = "quilt";
+                else if (l.contains("forge")) mSearchFilters.modLoader = "forge";
+            }
+        } catch (Throwable ignored) {}
     }
 
     /** Silver dot on the filter button while any filter is active. */

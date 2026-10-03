@@ -128,11 +128,13 @@ public final class Tools {
     public static String MULTIRT_HOME;
     public static String LOCAL_RENDERER = null;
     public static int DEVICE_ARCHITECTURE;
-    public static final String LAUNCHERPROFILES_RTPREFIX = "amethyst://";
+    public static final String LAUNCHERPROFILES_RTPREFIX = "evolved://";
+    /** Legacy prefix retained so existing profiles remain launchable after the storage migration. */
+    public static final String LEGACY_LAUNCHERPROFILES_RTPREFIX = "amethyst://";
 
     // New since 3.3.1
     public static String DIR_ACCOUNT_NEW;
-    public static String DIR_GAME_HOME = Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/Amethyst";
+    public static String DIR_GAME_HOME = Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/EvolveD";
     public static String DIR_GAME_NEW;
 
     // New since 3.0.0
@@ -157,9 +159,10 @@ public final class Tools {
 
     public static File getPojavStorageRoot(Context ctx) {
         if(SDK_INT >= 29) {
-            return ctx.getExternalFilesDir(null);
+            File root = ctx.getExternalFilesDir(null);
+            return root == null ? null : new File(root, "EvolveD");
         }else{
-            return new File(Environment.getExternalStorageDirectory(),"games/Amethyst");
+            return new File(Environment.getExternalStorageDirectory(),"games/EvolveD");
         }
     }
 
@@ -704,6 +707,8 @@ public final class Tools {
         if(minecraftProfile.gameDir != null){
             if(minecraftProfile.gameDir.startsWith(Tools.LAUNCHERPROFILES_RTPREFIX))
                 return new File(minecraftProfile.gameDir.replace(Tools.LAUNCHERPROFILES_RTPREFIX,Tools.DIR_GAME_HOME+"/"));
+            if(minecraftProfile.gameDir.startsWith(Tools.LEGACY_LAUNCHERPROFILES_RTPREFIX))
+                return new File(minecraftProfile.gameDir.replace(Tools.LEGACY_LAUNCHERPROFILES_RTPREFIX,Tools.DIR_GAME_HOME+"/"));
             else
                 return new File(Tools.DIR_GAME_HOME,minecraftProfile.gameDir);
         }
@@ -1728,8 +1733,11 @@ public final class Tools {
 
     public static String getRuntimeName(String prefixedName) {
         if(prefixedName == null) return prefixedName;
-        if(!prefixedName.startsWith(Tools.LAUNCHERPROFILES_RTPREFIX)) return null;
-        return prefixedName.substring(Tools.LAUNCHERPROFILES_RTPREFIX.length());
+        if(prefixedName.startsWith(Tools.LAUNCHERPROFILES_RTPREFIX))
+            return prefixedName.substring(Tools.LAUNCHERPROFILES_RTPREFIX.length());
+        if(prefixedName.startsWith(Tools.LEGACY_LAUNCHERPROFILES_RTPREFIX))
+            return prefixedName.substring(Tools.LEGACY_LAUNCHERPROFILES_RTPREFIX.length());
+        return null;
     }
 
     public static String getSelectedRuntime(MinecraftProfile minecraftProfile) {
@@ -1981,7 +1989,7 @@ public final class Tools {
             new net.kdt.pojavlaunch.ui.CsConfirmDialog(ctx)
                     .kicker("QUIT GAME")
                     .title("Leave this session?")
-                    .message("Minecraft closes immediately — unsaved world progress since the last autosave is lost. You will land back in CS Launcher Plus.")
+                    .message("Minecraft closes immediately — unsaved world progress since the last autosave is lost. You will land back in EvolveD Launcher.")
                     .detail("force close  \u00b7  back to launcher")
                     .danger("QUIT TO LAUNCHER", () -> quitToLauncher(ctx))
                     .show();

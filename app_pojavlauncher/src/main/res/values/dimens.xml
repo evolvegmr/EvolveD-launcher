@@ -33,11 +33,12 @@
     <dimen name="profile_editor_image_padding">@dimen/padding_small</dimen>
 
     <!-- Launcher Home "Stage" — compact defaults tuned for 360dp-height landscape. -->
+    <dimen name="lh_dock_width">142dp</dimen>
     <dimen name="lh_dock_icon">44dp</dimen>
     <dimen name="lh_dock_icon_inner">22dp</dimen>
     <dimen name="lh_dock_gap">15dp</dimen>
     <dimen name="lh_dock_pad_v">8dp</dimen>
-    <dimen name="lh_dock_width">56dp</dimen>
+    \1 142dp\2
     <dimen name="lh_player_w">128dp</dimen>
     <dimen name="lh_player_h">172dp</dimen>
     <dimen name="lh_card_width">178dp</dimen>

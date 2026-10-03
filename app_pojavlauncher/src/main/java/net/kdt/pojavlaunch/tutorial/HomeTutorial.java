@@ -49,7 +49,7 @@ public final class HomeTutorial {
 
                 // ── Task 1: Welcome ─────────────────────────────────
                 .addTask(new TutorialTask.Builder("task_welcome")
-                        .title("WELCOME TO CS LAUNCHER PLUS!")
+                        .title("WELCOME TO EVOLVED LAUNCHER!")
                         .description("Let's take a quick interactive tour of your Home Screen.")
                         .target(TutorialTarget.none())
                         .actionType(TutorialActionType.INFORMATION)
@@ -115,21 +115,11 @@ public final class HomeTutorial {
     }
 
     /**
-     * Start the tutorial sequence if it has not been completed.
+     * EvolveD Launcher does not start a first-run tutorial. The user lands
+     * directly on the main launcher with no onboarding overlay.
      */
     public static boolean maybeStart(@Nullable Activity activity) {
-        if (activity == null) return false;
-        try {
-            if (activity.isFinishing()) return false;
-            if (TutorialEngine.isShowing()) return false;
-            if (!TutorialEngine.shouldAutoStart(activity, getSequence())) return false;
-            if (!isHomeVisible(activity)) return false;
-        } catch (Throwable ignored) { return false; }
-
-        try {
-            TutorialEngine.start(activity, getSequence());
-            return true;
-        } catch (Throwable ignored) { return false; }
+        return false;
     }
 
     private static boolean isHomeVisible(@NonNull Activity activity) {

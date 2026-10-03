@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- ═══════════════════════════════════════════════════════════════════════════
-     CS Launcher — LAUNCHER HOME "STAGE" v2 (fixes pass)
+     EvolveD Launcher — LAUNCHER HOME "STAGE" v2 (fixes pass)
 
      Full-bleed primary-instance artwork + layered legibility scrim.
      One intentional composition:
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.47" />
+            app:layout_constraintGuide_percent="0.42" />
 
         <!-- ═══ BRAND CLUSTER (top-left, Phase 8) ═══
              Launcher mark + name, then two community pills: YouTube (red)
@@ -83,7 +83,7 @@
                     android:layout_height="22dp"
                     android:layout_gravity="center"
                     android:contentDescription="@null"
-                    android:src="@drawable/cs_logo" />
+                    android:src="@drawable/evolved_mark" />
             </FrameLayout>
 
             <LinearLayout
@@ -102,7 +102,7 @@
                     android:letterSpacing="0.06"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="CS LAUNCHER PLUS"
+                    android:text="EVOLVED LAUNCHER"
                     android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     android:textStyle="bold"
@@ -118,6 +118,7 @@
 
                     <ImageView
                         android:id="@+id/lh_brand_flag"
+                        android:visibility="gone"
                         android:layout_width="15dp"
                         android:layout_height="10dp"
                         android:contentDescription="@null"
@@ -131,7 +132,7 @@
                         android:includeFontPadding="false"
                         android:letterSpacing="0.14"
                         android:maxLines="1"
-                        android:text="MADE IN INDIA"
+                        android:text="MINECRAFT"
                         android:textColor="#C9CED8"
                         android:textSize="7.5sp"
                         android:textStyle="bold"
@@ -151,7 +152,7 @@
                 android:layout_height="30dp"
                 android:background="@drawable/bg_lh_pill_youtube"
                 android:clickable="true"
-                android:contentDescription="Open the CS Launcher YouTube channel"
+                android:contentDescription="Open the EvolveD Launcher YouTube channel"
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -184,7 +185,7 @@
                 android:layout_marginStart="6dp"
                 android:background="@drawable/bg_lh_pill_discord"
                 android:clickable="true"
-                android:contentDescription="Join the CS Launcher Discord"
+                android:contentDescription="Join the EvolveD Launcher Discord"
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -312,7 +313,7 @@
             android:shadowDy="1"
             android:shadowRadius="6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lh_center_guide"
             app:layout_constraintTop_toBottomOf="@id/lh_account_chip" />
 
         <!-- 3D player. IMPORTANT: this GLSurfaceView has setZOrderOnTop(true),
@@ -326,12 +327,12 @@
             android:id="@+id/lh_player"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="2dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lh_center_guide"
             app:layout_constraintTop_toBottomOf="@id/lh_hero_name"
-            app:layout_constraintBottom_toTopOf="@id/lh_launch_row" />
+            app:layout_constraintBottom_toTopOf="@id/lh_library" />
 
         <!-- LAUNCH capsule + pencil. Bottom-anchored ABOVE the carousel with a
              fixed gap → clear separation, can NEVER cover New Instance. -->
@@ -454,7 +455,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="22dp"
+            app:layout_constraintStart_toStartOf="@id/lh_center_guide"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/lh_launch_specs"
             android:layout_marginBottom="6dp">
@@ -462,7 +465,7 @@
             <!-- Signature launch capsule: wave/glow morph + STOP-cancel. -->
             <net.kdt.pojavlaunch.ui.PremiumPlayButtonView
                 android:id="@+id/lh_launch_button"
-                android:layout_width="168dp"
+                android:layout_width="260dp"
                 android:layout_height="@dimen/lh_launch_button_h"
                 android:contentDescription="Launch Minecraft">
 
@@ -525,7 +528,7 @@
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/lh_center_guide"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/lh_library">
 

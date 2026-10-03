@@ -111,13 +111,13 @@ public class PremiumPlayButtonView extends FrameLayout implements TaskCountListe
         mRoundPath.addRoundRect(mRect, h / 2f, h / 2f, Path.Direction.CW);
 
         mBaseGradient = new LinearGradient(0, 0, w, h,
-                new int[]{0xFFFAFAFC, 0xFFFFFFFF, 0xFFBFC1CB},
+                new int[]{0xFFFFD54A, 0xFFFF9800, 0xFFFF6A00},
                 new float[]{0f, 0.48f, 1f}, Shader.TileMode.CLAMP);
         mSheenGradient = new LinearGradient(0, 0, w * 0.32f, h,
-                new int[]{0x00FFFFFF, 0x7FFFFFFF, 0x00FFFFFF},
+                new int[]{0x00FFFFFF, 0x99FFFFFF, 0x00FFFFFF},
                 new float[]{0f, 0.5f, 1f}, Shader.TileMode.CLAMP);
         mWaveGradient = new LinearGradient(0, 0, Math.max(1, w), 0,
-                new int[]{0x00FFFFFF, 0x66FFFFFF, 0xCCD0D0D0, 0x66FFFFFF, 0x00FFFFFF},
+                new int[]{0x00FFFFFF, 0x66FFFFFF, 0xCCFFF2CC, 0x66FFFFFF, 0x00FFFFFF},
                 new float[]{0f, 0.28f, 0.5f, 0.72f, 1f}, Shader.TileMode.CLAMP);
         mBasePaint.setShader(mBaseGradient);
         mSheenPaint.setShader(mSheenGradient);

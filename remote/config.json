@@ -1,6 +1,16 @@
 {
   "loadingVideo": {
-    "enabled": true,
-    "url": "https://raw.githubusercontent.com/PAPA20000/CSL/main/remote/loading.mp4"
+    "enabled": false,
+    "url": ""
+  },
+  "launcherUpdates": {
+    "provider": "github-releases",
+    "repository": "evolvegmr/EvolveD-launcher",
+    "automaticCheck": true,
+    "stableOnly": true
+  },
+  "minecraftVersions": {
+    "provider": "mojang-version-manifest-v2",
+    "automaticRefreshOnLauncherOpen": true
   }
 }

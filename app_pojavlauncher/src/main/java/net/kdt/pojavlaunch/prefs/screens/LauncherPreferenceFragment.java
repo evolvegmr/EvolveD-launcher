@@ -687,7 +687,7 @@ public class LauncherPreferenceFragment extends Fragment {
                 items.add(new SettingItem("perf_presets_general", SettingItem.TYPE_PRESET_PANEL,
                         "Quick Device Optimizer", "1-Click auto-tuning for your device", null));
                 items.add(new SettingItem("check_for_update_btn", SettingItem.TYPE_ACTION,
-                        "Check for updates", "See if a newer CS Launcher Plus is available", null)
+                        "Check for updates", "See if a newer EvolveD Launcher is available", null)
                         .setAction(() -> net.kdt.pojavlaunch.remote.FirebaseSyncManager.checkForUpdateManual(requireActivity())));
                 items.add(new SettingItem("launcher_animations", SettingItem.TYPE_DROPDOWN,
                         "Animations", "Turn launcher animations on or off", "full")

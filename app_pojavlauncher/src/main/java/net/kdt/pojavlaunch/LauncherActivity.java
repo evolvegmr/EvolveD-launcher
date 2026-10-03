@@ -374,44 +374,60 @@ public class LauncherActivity extends BaseActivity {
      * these attributes every frame anyway, so the reset is invisible.
      */
 
-    // ── Persistent left navigation (shared across every launcher page) ──────
+    // ── Persistent RIGHT navigation (shared across every launcher page) ─────
 
     private void bindDockNavigation() {
         View home = findViewById(R.id.lh_nav_home);
-        View cursor = findViewById(R.id.lh_nav_cursor);
-        View controls = findViewById(R.id.lh_nav_controls);
-        View about = findViewById(R.id.lh_nav_about);
+        View versions = findViewById(R.id.lh_nav_versions);
+        View accounts = findViewById(R.id.lh_nav_accounts);
+        View mods = findViewById(R.id.lh_nav_mods);
+        View modpacks = findViewById(R.id.lh_nav_modpacks);
+        View resources = findViewById(R.id.lh_nav_resources);
+        View shaders = findViewById(R.id.lh_nav_shaders);
+        View playtime = findViewById(R.id.lh_nav_playtime);
+        View cleaner = findViewById(R.id.lh_nav_cleaner);
         View settings = findViewById(R.id.lh_nav_settings);
-        if (home == null) return;   // layout without the dock
+        if (home == null) return;
 
-        UiMotion.pressFeedback(home, cursor, controls, about, settings);
+        UiMotion.pressFeedback(home, versions, accounts, mods, modpacks, resources, shaders, playtime, cleaner, settings);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             home.setTooltipText("Home");
-            cursor.setTooltipText("Cursor customization");
-            controls.setTooltipText("Custom controls");
-            about.setTooltipText("About");
+            versions.setTooltipText("Versions");
+            accounts.setTooltipText("Accounts");
+            mods.setTooltipText("Mods");
+            modpacks.setTooltipText("Modpacks");
+            resources.setTooltipText("Resource Packs");
+            shaders.setTooltipText("Shaders");
+            playtime.setTooltipText("Playtime");
+            cleaner.setTooltipText("Cleaner");
             settings.setTooltipText("Settings");
         }
 
-        home.setOnClickListener(v ->
-                Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.LauncherHomeFragment.class,
-                        "ROOT_HOME", null));
-        cursor.setOnClickListener(v ->
-                Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.CursorCustomizationFragment.class,
-                        net.kdt.pojavlaunch.fragments.CursorCustomizationFragment.TAG, null));
-        controls.setOnClickListener(v ->
-                startActivity(new Intent(this, CustomControlsActivity.class)));
-        about.setOnClickListener(v -> Tools.swapFragment(this,
-                net.kdt.pojavlaunch.fragments.AboutFragment.class,
-                net.kdt.pojavlaunch.fragments.AboutFragment.TAG, null));
-        settings.setOnClickListener(v -> Tools.swapFragment(this,
-                net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class,
-                "SETTINGS_FRAGMENT", null));
+        home.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.LauncherHomeFragment.class, "ROOT_HOME", null));
+        versions.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.InstancePickerFragment.class, "VERSIONS", null));
+        accounts.setOnClickListener(v -> {
+            View accountSpinner = findViewById(R.id.account_spinner);
+            if (accountSpinner != null) accountSpinner.performClick();
+        });
+        mods.setOnClickListener(v -> {
+            android.os.Bundle args = new android.os.Bundle();
+            String key = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE, null);
+            if (key != null) args.putString(net.kdt.pojavlaunch.fragments.ManageModsFragment.BUNDLE_PROFILE_KEY, key);
+            Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.ManageModsFragment.class, net.kdt.pojavlaunch.fragments.ManageModsFragment.TAG, args);
+        });
+        modpacks.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.ModpackCreateFragment.class, "MODPACKS", null));
+        resources.setOnClickListener(v -> net.kdt.pojavlaunch.fragments.ResourceBrowserDialog.show(this));
+        shaders.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class, "SETTINGS_GRAPHICS", null));
+        playtime.setOnClickListener(v -> Tools.swapFragment(this,
+                net.kdt.pojavlaunch.fragments.PlaytimeFragment.class, "PLAYTIME", null));
+        cleaner.setOnClickListener(v -> Tools.swapFragment(this,
+                net.kdt.pojavlaunch.fragments.CleanerFragment.class, "CLEANER", null));
+        settings.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class, "SETTINGS_FRAGMENT", null));
 
-        animateDockEntrance(home, cursor, controls, about, settings);
+        animateDockEntrance(home, versions, accounts, mods, modpacks, resources, shaders, playtime, cleaner, settings);
     }
 
-    /** Staggered fade + slide-in-from-left so the dock feels alive on load. */
+    /** Staggered fade + slide-in-from-right so the rail matches the reference UI. */
     private boolean mDockEntrancePlayed = false;
     private void animateDockEntrance(View... items) {
         // Run at most ONCE per activity so re-binding never re-hides icons, and
@@ -428,7 +444,7 @@ public class LauncherActivity extends BaseActivity {
             final View it = items[i];
             if (it == null) continue;
             it.setAlpha(0f);
-            it.setTranslationX(-dx);
+            it.setTranslationX(dx);
             it.animate().alpha(1f).translationX(0f)
                     .setStartDelay(90L + i * 65L).setDuration(360)
                     .setInterpolator(new android.view.animation.DecelerateInterpolator(1.6f))
@@ -439,19 +455,26 @@ public class LauncherActivity extends BaseActivity {
 
     /** Keeps the dock communicating "you are here" for the resumed page. */
     private void updateDockSelection(@NonNull Fragment fragment) {
-        setDockSelected(fragment instanceof net.kdt.pojavlaunch.fragments.LauncherHomeFragment,
-                fragment instanceof net.kdt.pojavlaunch.fragments.CursorCustomizationFragment,
-                false,   // Control Customization is a separate full-screen activity
-                fragment instanceof net.kdt.pojavlaunch.fragments.AboutFragment,
-                fragment instanceof net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment);
+        boolean isHome = fragment instanceof net.kdt.pojavlaunch.fragments.LauncherHomeFragment;
+        boolean isVersions = fragment instanceof net.kdt.pojavlaunch.fragments.InstancePickerFragment;
+        boolean isAccounts = fragment instanceof net.kdt.pojavlaunch.fragments.SelectAuthFragment;
+        boolean isMods = fragment instanceof net.kdt.pojavlaunch.fragments.ManageModsFragment;
+        boolean isModpacks = fragment instanceof net.kdt.pojavlaunch.fragments.ModpackCreateFragment;
+        boolean isPlaytime = fragment instanceof net.kdt.pojavlaunch.fragments.PlaytimeFragment;
+        boolean isCleaner = fragment instanceof net.kdt.pojavlaunch.fragments.CleanerFragment;
+        boolean isSettings = fragment instanceof net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment;
+        setDockSelected(isHome, isVersions, isAccounts, isMods, isModpacks, isPlaytime, isCleaner, isSettings);
     }
 
-    private void setDockSelected(boolean home, boolean cursor, boolean controls,
-                                 boolean about, boolean settings) {
+    private void setDockSelected(boolean home, boolean versions, boolean accounts, boolean mods,
+                                 boolean modpacks, boolean playtime, boolean cleaner, boolean settings) {
         applyDockState(findViewById(R.id.lh_nav_home), home);
-        applyDockState(findViewById(R.id.lh_nav_cursor), cursor);
-        applyDockState(findViewById(R.id.lh_nav_controls), controls);
-        applyDockState(findViewById(R.id.lh_nav_about), about);
+        applyDockState(findViewById(R.id.lh_nav_versions), versions);
+        applyDockState(findViewById(R.id.lh_nav_accounts), accounts);
+        applyDockState(findViewById(R.id.lh_nav_mods), mods);
+        applyDockState(findViewById(R.id.lh_nav_modpacks), modpacks);
+        applyDockState(findViewById(R.id.lh_nav_playtime), playtime);
+        applyDockState(findViewById(R.id.lh_nav_cleaner), cleaner);
         applyDockState(findViewById(R.id.lh_nav_settings), settings);
     }
 
@@ -797,9 +820,9 @@ public class LauncherActivity extends BaseActivity {
         // home UI never flashes; onboarding dialogs stay out of the way.
         if (shortcutLaunchRequested) {
             showBootOverlayInstant();
-        } else {
-            maybeShowRuntimeWizard();
         }
+        // EvolveD 1.0.0: no startup tutorial, welcome overlay, runtime wizard,
+        // or partner welcome dialog. Home is the first screen immediately.
     }
 
     /** Lightweight greeting replacing the false startup-download flash. */
@@ -1005,6 +1028,14 @@ public class LauncherActivity extends BaseActivity {
         } catch (Throwable t) {
             android.util.Log.w("LauncherActivity", "firebase sync skipped", t);
         }
+        // EvolveD self-update: checks GitHub Releases and only shows a dialog
+        // when a newer stable release is actually available. The check is
+        // throttled internally so opening the launcher does not hammer GitHub.
+        try {
+            net.kdt.pojavlaunch.launch.GitHubReleaseUpdateManager.checkOnLauncherOpen(this);
+        } catch (Throwable t) {
+            android.util.Log.w("LauncherActivity", "EvolveD update check skipped", t);
+        }
         // Phase 11 (item 1): back from a modloader installer (:gui_installer
         // exited) — reconcile the profile it wrote right now, no second click.
         try {
@@ -1026,12 +1057,8 @@ public class LauncherActivity extends BaseActivity {
         // the tracker may already have settled back to IDLE while our listener
         // notice raced the activity swap. A still-visible overlay would wedge
         // over the whole UI — hide it on settle. Zero-op when nothing is up.
-        // Guaranteed normal-start greeting. The old onCreate-only branch was
-        // skipped whenever runtime/onboarding routing returned true.
-        if (!mWelcomeShown && !isShortcutLaunchRequested(getIntent())) {
-            View welcome = findViewById(R.id.welcome_back_overlay);
-            if (welcome != null) welcome.postDelayed(this::showWelcomeBack, 220);
-        }
+        // EvolveD 1.0.0 intentionally has no startup greeting/tutorial.
+
     }
 
     @Override

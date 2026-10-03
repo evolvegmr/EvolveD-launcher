@@ -21,15 +21,10 @@ import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.sound.CsSoundPlayer;
 
 /**
- * CS Launcher Plus — first-launch thank-you popup.
+ * EvolveD Launcher — legacy first-launch popup retained as a no-op.
  *
- * <p>Shown exactly once, in the first-launch chain between the runtime
- * installer ({@code RuntimeSetupActivity}) and the Home tutorial: the Home
- * fragment offers the tutorial only after this dialog has been seen, so the
- * player lands on a warm "thank you + essential info" card before the tour.
- *
- * <p>Cancel paths: the ✕ button, the dim background, or the back gesture —
- * all dismiss, mark it seen, and hand the flow over to the tutorial.
+ * <p>This launcher opens directly into the real home screen and never starts a
+ * tutorial or first-run onboarding flow.
  */
 public final class PlusWelcomeDialog extends DialogFragment {
 
@@ -59,19 +54,10 @@ public final class PlusWelcomeDialog extends DialogFragment {
         } catch (Throwable ignored) { }
     }
 
-    /** Show once, only on Home, only when no tutorial overlay is up. */
+    /** The launcher opens directly to the main EvolveD experience without a
+     * startup welcome or tutorial overlay. */
     public static boolean maybeShow(@NonNull FragmentActivity activity) {
-        if (activity.isFinishing()) return false;
-        if (wasShown(activity)) return false;
-        try {
-            if (activity.getSupportFragmentManager().findFragmentByTag(TAG) != null) return false;
-        } catch (Throwable ignored) { return false; }
-        try {
-            new PlusWelcomeDialog().show(activity.getSupportFragmentManager(), TAG);
-            return true;
-        } catch (Throwable ignored) {
-            return false;
-        }
+        return false;
     }
 
     @NonNull
@@ -162,12 +148,8 @@ public final class PlusWelcomeDialog extends DialogFragment {
         releaseTutorial();
     }
 
-    /** The tutorial starts as soon as this popup is out of the way. */
+    /** EvolveD Launcher does not run a startup tutorial or welcome flow. */
     private void releaseTutorial() {
-        FragmentActivity activity = getActivity();
-        if (activity == null || activity.isFinishing()) return;
-        try {
-            net.kdt.pojavlaunch.tutorial.HomeTutorial.maybeStart(activity);
-        } catch (Throwable ignored) { }
+        // Intentionally left blank: the launcher opens directly into the real UI.
     }
 }

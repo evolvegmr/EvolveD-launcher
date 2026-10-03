@@ -29,12 +29,15 @@ public class AsyncVersionList {
     /** How many times a forced manifest refresh is attempted before giving up. */
     private static final int FORCE_REFRESH_ATTEMPTS = 2;
 
+    /** The Mojang manifest is small and authoritative, so refresh it on launcher open. */
+    private static final boolean REFRESH_MANIFEST_ON_LAUNCH = true;
+
     public void getVersionList(@Nullable VersionDoneListener listener, boolean secondPass){
         sExecutorService.execute(() -> {
             File versionFile = new File(Tools.DIR_CACHE + "/version_list.json");
             JMinecraftVersionList versionList = null;
             try{
-                if(!versionFile.exists() || (System.currentTimeMillis() > versionFile.lastModified() + 86400000 )){
+                if (REFRESH_MANIFEST_ON_LAUNCH || !versionFile.exists()) {
                     versionList = downloadVersionList(LauncherPreferences.PREF_VERSION_REPOS);
                 }
             }catch (Exception e){
