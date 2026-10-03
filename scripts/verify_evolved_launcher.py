@@ -20,6 +20,9 @@ FILES = {
     "manifest": read("app_pojavlauncher/src/main/AndroidManifest.xml"),
     "updater": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/launch/GitHubReleaseUpdateManager.java"),
     "cleaner": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/CleanerFragment.java"),
+    "playtime": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/PlaytimeFragment.java"),
+    "playtime_store": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/performance/PlaytimeStore.java"),
+    "game_activity": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/MainActivity.java"),
     "mods": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/ModsSearchFragment.java"),
     "launch_home": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/LauncherHomeFragment.java"),
     "launcher_activity": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/LauncherActivity.java"),
@@ -86,8 +89,14 @@ def assertions():
     assert 'refresh_minecraft_versions' in FILES["settings"] and 'refreshNow' in FILES["settings"]
     assert 'FirebaseSyncManager.checkForUpdateManual' not in FILES["settings"]
     assert 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json' in FILES["prefs"]
-    assert 'safeCacheSize' in c and 'getCacheDir()' in c and 'getExternalCacheDir()' in c
+    assert 'scanSafeCache' in c and 'getCacheDir()' in c and 'getExternalCacheDir()' in c
+    assert 'getCodeCacheDir()' in c and 'getCanonicalPath()' in c
     assert 'Tools.DIR_GAME_NEW' not in c and 'mods/' not in c
+    assert 'No playtime data yet' in FILES["playtime"]
+    assert 'averageDailyMs' in FILES["playtime"] and 'MAXIMUM SESSION' in FILES["playtime"]
+    assert 'PlaytimeStore.start(' in FILES["game_activity"]
+    assert 'frames > mFirstFrameBaseline' in FILES["game_activity"]
+    assert 'checkpoint(Context context)' in FILES["playtime_store"]
     assert 'applyProfileFiltersFromSelection();' in m
     assert 'String version = profile.lastVersionId;' in m and 'String loader = profile.lastVersionId;' in m
     for loader in ("Fabric", "Forge", "NeoForge", "Quilt"):

@@ -1,33 +1,5 @@
 # 🚀 EvolveD Launcher
 
-<p align="center">
-  <strong>Faster. Smoother. More Customisable.</strong>
-</p>
-
-<p align="center">
-  A modern Minecraft launcher focused on performance, customisation, mod-loader support, and a smooth user experience.
-</p>
-
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#screenshots">Screenshots</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#supported-loaders">Supported Loaders</a> •
-  <a href="#downloads">Downloads</a>
-</p>
-
-<p align="center">
-
-![GitHub release](https://img.shields.io/github/v/release/evolvegmr/EvolveD-Launcher?style=for-the-badge\&logo=github)
-![GitHub downloads](https://img.shields.io/github/downloads/evolvegmr/EvolveD-Launcher/total?style=for-the-badge\&logo=github)
-![GitHub stars](https://img.shields.io/github/stars/evolvegmr/EvolveD-Launcher?style=for-the-badge\&logo=github)
-![GitHub issues](https://img.shields.io/github/issues/evolvegmr/EvolveD-Launcher?style=for-the-badge\&logo=github)
-![License](https://img.shields.io/github/license/evolvegmr/EvolveD-Launcher?style=for-the-badge)
-
-</p>
-
----
-
 ## 📖 About
 
 **EvolveD Launcher** is a Minecraft launcher designed to provide a fast, flexible, and highly customisable Minecraft experience.
@@ -101,44 +73,6 @@ Performance-focused improvements include:
 
 > **Note:** Actual Minecraft FPS depends on the device, Minecraft version, mods, shaders, render distance, and other configuration factors.
 
----
-
-# 📸 Screenshots
-
-> Add your real screenshots to `assets/screenshots/` and replace the filenames below.
-
-### 🏠 Main Launcher
-
-<p align="center">
-  <img src="assets/screenshots/home.png" alt="EvolveD Launcher Home Screen" width="800">
-</p>
-
-### 🎮 Control Customisation
-
-<p align="center">
-  <img src="assets/screenshots/controls.png" alt="EvolveD Launcher Control Customisation" width="800">
-</p>
-
-### ⚙️ Settings
-
-<p align="center">
-  <img src="assets/screenshots/settings.png" alt="EvolveD Launcher Settings" width="800">
-</p>
-
-### 📦 Mod / Instance Management
-
-<p align="center">
-  <img src="assets/screenshots/mods.png" alt="EvolveD Launcher Mod Management" width="800">
-</p>
-
-### 🌈 Resource Packs & Shaders
-
-<p align="center">
-  <img src="assets/screenshots/resource-packs.png" alt="EvolveD Launcher Resource Packs" width="800">
-</p>
-
----
-
 # 🧩 Supported Loaders
 
 EvolveD Launcher is designed to support Minecraft installations using multiple major mod-loader ecosystems.
@@ -183,11 +117,10 @@ The Android build is distributed as an `.apk` release package.
 If a desktop build is provided for your release:
 
 1. Download the appropriate package from **Releases**.
-2. Extract the archive if necessary.
-3. Start EvolveD Launcher.
-4. Select your Minecraft version.
-5. Configure your installation.
-6. Launch the game.
+2. Start EvolveD Launcher.
+3. Select your Minecraft version.
+4. Configure your installation.
+5. Launch the game.
 
 ---
 
@@ -306,45 +239,6 @@ Open a feature request and describe:
 2. Why it would be useful
 3. How you expect it to work
 4. Any relevant screenshots or examples
-
----
-
-# 🤝 Contributing
-
-Contributions are welcome.
-
-### Basic workflow
-
-```bash
-git clone https://github.com/evolvegmr/EvolveD-Launcher.git
-cd EvolveD-Launcher
-```
-
-Create a branch for your changes:
-
-```bash
-git checkout -b feature/your-feature
-```
-
-After making your changes:
-
-```bash
-git add .
-git commit -m "Add your feature"
-git push origin feature/your-feature
-```
-
-Then open a Pull Request.
-
----
-
-# 📥 Downloads
-
-Download the latest version from:
-
-**[GitHub Releases](https://github.com/evolvegmr/EvolveD-Launcher/releases)**
-
----
 
 # 🌐 Community
 

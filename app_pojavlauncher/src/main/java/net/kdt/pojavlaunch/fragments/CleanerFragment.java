@@ -131,10 +131,17 @@ public class CleanerFragment extends Fragment {
         if (getView() != null && (snapshot == null || state == State.COMPLETE)) scan();
     }
 
+    @Override
+    public void onDestroyView() {
+        operationId++;
+        if (state == State.SCANNING || state == State.CLEANING) state = State.IDLE;
+        super.onDestroyView();
+    }
+
     private State state = State.IDLE;
 
     private void scan() {
-        if (getContext() == null || sizeValue == null) return;
+        if (getContext() == null || sizeValue == null || state == State.SCANNING) return;
         final int id = ++operationId;
         final Context app = requireContext().getApplicationContext();
         setState(State.SCANNING, "Scanning safe cache locations…");
@@ -156,7 +163,7 @@ public class CleanerFragment extends Fragment {
                                     ? "No removable app-cache files found."
                                     : "Ready to remove the listed cache files.");
                 });
-            } catch (IOException e) {
+            } catch (IOException | SecurityException e) {
                 android.util.Log.e("EvolveD-Cleaner", "Safe cache scan failed", e);
                 postResult(id, () -> {
                     snapshot = null;
@@ -192,10 +199,13 @@ public class CleanerFragment extends Fragment {
         IO.execute(() -> {
             long removedBytes = 0L;
             int removedFiles = 0;
-            IOException failure = null;
+            Exception failure = null;
             for (ScannedFile scanned : selected.files) {
                 File file = scanned.file;
                 try {
+                    if (!file.getCanonicalPath().equals(scanned.canonicalPath)) {
+                        throw new IOException("Cache file changed after scan: " + file.getName());
+                    }
                     if (!file.exists()) continue;
                     long size = Math.max(0L, file.length());
                     if (file.delete()) {
@@ -204,23 +214,23 @@ public class CleanerFragment extends Fragment {
                     } else if (file.exists()) {
                         throw new IOException("Could not remove " + file.getName());
                     }
-                } catch (IOException e) {
+                } catch (IOException | SecurityException e) {
                     if (failure == null) failure = e;
                     else failure.addSuppressed(e);
                 }
             }
             final long actualRemoved = removedBytes;
             final int actualRemovedFiles = removedFiles;
-            final IOException cleanFailure = failure;
+            final Exception cleanFailure = failure;
             Snapshot after = null;
-            IOException scanFailure = null;
+            Exception scanFailure = null;
             try {
                 after = scanSafeCache(app);
-            } catch (IOException e) {
+            } catch (IOException | SecurityException e) {
                 scanFailure = e;
             }
             final Snapshot remaining = after;
-            final IOException finalScanFailure = scanFailure;
+            final Exception finalScanFailure = scanFailure;
             postResult(id, () -> {
                 progress.setVisibility(View.GONE);
                 if (remaining != null) {
@@ -231,7 +241,7 @@ public class CleanerFragment extends Fragment {
                     sizeValue.setText(formatBytes(remaining.totalBytes));
                 }
                 if (cleanFailure != null || finalScanFailure != null) {
-                    IOException error = cleanFailure != null ? cleanFailure : finalScanFailure;
+                    Exception error = cleanFailure != null ? cleanFailure : finalScanFailure;
                     if (finalScanFailure != null && cleanFailure != null) error.addSuppressed(finalScanFailure);
                     setState(State.ERROR, "Partial cleanup: removed " + formatBytes(actualRemoved)
                             + " from " + actualRemovedFiles + " files. " + error.getMessage());
@@ -315,7 +325,8 @@ public class CleanerFragment extends Fragment {
             return;
         }
         if (!file.isFile() || !visited.add(canonical)) return;
-        result.files.add(new ScannedFile(file, Math.max(0L, file.length()), category(file)));
+        result.files.add(new ScannedFile(
+                file, canonical, Math.max(0L, file.length()), category(file)));
         result.totalBytes += Math.max(0L, file.length());
         switch (category(file)) {
             case TEMPORARY: result.temporaryBytes += Math.max(0L, file.length()); break;
@@ -340,11 +351,13 @@ public class CleanerFragment extends Fragment {
 
     private static final class ScannedFile {
         final File file;
+        final String canonicalPath;
         final long scannedBytes;
         final Category category;
 
-        ScannedFile(File file, long scannedBytes, Category category) {
+        ScannedFile(File file, String canonicalPath, long scannedBytes, Category category) {
             this.file = file;
+            this.canonicalPath = canonicalPath;
             this.scannedBytes = scannedBytes;
             this.category = category;
         }

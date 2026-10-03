@@ -502,7 +502,11 @@ public class LauncherHomeFragment extends Fragment {
         if (mSkinLoadingProgress != null) mSkinLoadingProgress.setVisibility(View.VISIBLE);
         if (mSkinLoadingStatus != null) mSkinLoadingStatus.setVisibility(View.GONE);
         final android.content.Context ctx = getContext() == null ? null : getContext().getApplicationContext();
-        if (ctx == null) return;
+        if (ctx == null) {
+            if (mSkinLoadingProgress != null) mSkinLoadingProgress.setVisibility(View.GONE);
+            if (mSkinLoadingStatus != null) mSkinLoadingStatus.setVisibility(View.VISIBLE);
+            return;
+        }
         PojavApplication.sExecutorService.execute(() -> {
             android.graphics.Bitmap skin = null;
             android.graphics.Bitmap cape = null;
@@ -568,9 +572,11 @@ public class LauncherHomeFragment extends Fragment {
             // when none is available do we show the bundled default character.
             final boolean usedFallback = name != null && (skin == null || skin.getWidth() < 64);
             if (skin == null || skin.getWidth() < 64) {
+                if (skin != null && !skin.isRecycled()) skin.recycle();
                 android.graphics.BitmapFactory.Options o = new android.graphics.BitmapFactory.Options();
                 o.inScaled = false;
-                skin = android.graphics.BitmapFactory.decodeResource(getResources(), R.drawable.cs_default_skin, o);
+                skin = android.graphics.BitmapFactory.decodeResource(ctx.getResources(),
+                        R.drawable.cs_default_skin, o);
             }
             final android.graphics.Bitmap fSkin = skin;
             final android.graphics.Bitmap fCape = cape;

@@ -43,20 +43,20 @@ public final class PlaytimeStore {
         } catch (org.json.JSONException e) {
             android.util.Log.e("PlaytimeStore", "Unable to persist active playtime session", e);
         }
+    }
 
-        private static void recoverExistingActive(Context context) {
-            String raw = prefs(context).getString(KEY_ACTIVE, null);
-            if (raw == null) return;
-            try {
-                JSONObject active = new JSONObject(raw);
-                long end = processIsRunning(active.optInt("pid", -1))
-                        ? System.currentTimeMillis()
-                        : active.optLong("checkpoint", active.optLong("start", 0L));
-                closeActive(context, end);
-            } catch (org.json.JSONException e) {
-                android.util.Log.e("PlaytimeStore", "Unable to recover previous playtime session", e);
-                prefs(context).edit().remove(KEY_ACTIVE).apply();
-            }
+    private static void recoverExistingActive(Context context) {
+        String raw = prefs(context).getString(KEY_ACTIVE, null);
+        if (raw == null) return;
+        try {
+            JSONObject active = new JSONObject(raw);
+            long end = processIsRunning(active.optInt("pid", -1))
+                    ? System.currentTimeMillis()
+                    : active.optLong("checkpoint", active.optLong("start", 0L));
+            closeActive(context, end);
+        } catch (org.json.JSONException e) {
+            android.util.Log.e("PlaytimeStore", "Unable to recover previous playtime session", e);
+            prefs(context).edit().remove(KEY_ACTIVE).apply();
         }
     }
 
@@ -187,7 +187,7 @@ public final class PlaytimeStore {
                 long start = active.optLong("start", 0L);
                 if (start > 0L && start < now) {
                     if (processIsRunning(active.optInt("pid", -1))) {
-                        JSONObject live = new JSONObject(active);
+                        JSONObject live = new JSONObject(active.toString());
                         live.put("end", now);
                         records.add(live);
                         earliest = Math.min(earliest, start);

@@ -284,12 +284,12 @@ public class PlaytimeFragment extends Fragment {
                             Math.max(dp(12), y - dp(5)), label);
                 }
             }
+        }
 
-            private boolean calForIndexIsToday(int index) {
-                Calendar today = Calendar.getInstance();
-                int offset = (today.get(Calendar.DAY_OF_WEEK) - today.getFirstDayOfWeek() + 7) % 7;
-                return index == offset;
-            }
+        private boolean calForIndexIsToday(int index) {
+            Calendar today = Calendar.getInstance();
+            int offset = (today.get(Calendar.DAY_OF_WEEK) - today.getFirstDayOfWeek() + 7) % 7;
+            return index == offset;
         }
     }
 }
