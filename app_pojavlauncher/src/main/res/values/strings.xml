@@ -192,8 +192,8 @@
     <string name="customctrl_swipeable">Swipeable</string>
     <string name="customctrl_forward_lock">Forward lock</string>
     <string name="customctrl_absolute_tracking">Absolute finger tracking</string>
-    <string name="memory_warning_msg">The current amount of free RAM (%d) is lower than allocated RAM (%d), which may lead to crashes. Change the allocation if the game crashes.</string>
-    <string name="address_memory_warning_msg">The current amount of free addressable RAM space (%d) is lower than the allocated RAM (%d), which will lead to crashes. Change the allocation if the game crashes.</string>
+    <string name="memory_warning_msg" formatted="false">The current amount of free RAM (%d) is lower than allocated RAM (%d), which may lead to crashes. Change the allocation if the game crashes.</string>
+    <string name="address_memory_warning_msg" formatted="false">The current amount of free addressable RAM space (%d) is lower than the allocated RAM (%d), which will lead to crashes. Change the allocation if the game crashes.</string>
     <string name="mcl_memory_allocation">Memory allocation</string>
     <string name="mcl_memory_allocation_subtitle">Controls how much memory is given to Minecraft.</string>
     <string name="multirt_runtime_corrupt">Corrupted Java Runtime</string>
@@ -285,11 +285,11 @@
     <string name="cs_notif_elapsed">Elapsed %1$s</string>
     <string name="cs_notif_left">%1$s left</string>
     <string name="cs_notif_failed_title">Download failed</string>
-    <string name="cs_notif_failed_text">%1$s — %2$s</string>
+    <string name="cs_notif_failed_text" formatted="false">%1$s — %2$s</string>
     <string name="cs_notif_cancelled_title">Download cancelled</string>
     <string name="cs_notif_cancelled_text">%1$s was stopped</string>
     <string name="cs_notif_summary_one">Downloading • %1$d%%</string>
-    <string name="cs_notif_summary_many">Downloading %1$d items • %2$d%%</string>
+    <string name="cs_notif_summary_many" formatted="false">Downloading %1$d items • %2$d%%</string>
     <string name="execute_jar_no_compatible_runtime">This .jar needs Java 17 or older for its installer UI, but no compatible runtime is installed. Install Java 17 from the Runtime manager and try again.</string>
 
     <!-- ── Modpack version channels (Phase 5) ── -->
@@ -522,12 +522,12 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
 
     <string name="modpack_download_downloading_metadata">Downloading modpack metadata (%.2f MB / %.2f MB)</string>
     <string name="import_modpack_start">Importing modpack…</string>
-    <string name="import_modpack_hash">Hashing modpack file… (%s MB/ %s MB)</string>
+    <string name="import_modpack_hash" formatted="false">Hashing modpack file… (%s MB/ %s MB)</string>
     <string name="import_modpack_json">Reading modpack info…</string>
-    <string name="import_modpack_copy">Copying modpack file to cache… (%s MB/ %s MB)</string>
+    <string name="import_modpack_copy" formatted="false">Copying modpack file to cache… (%s MB/ %s MB)</string>
     <string name="modpack_download_downloading_mods">Downloading mods (%.2f MB / %.2f MB)</string>
-    <string name="modpack_download_downloading_mods_fc">Downloading mods (File %d out of %d)</string>
-    <string name="modpack_download_applying_overrides">Applying overrides (%d/%d)</string>
+    <string name="modpack_download_downloading_mods_fc" formatted="false">Downloading mods (File %d out of %d)</string>
+    <string name="modpack_download_applying_overrides" formatted="false">Applying overrides (%d/%d)</string>
     <string name="modpack_install_notification_title">Pojav Modpack Installer</string>
     <string name="modpack_install_notification_success">Click here to finish modpack installation</string>
     <string name="modpack_install_notification_data_not_available">Failed to download mod loader information</string>
@@ -570,7 +570,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="newdl_starting">Reading game metadata…</string>
     <string name="newdl_downloading_jre_runtime">Downloading Java %s runtime (%.2f/%.2f MB)</string>
     <string name="newdl_downloading_metadata">Downloading game metadata (%s)</string>
-    <string name="newdl_downloading_game_files">Downloading game… (%d/%d, %.2f MB/s)</string>
+    <string name="newdl_downloading_game_files" formatted="false">Downloading game… (%d/%d, %.2f MB/s)</string>
     <string name="newdl_downloading_game_files_size">Downloading game… (%.2f/%.2f MB, %.2f MB/s)</string>
     <string name="cropper_title">Select image region</string>
     <string name="cropper_lock_vertical">V. lock</string>
@@ -653,7 +653,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="bta_installer_available_versions">Supported BTA versions</string>
     <string name="bta_installer_untested_versions">Untested BTA versions</string>
     <string name="bta_installer_nightly_versions">Nightly BTA versions</string>
-    <string name="newdl_extracting_native_libraries">Extracting native libraries (%d/%d)</string>
+    <string name="newdl_extracting_native_libraries" formatted="false">Extracting native libraries (%d/%d)</string>
     <string name="toast_not_available_demo">This is not available in demo mode</string>
 
     <string name="preference_renderer_mobileglues_settings">MobileGlues Renderer Settings</string>
@@ -712,7 +712,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="sodium_override_summaryOn">Sodium is not supported. No help will be given if you encounter any issues.</string>
     <!--  Make sure the people turning this on can read English.  -->
     <string name="sodium_math_warning_title" translatable="false">Solve the math question to enable</string>
-    <string name="sodium_math_warning_message" translatable="false">
+    <string name="sodium_math_warning_message" translatable="false" formatted="false">
     Sodium is unsupported, you are on your own. No support will be given in the discord server.\nUsing sodium may result in bugs, glitches, and crashes. No help will be given even if you lose any of your worlds or saves.\n\nNow what\'s %1$s multiplied by %2$s plus %3$s minus %4$s?
     </string>
     <string name="not_modpack_file">Not a modpack file!</string>
@@ -760,7 +760,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="mod_install_links_label">LINKS</string>
     <string name="mod_install_changelog_label">CHANGELOG</string>
     <string name="mod_install_dep_label">DEPENDENCIES</string>
-    <string name="mod_install_dep_message">%1$d required, %2$d optional — you will choose which ones to install.</string>
+    <string name="mod_install_dep_message" formatted="false">%1$d required, %2$d optional — you will choose which ones to install.</string>
     <string name="mod_install_dep_message_simple">%d required — you will choose which ones to install.</string>
     <string name="mod_install_version_label">Version</string>
     <string name="mod_install_last_updated">Last updated</string>
@@ -826,7 +826,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="rs_failed_toast">Java %1$d installation failed. Tap the card to retry.</string>
     <string name="rs_back_locked">Please wait — installation in progress…</string>
     <string name="rs_summary_none">Nothing selected</string>
-    <string name="rs_summary_pick">%1$d selected  •  ~%2$d MB</string>
+    <string name="rs_summary_pick" formatted="false">%1$d selected  •  ~%2$d MB</string>
     <string name="rs_step_downloading_all">Downloading selected runtimes</string>
     <string name="rs_step_starting">Starting</string>
     <string name="rs_step_preparing">Preparing</string>
@@ -836,7 +836,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="rs_step_failed">Failed</string>
     <string name="rs_stats_starting">Starting the runtime installer…</string>
     <string name="rs_stats_preparing_short">Preparing the download queue…</string>
-    <string name="rs_stats_downloading">Downloading Java %1$d — %2$d%% complete</string>
+    <string name="rs_stats_downloading" formatted="false">Downloading Java %1$d — %2$d%% complete</string>
     <string name="rs_stats_installing">Installing Java %1$d — unpacking the runtime…</string>
     <string name="rs_stats_completed">All runtimes installed and verified. You are ready to play.</string>
     <string name="rs_stats_failed_all">Every download failed. Check your connection and retry.</string>
@@ -851,7 +851,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="rw_downloading">DOWNLOADING</string>
     <string name="rw_ready">READY</string>
     <string name="rw_failed">FAILED — TAP TO RETRY</string>
-    <string name="rw_progress_status">Setting up runtimes (%1$d/%2$d) — keep the app open</string>
+    <string name="rw_progress_status" formatted="false">Setting up runtimes (%1$d/%2$d) — keep the app open</string>
     <string name="rw_all_ready">All runtimes ready ✓</string>
     <string name="rw_some_failed">Some downloads failed — tap a card to retry</string>
     <string name="rw_finish">Done — let’s play</string>
@@ -931,7 +931,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="shortcut_manage_title">Manage shortcuts</string>
     <string name="shortcut_manage_empty">No shortcuts yet</string>
     <string name="shortcut_manage_empty_hint">Long-press a profile on the home screen, or tap its shortcut button, to pin it to your device.</string>
-    <string name="shortcut_entry_subtitle">%1$s · %2$s</string>
+    <string name="shortcut_entry_subtitle" formatted="false">%1$s · %2$s</string>
     <string name="shortcut_entry_never_used">Created %1$s · not used yet</string>
     <string name="shortcut_unknown_profile">Unknown profile</string>
     <string name="shortcut_orphaned">Profile deleted</string>
@@ -1152,7 +1152,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="customctrl_command_export">Export</string>
     <string name="customctrl_command_ready">Script ready — %d action(s)</string>
     <string name="customctrl_command_empty">Add one command per line. Supports delay:ms, var:name=value, if:…, repeat:N /cmd</string>
-    <string name="customctrl_command_error_line">Line %1$d: %2$s</string>
+    <string name="customctrl_command_error_line" formatted="false">Line %1$d: %2$s</string>
     <string name="customctrl_command_exported">Command script copied</string>
     <string name="customctrl_command_imported">Command script imported</string>
     <string name="customctrl_command_clipboard_empty">Clipboard is empty</string>
@@ -1199,17 +1199,17 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="mod_copy_blocked_vanilla">Vanilla profiles cannot use mods</string>
     <string name="mod_copy_blocked_optifine">OptiFine profiles cannot use mods</string>
     <string name="mod_copy_exists_title">Already installed there</string>
-    <string name="mod_copy_exists_message">%1$s already has %2$s. Replace it?</string>
+    <string name="mod_copy_exists_message" formatted="false">%1$s already has %2$s. Replace it?</string>
     <string name="mod_copy_skip">Skip</string>
     <string name="mod_copy_replace">Replace</string>
     <string name="mod_copy_done">Copied to %1$s</string>
     <string name="mod_copy_failed">Copy failed</string>
-    <string name="mod_copy_already_there">%1$s already has %2$s — nothing was copied</string>
+    <string name="mod_copy_already_there" formatted="false">%1$s already has %2$s — nothing was copied</string>
     <string name="mod_detail_already_in_folder">The same file is already in that folder — open Manage Mods to uninstall it</string>
     <string name="mod_update_checking_title">Checking for update</string>
     <string name="mod_update_checking">Looking up %1$s on Modrinth…</string>
     <string name="mod_update_available_title">Update available</string>
-    <string name="mod_update_available_message">%1$s  →  %2$s</string>
+    <string name="mod_update_available_message" formatted="false">%1$s  →  %2$s</string>
     <string name="mod_update_install">Update</string>
     <string name="mod_update_later">Later</string>
     <string name="mod_update_up_to_date">This mod is already up to date</string>
@@ -1235,7 +1235,7 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="hub_status_idle">%1$d servers · tap Refresh for live status</string>
     <string name="hub_status_empty">No servers yet · tap Add to type one in</string>
     <string name="hub_status_pinging">%1$d servers · checking now</string>
-    <string name="hub_status_updated">%1$d servers · updated %2$s</string>
+    <string name="hub_status_updated" formatted="false">%1$d servers · updated %2$s</string>
     <string name="hub_added">Added %1$s</string>
     <string name="hub_saved">Saved %1$s</string>
     <string name="hub_removed">Removed %1$s</string>
