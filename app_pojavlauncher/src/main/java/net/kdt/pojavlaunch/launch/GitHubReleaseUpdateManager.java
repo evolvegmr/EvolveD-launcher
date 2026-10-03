@@ -369,8 +369,18 @@ public final class GitHubReleaseUpdateManager {
             Signature[] installedSigners = installed.signingInfo.getApkContentsSigners();
             if (installedSigners == null || installedSigners.length == 0) return false;
             for (Signature signer : installedSigners) {
-                if (!candidate.signingInfo.hasSigningCertificate(signer.toByteArray(),
-                        PackageManager.CERT_INPUT_RAW_X509)) return false;
+                boolean found = false;
+            Signature[] candidateSigners = candidate.signingInfo.getApkContentsSigners();
+            if (candidateSigners == null || candidateSigners.length == 0) return false;
+
+            for (Signature candidateSigner : candidateSigners) {
+                if (Arrays.equals(signer.toByteArray(), candidateSigner.toByteArray())) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) return false;
             }
             return true;
         }
