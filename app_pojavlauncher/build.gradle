@@ -35,7 +35,19 @@ def getCFApiKey = {
         return curseforgeKeyFile.text;
     }
     logger.warn('BUILD: You have no CurseForge key, the curseforge api will get disabled !');
-    return "DUMMY";
+    return "";
+}
+
+def releaseSigningProperties = [
+        "signingKeystore",
+        "signingStorePassword",
+        "signingKeyAlias",
+        "signingKeyPassword"
+]
+def releaseSigningConfigured = releaseSigningProperties.every { project.hasProperty(it) } &&
+        new File(project.property("signingKeystore").toString()).isFile()
+if (!releaseSigningConfigured) {
+    logger.warn("BUILD: No release signing properties found; release APKs will be unsigned.")
 }
 
 configurations {
@@ -63,16 +75,11 @@ android {
             keyPassword "android"
         }
         release {
-            if (project.hasProperty("signingKeystore") && new File(project.property("signingKeystore")).exists()) {
+            if (releaseSigningConfigured) {
                 storeFile file(project.property("signingKeystore"))
                 storePassword project.property("signingStorePassword")
                 keyAlias project.property("signingKeyAlias")
                 keyPassword project.property("signingKeyPassword")
-            } else {
-                storeFile file("release.keystore")
-                storePassword "cslauncher2026"
-                keyAlias "cslauncher"
-                keyPassword "cslauncher2026"
             }
         }
     }
@@ -133,7 +140,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             // defaultConfig already set
             // multiDexEnabled = true
-            signingConfig signingConfigs.release
+            if (releaseSigningConfigured) signingConfig signingConfigs.release
             resValue "string", "app_name", "EvolveD Launcher"
             resValue "string", "app_short_name", "EvolveD Launcher"
             resValue 'string', 'storageProviderAuthorities', 'com.cslaucher.plus.gamefolder'

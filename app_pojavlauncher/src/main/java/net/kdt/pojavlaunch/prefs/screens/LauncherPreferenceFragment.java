@@ -98,7 +98,7 @@ public class LauncherPreferenceFragment extends Fragment {
     // grouped under its old section name — nothing was removed, it was moved.
     /** Keys shown on the four simple pages (filtered out of Advanced so nothing appears twice). */
     private static final java.util.Set<String> SIMPLE_KEYS = new java.util.HashSet<>(java.util.Arrays.asList(
-            "check_for_update_btn", "launcher_animations", "launcher_transition_style", "launcher_animate_speed",
+            "check_for_update_btn", "refresh_minecraft_versions", "launcher_animations", "launcher_transition_style", "launcher_animate_speed",
             "downloadSource", "game_log_display_mode", "force_english", "verifyManifest", "notification_permission_request",
             "perf_presets_general", "perf_presets_game", "perf_presets_display", "perf_presets_launcher", "perf_presets_graphics", "perf_presets_java", "perf_presets",
             "allocation", "ram_effective_info", PerformanceMode.PREF_KEY, "install_jre", "javaArgs", "java_sandbox", "disable_autojre_select",
@@ -687,8 +687,14 @@ public class LauncherPreferenceFragment extends Fragment {
                 items.add(new SettingItem("perf_presets_general", SettingItem.TYPE_PRESET_PANEL,
                         "Quick Device Optimizer", "1-Click auto-tuning for your device", null));
                 items.add(new SettingItem("check_for_update_btn", SettingItem.TYPE_ACTION,
-                        "Check for updates", "See if a newer EvolveD Launcher is available", null)
-                        .setAction(() -> net.kdt.pojavlaunch.remote.FirebaseSyncManager.checkForUpdateManual(requireActivity())));
+                        "Check for EvolveD Launcher updates",
+                        "Check GitHub Releases for a newer launcher APK", null)
+                        .setAction(() -> net.kdt.pojavlaunch.launch.GitHubReleaseUpdateManager
+                                .checkManually(requireActivity())));
+                items.add(new SettingItem("refresh_minecraft_versions", SettingItem.TYPE_ACTION,
+                        "Refresh Minecraft versions",
+                        "Fetch the latest official Mojang version metadata. This does not update EvolveD Launcher.",
+                        null).setAction(this::refreshMinecraftVersions));
                 items.add(new SettingItem("launcher_animations", SettingItem.TYPE_DROPDOWN,
                         "Animations", "Turn launcher animations on or off", "full")
                         .setDropdownOptions(new String[]{"On", "Off"}, new String[]{"full", "off"}));
@@ -873,10 +879,10 @@ public class LauncherPreferenceFragment extends Fragment {
                     List<SettingItem> launcherItems = new ArrayList<>();
                     launcherItems.add(new SettingItem("perf_presets_launcher", SettingItem.TYPE_PRESET_PANEL, "Performance Presets", "", null));
                     launcherItems.add(new SettingItem("check_for_update_btn", SettingItem.TYPE_ACTION,
-                            "Check for Update",
-                            "Check online for the latest CS LAUNCHER PLUS release",
+                            "Check for EvolveD Launcher updates",
+                            "Check GitHub Releases for a newer launcher APK",
                             null).setAction(() -> {
-                        net.kdt.pojavlaunch.remote.FirebaseSyncManager.checkForUpdateManual(requireActivity());
+                        net.kdt.pojavlaunch.launch.GitHubReleaseUpdateManager.checkManually(requireActivity());
                     }));
                     launcherItems.add(new SettingItem("force_english", SettingItem.TYPE_SWITCH, getString(R.string.preference_force_english_title), getString(R.string.preference_force_english_description), false));
                     launcherItems.add(new SettingItem("notification_permission_request", SettingItem.TYPE_SWITCH, getString(R.string.preference_ask_for_notification_title), getString(R.string.preference_ask_for_notification_description), false));
@@ -1017,11 +1023,10 @@ public class LauncherPreferenceFragment extends Fragment {
                 case "Maintenance":
                     List<SettingItem> advItems = new ArrayList<>();
                     advItems.add(new SettingItem("check_for_update_adv_btn", SettingItem.TYPE_ACTION,
-                            "Check for Update",
-                            "Check online for the latest CS LAUNCHER PLUS release",
-                            null).setAction(() -> {
-                        net.kdt.pojavlaunch.remote.FirebaseSyncManager.checkForUpdateManual(requireActivity());
-                    }));
+                            "Check for EvolveD Launcher updates",
+                            "Check GitHub Releases for a newer launcher APK",
+                            null).setAction(() -> net.kdt.pojavlaunch.launch.GitHubReleaseUpdateManager
+                                    .checkManually(requireActivity())));
                     advItems.add(new SettingItem("clear_cache_files", SettingItem.TYPE_ACTION, "Clear Shader & Temporary Caches", "Free up storage by deleting temporary rendering files", null).setAction(() -> {
                         try {
                             clearCacheLocal(requireContext());
@@ -1541,6 +1546,41 @@ public class LauncherPreferenceFragment extends Fragment {
             }
         }
         return allMatch;
+    }
+
+    private void refreshMinecraftVersions() {
+        Activity activity = getActivity();
+        if (activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+
+        AlertDialog progress = new AlertDialog.Builder(activity)
+                .setTitle("Minecraft versions")
+                .setMessage("Refreshing official Mojang version metadata…")
+                .setCancelable(false)
+                .create();
+        progress.show();
+
+        net.kdt.pojavlaunch.tasks.AsyncVersionList.refreshNow(versions ->
+                activity.runOnUiThread(() -> {
+                    if (activity.isFinishing() || activity.isDestroyed()) {
+                        progress.dismiss();
+                        return;
+                    }
+                    progress.dismiss();
+                    if (versions == null || versions.versions == null) {
+                        new AlertDialog.Builder(activity)
+                                .setTitle("Minecraft versions not refreshed")
+                                .setMessage("Unable to retrieve valid Mojang version metadata. Previously cached versions remain available.")
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
+                    } else {
+                        new AlertDialog.Builder(activity)
+                                .setTitle("Minecraft versions refreshed")
+                                .setMessage("Loaded " + versions.versions.length
+                                        + " versions from official Mojang metadata. This did not update EvolveD Launcher.")
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
+                    }
+                }));
     }
 
     private void openMultiRTDialog() {

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lh_bottom_nav"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_lh_dock"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="4dp">
+
+    <LinearLayout
+        android:id="@+id/lh_nav_home"
+        style="@style/EvolveDNavItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:contentDescription="Home"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="5dp">
+        <ImageView style="@style/EvolveDBottomNavIcon" android:src="@drawable/ic_menu_home" app:tint="#FFFFFF" />
+        <TextView style="@style/EvolveDBottomNavLabel" android:text="Home" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lh_nav_versions"
+        style="@style/EvolveDNavItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:contentDescription="Minecraft versions"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="5dp">
+        <ImageView style="@style/EvolveDBottomNavIcon" android:src="@drawable/ic_nav_runtime" app:tint="#C7C1DA" />
+        <TextView style="@style/EvolveDBottomNavLabel" android:text="Versions" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lh_nav_accounts"
+        style="@style/EvolveDNavItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:contentDescription="Accounts"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="5dp">
+        <ImageView style="@style/EvolveDBottomNavIcon" android:src="@drawable/ic_menu_accounts" app:tint="#C7C1DA" />
+        <TextView style="@style/EvolveDBottomNavLabel" android:text="Accounts" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lh_nav_mods"
+        style="@style/EvolveDNavItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:contentDescription="Mods"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="5dp">
+        <ImageView style="@style/EvolveDBottomNavIcon" android:src="@drawable/ic_nav_mods" app:tint="#C7C1DA" />
+        <TextView style="@style/EvolveDBottomNavLabel" android:text="Mods" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lh_nav_settings"
+        style="@style/EvolveDNavItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:contentDescription="Settings"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="5dp">
+        <ImageView style="@style/EvolveDBottomNavIcon" android:src="@drawable/ic_menu_settings" app:tint="#C7C1DA" />
+        <TextView style="@style/EvolveDBottomNavLabel" android:text="Settings" />
+    </LinearLayout>
+</LinearLayout>

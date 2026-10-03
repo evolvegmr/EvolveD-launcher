@@ -85,6 +85,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.graphics.Insets;
 
 public class LauncherActivity extends BaseActivity {
     public static final String SETTING_FRAGMENT_TAG = "SETTINGS_FRAGMENT";
@@ -391,38 +392,38 @@ public class LauncherActivity extends BaseActivity {
 
         UiMotion.pressFeedback(home, versions, accounts, mods, modpacks, resources, shaders, playtime, cleaner, settings);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            home.setTooltipText("Home");
-            versions.setTooltipText("Versions");
-            accounts.setTooltipText("Accounts");
-            mods.setTooltipText("Mods");
-            modpacks.setTooltipText("Modpacks");
-            resources.setTooltipText("Resource Packs");
-            shaders.setTooltipText("Shaders");
-            playtime.setTooltipText("Playtime");
-            cleaner.setTooltipText("Cleaner");
-            settings.setTooltipText("Settings");
+            if (home != null) home.setTooltipText("Home");
+            if (versions != null) versions.setTooltipText("Versions");
+            if (accounts != null) accounts.setTooltipText("Accounts");
+            if (mods != null) mods.setTooltipText("Mods");
+            if (modpacks != null) modpacks.setTooltipText("Modpacks");
+            if (resources != null) resources.setTooltipText("Resource Packs");
+            if (shaders != null) shaders.setTooltipText("Shaders");
+            if (playtime != null) playtime.setTooltipText("Playtime");
+            if (cleaner != null) cleaner.setTooltipText("Cleaner");
+            if (settings != null) settings.setTooltipText("Settings");
         }
 
-        home.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.LauncherHomeFragment.class, "ROOT_HOME", null));
-        versions.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.InstancePickerFragment.class, "VERSIONS", null));
-        accounts.setOnClickListener(v -> {
+        if (home != null) home.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.LauncherHomeFragment.class, "ROOT_HOME", null));
+        if (versions != null) versions.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.InstancePickerFragment.class, "VERSIONS", null));
+        if (accounts != null) accounts.setOnClickListener(v -> {
             View accountSpinner = findViewById(R.id.account_spinner);
             if (accountSpinner != null) accountSpinner.performClick();
         });
-        mods.setOnClickListener(v -> {
+        if (mods != null) mods.setOnClickListener(v -> {
             android.os.Bundle args = new android.os.Bundle();
             String key = LauncherPreferences.DEFAULT_PREF.getString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE, null);
             if (key != null) args.putString(net.kdt.pojavlaunch.fragments.ManageModsFragment.BUNDLE_PROFILE_KEY, key);
             Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.ManageModsFragment.class, net.kdt.pojavlaunch.fragments.ManageModsFragment.TAG, args);
         });
-        modpacks.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.ModpackCreateFragment.class, "MODPACKS", null));
-        resources.setOnClickListener(v -> net.kdt.pojavlaunch.fragments.ResourceBrowserDialog.show(this));
-        shaders.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class, "SETTINGS_GRAPHICS", null));
-        playtime.setOnClickListener(v -> Tools.swapFragment(this,
+        if (modpacks != null) modpacks.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.fragments.ModpackCreateFragment.class, "MODPACKS", null));
+        if (resources != null) resources.setOnClickListener(v -> net.kdt.pojavlaunch.fragments.ResourceBrowserDialog.show(this));
+        if (shaders != null) shaders.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class, "SETTINGS_GRAPHICS", null));
+        if (playtime != null) playtime.setOnClickListener(v -> Tools.swapFragment(this,
                 net.kdt.pojavlaunch.fragments.PlaytimeFragment.class, "PLAYTIME", null));
-        cleaner.setOnClickListener(v -> Tools.swapFragment(this,
+        if (cleaner != null) cleaner.setOnClickListener(v -> Tools.swapFragment(this,
                 net.kdt.pojavlaunch.fragments.CleanerFragment.class, "CLEANER", null));
-        settings.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class, "SETTINGS_FRAGMENT", null));
+        if (settings != null) settings.setOnClickListener(v -> Tools.swapFragment(this, net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class, "SETTINGS_FRAGMENT", null));
 
         animateDockEntrance(home, versions, accounts, mods, modpacks, resources, shaders, playtime, cleaner, settings);
     }
@@ -705,10 +706,6 @@ public class LauncherActivity extends BaseActivity {
         setTheme(R.style.AppTheme);
         LauncherPreferences.DEFAULT_PREF.edit().remove("launcher_theme").remove("enable_bg_gradient").apply();
         
-        // The launcher UI is designed as a wide dashboard: keep every flow in
-        // landscape instead of allowing a partial portrait layout to appear.
-        setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-
         setContentView(R.layout.activity_pojav_launcher);
         // Full-bleed window: cutout mode follows the user's "Ignore camera
         // cutout" preference via BaseActivity.onPostResume (pref-respecting).
@@ -717,8 +714,23 @@ public class LauncherActivity extends BaseActivity {
         // applyCutoutSafety() in settleFragmentView().
 
         // Handle window insets properly to prevent navigation bar space reservation
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content),
-            (v, insets) -> WindowInsetsCompat.CONSUMED);
+        View contentRoot = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(contentRoot, (v, insets) -> {
+            View dock = findViewById(R.id.lh_dock);
+            if (dock != null && findViewById(R.id.lh_dock_scroll) == null) {
+                Insets safeInsets = insets.getInsets(
+                        WindowInsetsCompat.Type.navigationBars()
+                                | WindowInsetsCompat.Type.displayCutout());
+                int baseHeight = getResources().getDimensionPixelSize(R.dimen.lh_bottom_nav_height);
+                ViewGroup.LayoutParams layoutParams = dock.getLayoutParams();
+                layoutParams.height = baseHeight + safeInsets.bottom;
+                dock.setLayoutParams(layoutParams);
+                int horizontalPadding = (int) (4f * getResources().getDisplayMetrics().density + 0.5f);
+                dock.setPadding(safeInsets.left + horizontalPadding, 0,
+                        safeInsets.right + horizontalPadding, safeInsets.bottom);
+            }
+            return WindowInsetsCompat.CONSUMED;
+        });
         FragmentManager fragmentManager = getSupportFragmentManager();
         // One motion policy for every launcher page (home, settings and all child
         // flows), so new screens do not need to reinvent their own entrance logic.

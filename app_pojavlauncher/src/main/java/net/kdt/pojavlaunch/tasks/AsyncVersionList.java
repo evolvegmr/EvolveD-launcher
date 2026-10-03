@@ -64,6 +64,18 @@ public class AsyncVersionList {
         });
     }
 
+    /**
+     * Force-refresh the official Mojang version manifest without blocking the UI.
+     * The callback runs on the launcher worker executor and receives null if the
+     * network response could not be parsed or fetched.
+     */
+    public static void refreshNow(@Nullable VersionDoneListener listener) {
+        sExecutorService.execute(() -> {
+            JMinecraftVersionList versions = fetchFreshVersionListBlocking();
+            if (listener != null) listener.onVersionDone(versions);
+        });
+    }
+
 
     /**
      * Synchronously fetch the freshest version manifest straight from Mojang,

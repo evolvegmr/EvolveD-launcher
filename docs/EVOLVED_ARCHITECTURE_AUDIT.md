@@ -6,6 +6,8 @@ This repository is a fork of the existing Android Minecraft launcher codebase bu
 ## Existing architecture
 - App namespace: `net.kdt.pojavlaunch`
 - Android application entrypoints: `PojavApplication`, `LauncherActivity`, `MainActivity`, `RuntimeSetupActivity`
+- Launcher navigation adapts to orientation: portrait phones use a five-item bottom bar; landscape retains the scrollable side dock.
+- The portrait Home screen gives the Launch action the available width and keeps the instance library reachable above navigation.
 - Native launcher components: JNI under `app_pojavlauncher/src/main/jni/`
 - Runtime management: multi-runtime Java installation and launch configuration
 - Loader support: Fabric, Forge, NeoForge, Quilt, OptiFine, custom profiles, modpacks, and installer flows
@@ -80,6 +82,7 @@ The launcher preserves Microsoft authentication, offline accounts, Ely.by-style 
 ## Storage and networking
 - Android storage providers and scoped access remain in use
 - downloads and libraries remain handled by the launcher infrastructure
+- CurseForge API calls are disabled when no API key is configured; no placeholder key is sent.
 - remote update services are optional and guarded by config
 
 ## Logging and crash handling

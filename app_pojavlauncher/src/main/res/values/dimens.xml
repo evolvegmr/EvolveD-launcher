@@ -38,11 +38,11 @@
     <dimen name="lh_dock_icon_inner">22dp</dimen>
     <dimen name="lh_dock_gap">15dp</dimen>
     <dimen name="lh_dock_pad_v">8dp</dimen>
-    \1 142dp\2
     <dimen name="lh_player_w">128dp</dimen>
     <dimen name="lh_player_h">172dp</dimen>
     <dimen name="lh_card_width">178dp</dimen>
     <dimen name="lh_card_height">108dp</dimen>
     <dimen name="lh_carousel_height">72dp</dimen>
     <dimen name="lh_launch_button_h">56dp</dimen>
+    <dimen name="lh_bottom_nav_height">68dp</dimen>
 </resources>

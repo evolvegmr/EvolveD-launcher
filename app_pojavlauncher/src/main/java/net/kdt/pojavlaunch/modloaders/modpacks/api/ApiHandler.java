@@ -23,31 +23,44 @@ import java.util.Objects;
 public class ApiHandler {
     public final String baseUrl;
     public final Map<String, String> additionalHeaders;
+    private final boolean mDisabled;
 
     public ApiHandler(String url) {
         baseUrl = url;
         additionalHeaders = null;
+        mDisabled = false;
     }
 
     public ApiHandler(String url, String apiKey) {
         baseUrl = url;
-        additionalHeaders = new ArrayMap<>();
-        additionalHeaders.put("x-api-key", apiKey);
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            additionalHeaders = null;
+            mDisabled = true;
+            Log.w("ApiHandler", "API client disabled because no API key is configured: " + baseUrl);
+        } else {
+            additionalHeaders = new ArrayMap<>();
+            additionalHeaders.put("x-api-key", apiKey);
+            mDisabled = false;
+        }
     }
 
     public <T> T get(String endpoint, Class<T> tClass) {
+        if (mDisabled) return null;
         return getFullUrl(additionalHeaders, baseUrl + "/" + endpoint, tClass);
     }
 
     public <T> T get(String endpoint, HashMap<String, Object> query, Class<T> tClass) {
+        if (mDisabled) return null;
         return getFullUrl(additionalHeaders, baseUrl + "/" + endpoint, query, tClass);
     }
 
     public <T> T post(String endpoint, T body, Class<T> tClass) {
+        if (mDisabled) return null;
         return postFullUrl(additionalHeaders, baseUrl + "/" + endpoint, body, tClass);
     }
 
     public <T> T post(String endpoint, HashMap<String, Object> query, T body, Class<T> tClass) {
+        if (mDisabled) return null;
         return postFullUrl(additionalHeaders, baseUrl + "/" + endpoint, query, body, tClass);
     }
 

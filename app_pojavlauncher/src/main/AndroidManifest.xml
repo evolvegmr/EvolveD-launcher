@@ -43,20 +43,14 @@
             android:name=".MissingStorageActivity"
             android:exported="false" />
 
-        <!-- Full-screen first-launch Java runtime installer -->
-        <!-- sensorLandscape: the launcher itself is landscape (Task 2); the
-             runtime setup page follows with its dedicated layout-land split. -->
+        <!-- This advanced runtime setup flow retains its landscape-specific layout. -->
         <activity
             android:name=".multirt.RuntimeSetupActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="sensorLandscape" />
 
-        <!-- Server Hub: the launcher's own server list (built-in servers + saved ones).
-             sensorLandscape like every other launcher page, so opening it from the profile
-             editor does not rotate the world twice; it has a dedicated layout-land split, and no
-             configChanges, so a rotation picks the right layout instead of stretching the wrong
-             one. -->
+        <!-- Server Hub keeps its existing landscape-specific layout. -->
         <activity
             android:name=".servers.ServerHubActivity"
             android:exported="false"
@@ -71,8 +65,7 @@
             android:name=".TestStorageActivity"
             android:exported="true"
             android:label="@string/app_short_name"
-            android:launchMode="singleTop"
-            android:screenOrientation="sensorLandscape">
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -102,7 +95,6 @@
             android:name=".LauncherActivity"
             android:label="@string/app_short_name"
             android:hardwareAccelerated="true"
-            android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="adjustPan"/>
         <!-- adjustResize + FLAG_LAYOUT_NO_LIMITS got stuck after the IME closed:
              the window frame kept the shrunken height, so returning from

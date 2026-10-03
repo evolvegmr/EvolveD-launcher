@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.42" />
+            app:layout_constraintGuide_percent="0.05" />
 
         <!-- ═══ BRAND CLUSTER (top-left, Phase 8) ═══
              Launcher mark + name, then two community pills: YouTube (red)
@@ -60,9 +60,10 @@
              Links come from CsLinks (same URLs as the About page). -->
         <LinearLayout
             android:id="@+id/lh_brand_cluster"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/bg_lh_glass"
             android:gravity="center_vertical"
@@ -70,6 +71,7 @@
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lh_account_chip"
             app:layout_constraintTop_toTopOf="parent">
 
             <FrameLayout
@@ -87,10 +89,11 @@
             </FrameLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="10dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <!-- Phase 10: full brand on ONE line, "Made in India" + tricolour below -->
@@ -100,11 +103,13 @@
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
                     android:letterSpacing="0.06"
+                    android:maxWidth="112dp"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="EVOLVED LAUNCHER"
+                    android:ellipsize="end"
+                    android:text="EvolveD"
+                    android:textSize="11sp"
                     android:textColor="#FFFFFF"
-                    android:textSize="12sp"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText,Deprecated" />
 
@@ -113,6 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
+                    android:visibility="gone"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -141,6 +147,7 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/lh_brand_social_divider"
                 android:layout_width="1dp"
                 android:layout_height="22dp"
                 android:layout_marginEnd="8dp"
@@ -150,6 +157,7 @@
                 android:id="@+id/lh_btn_youtube"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
+                android:visibility="gone"
                 android:background="@drawable/bg_lh_pill_youtube"
                 android:clickable="true"
                 android:contentDescription="Open the EvolveD Launcher YouTube channel"
@@ -182,6 +190,7 @@
                 android:id="@+id/lh_btn_discord"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
+                android:visibility="gone"
                 android:layout_marginStart="6dp"
                 android:background="@drawable/bg_lh_pill_discord"
                 android:clickable="true"
@@ -244,7 +253,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:maxWidth="110dp"
+                android:maxWidth="72dp"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:text="Player"
@@ -295,9 +304,11 @@
              z-ordered on top) can never paint over and hide the tag. -->
         <TextView
             android:id="@+id/lh_hero_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:maxWidth="230dp"
             android:singleLine="true"
             android:ellipsize="end"
@@ -309,11 +320,12 @@
             android:paddingVertical="3dp"
             android:background="@drawable/bg_lh_nametag"
             android:includeFontPadding="false"
+            android:gravity="center"
             android:shadowColor="#B3000000"
             android:shadowDy="1"
             android:shadowRadius="6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/lh_center_guide"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lh_account_chip" />
 
         <!-- 3D player. IMPORTANT: this GLSurfaceView has setZOrderOnTop(true),
@@ -327,6 +339,7 @@
             android:id="@+id/lh_player"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="2dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -422,8 +435,6 @@
                     android:textColor="#EDEAF7"
                     android:textSize="13sp"
                     android:includeFontPadding="false" />
-                    android:textStyle="bold"
-                    android:includeFontPadding="false" />
             </LinearLayout>
 
             <ProgressBar
@@ -451,13 +462,13 @@
 
         <LinearLayout
             android:id="@+id/lh_launch_row"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginStart="18dp"
             android:layout_marginEnd="22dp"
-            app:layout_constraintStart_toStartOf="@id/lh_center_guide"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/lh_launch_specs"
             android:layout_marginBottom="6dp">
@@ -465,8 +476,9 @@
             <!-- Signature launch capsule: wave/glow morph + STOP-cancel. -->
             <net.kdt.pojavlaunch.ui.PremiumPlayButtonView
                 android:id="@+id/lh_launch_button"
-                android:layout_width="260dp"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/lh_launch_button_h"
+                android:layout_weight="1"
                 android:contentDescription="Launch Minecraft">
 
                 <LinearLayout
@@ -475,7 +487,7 @@
                     android:layout_gravity="center"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:paddingHorizontal="24dp">
+                    android:paddingHorizontal="10dp">
 
                     <ImageView
                         android:layout_width="18dp"
@@ -501,8 +513,8 @@
             <!-- Pencil: opens THIS profile's edit page. -->
             <FrameLayout
                 android:id="@+id/lh_edit_btn"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="10dp"
                 android:background="@drawable/bg_lh_glass"
                 android:clickable="true"
@@ -520,7 +532,7 @@
         <!-- Profile runtime Java version and RAM allocation spec pill -->
         <LinearLayout
             android:id="@+id/lh_launch_specs"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
@@ -528,7 +540,7 @@
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toStartOf="@id/lh_center_guide"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/lh_library">
 
