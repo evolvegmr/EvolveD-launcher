@@ -1,2 +1,242 @@
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
+
+> Configure project :app_pojavlauncher
+BUILD: No google-services.json detected; Firebase remains optional and disabled.
+BUILD: No release signing properties found; release APKs will be unsigned.
+BUILD: You have no CurseForge key, the curseforge api will get disabled !
+WARNING: BuildType 'proguard' is both debuggable and has 'isMinifyEnabled' set to true.
+All code optimizations and obfuscation are disabled for debuggable builds.
+Merging LWJGL 3.3.3 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+Merging LWJGL 3.4.1 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+Merging LWJGL 3.4.2 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+
+> Task :app_pojavlauncher:preBuild UP-TO-DATE
+> Task :app_pojavlauncher:preDebugBuild UP-TO-DATE
+> Task :app_pojavlauncher:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app_pojavlauncher:generateDebugBuildConfig
+> Task :app_pojavlauncher:javaPreCompileDebug
+> Task :app_pojavlauncher:checkDebugAarMetadata
+> Task :app_pojavlauncher:generateDebugResValues
+> Task :app_pojavlauncher:mapDebugSourceSetPaths
+> Task :app_pojavlauncher:generateDebugResources
+
+> Task :app_pojavlauncher:mergeDebugResources
+/home/codespace/.gradle/caches/8.13/transforms/20d1124622a26c54c89f5aa0835fe669/transformed/material-1.12.0/res/values/values.xml:1288:4: Multiple substitutions specified in non-positional format of string resource string/bind_process_waiting_joystick. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values/strings.xml:196:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values/strings.xml:527:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values/strings.xml:528:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values/strings.xml:570:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values/strings.xml:571:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_jre_runtime. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pt/strings.xml:128:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-fil/strings.xml:106:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-hu/strings.xml:32:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-hu/strings.xml:297:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-hu/strings.xml:298:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-hu/strings.xml:338:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-lol-rAA/strings.xml:111:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-af/strings.xml:30:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-in/strings.xml:156:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-in/strings.xml:295:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-in/strings.xml:296:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-in/strings.xml:336:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-it/strings.xml:155:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-it/strings.xml:292:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-it/strings.xml:293:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-it/strings.xml:333:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-iw/strings.xml:150:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-iw/strings.xml:283:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-iw/strings.xml:284:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-iw/strings.xml:324:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ar/strings.xml:134:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ar/strings.xml:269:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ar/strings.xml:270:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ar/strings.xml:306:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ja/strings.xml:138:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ro/strings.xml:108:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ba/strings.xml:31:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ru/strings.xml:153:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ru/strings.xml:292:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ru/strings.xml:293:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ru/strings.xml:333:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-mn-rMN/strings.xml:30:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ca/strings.xml:39:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-sr/strings.xml:110:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-kk/strings.xml:31:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-sk-rSK/strings.xml:126:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-sk-rSK/strings.xml:252:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-sk-rSK/strings.xml:253:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-sv/strings.xml:64:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ko/strings.xml:154:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ko/strings.xml:292:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ko/strings.xml:293:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ko/strings.xml:333:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-bn-rBD/strings.xml:31:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pt-rBR/strings.xml:135:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pt-rBR/strings.xml:268:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pt-rBR/strings.xml:269:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pt-rBR/strings.xml:309:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-cs/strings.xml:156:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-cs/strings.xml:295:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-cs/strings.xml:296:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-cs/strings.xml:336:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-fa-rIR/strings.xml:133:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-fa-rIR/strings.xml:233:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-fa-rIR/strings.xml:234:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-th/strings.xml:133:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-th/strings.xml:266:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-th/strings.xml:267:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-da/strings.xml:20:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-tr/strings.xml:156:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-tr/strings.xml:295:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-tr/strings.xml:296:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-tr/strings.xml:336:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-tt/strings.xml:95:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-de/strings.xml:157:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-de/strings.xml:294:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-de/strings.xml:295:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-de/strings.xml:335:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-lt/strings.xml:123:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-uk/strings.xml:158:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-uk/strings.xml:297:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-uk/strings.xml:298:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-uk/strings.xml:338:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ms/strings.xml:156:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ms/strings.xml:295:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ms/strings.xml:296:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-ms/strings.xml:336:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-el/strings.xml:131:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-el/strings.xml:259:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-el/strings.xml:260:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-zh-rTW/strings.xml:156:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-zh-rTW/strings.xml:296:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-zh-rTW/strings.xml:297:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-zh-rTW/strings.xml:337:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-es/strings.xml:144:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-es/strings.xml:281:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-es/strings.xml:282:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-es/strings.xml:322:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-vi/strings.xml:156:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-vi/strings.xml:295:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-vi/strings.xml:296:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-vi/strings.xml:336:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-nl/strings.xml:115:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-nl/strings.xml:189:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-nl/strings.xml:190:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-zh-rCN/strings.xml:158:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-zh-rCN/strings.xml:299:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-zh-rCN/strings.xml:300:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-zh-rCN/strings.xml:340:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-no/strings.xml:88:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-az-rAZ/strings.xml:106:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-az-rAZ/strings.xml:227:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-az-rAZ/strings.xml:228:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-fr/strings.xml:151:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-fr/strings.xml:288:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-fr/strings.xml:289:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-fr/strings.xml:329:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-rpr/strings.xml:109:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pl/strings.xml:158:4: Multiple substitutions specified in non-positional format of string resource string/mcl_launch_downloading_progress. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pl/strings.xml:297:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_metadata. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pl/strings.xml:298:4: Multiple substitutions specified in non-positional format of string resource string/modpack_download_downloading_mods. Did you mean to add the formatted="false" attribute?
+/workspaces/EvolveD-launcher/app_pojavlauncher/src/main/res/values-pl/strings.xml:338:4: Multiple substitutions specified in non-positional format of string resource string/newdl_downloading_game_files_size. Did you mean to add the formatted="false" attribute?
+
+> Task :app_pojavlauncher:createDebugCompatibleScreenManifests
+> Task :app_pojavlauncher:extractDeepLinksDebug
+> Task :app_pojavlauncher:processDebugMainManifest
+> Task :app_pojavlauncher:processDebugManifest
+> Task :app_pojavlauncher:processDebugManifestForPackage
+warn: removing resource com.cslaucher.plus.debug:string/login_error_invalid_username without required default value.
+warn: removing resource com.cslaucher.plus.debug:string/login_microsoft without required default value.
+
+> Task :app_pojavlauncher:processDebugResources
+
+> Task :app_pojavlauncher:compileDebugJavaWithJavac
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /workspaces/EvolveD-launcher/app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/FabriclikeInstallFragment.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :app_pojavlauncher:mergeDebugShaders
+> Task :app_pojavlauncher:compileDebugShaders NO-SOURCE
+> Task :app_pojavlauncher:generateDebugAssets UP-TO-DATE
+> Task :arc_dns_injector:compileJava
+> Task :arc_dns_injector:processResources NO-SOURCE
+> Task :arc_dns_injector:classes
+> Task :arc_dns_injector:jar
+> Task :forge_installer:compileJava
+> Task :forge_installer:processResources NO-SOURCE
+> Task :forge_installer:classes
+> Task :forge_installer:jar
+
+> Task :jre_lwjgl3glfw:lwjgl-3.3.3:compileJava
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :jre_lwjgl3glfw:lwjgl-3.3.3:processResources NO-SOURCE
+> Task :jre_lwjgl3glfw:lwjgl-3.3.3:classes
+
+> Task :jre_lwjgl3glfw:lwjgl-3.3.3:jar
+Merging LWJGL 3.3.3 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+Merging LWJGL 3.3.3 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+Merging LWJGL 3.3.3 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+
+> Task :jre_lwjgl3glfw:lwjgl-3.4.1:compileJava
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :jre_lwjgl3glfw:lwjgl-3.4.1:processResources NO-SOURCE
+> Task :jre_lwjgl3glfw:lwjgl-3.4.1:classes
+
+> Task :jre_lwjgl3glfw:lwjgl-3.4.1:jar
+Merging LWJGL 3.4.1 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+Merging LWJGL 3.4.1 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+Merging LWJGL 3.4.1 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+
+> Task :jre_lwjgl3glfw:lwjgl-3.4.2:compileJava
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :jre_lwjgl3glfw:lwjgl-3.4.2:processResources NO-SOURCE
+> Task :jre_lwjgl3glfw:lwjgl-3.4.2:classes
+
+> Task :jre_lwjgl3glfw:lwjgl-3.4.2:jar
+Merging LWJGL 3.4.2 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+Merging LWJGL 3.4.2 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+Merging LWJGL 3.4.2 modules in the order: 
+lwjgl-glfw.jar
+lwjgl-opengl.jar
+
+> Task :jre_lwjgl3glfw:jar
+> Task :methods_injector_agent:compileJava
+> Task :methods_injector_agent:processResources NO-SOURCE
+> Task :methods_injector_agent:classes
+> Task :methods_injector_agent:jar
+> Task :app_pojavlauncher:mergeDebugAssets
+> Task :app_pojavlauncher:compressDebugAssets
+> Task :app_pojavlauncher:processDebugJavaRes NO-SOURCE
+> Task :app_pojavlauncher:mergeDebugJavaResource
+> Task :app_pojavlauncher:checkDebugDuplicateClasses
+> Task :app_pojavlauncher:desugarDebugFileDependencies
