@@ -5,6 +5,7 @@ import static net.kdt.pojavlaunch.Tools.hasNoOnlineProfileDialog;
 
 import android.Manifest;
 import android.app.NotificationManager;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.provider.OpenableColumns;
 import android.content.Context;
@@ -693,7 +694,8 @@ public class LauncherActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
         // Edge-to-edge setup
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();

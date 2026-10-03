@@ -3,6 +3,7 @@ package net.kdt.pojavlaunch;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -14,14 +15,19 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import net.kdt.pojavlaunch.multirt.MultiRTUtils;
+import net.kdt.pojavlaunch.multirt.RuntimeSetupActivity;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.tasks.AsyncAssetManager;
 
 public class TestStorageActivity extends Activity {
-    private final int REQUEST_STORAGE_REQUEST_CODE = 1;
+    private static final int REQUEST_STORAGE_REQUEST_CODE = 1;
+    private static final int REQUEST_RUNTIME_SETUP = 2;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         if(Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 29 && !isStorageAllowed(this)) requestStoragePermission();
         else exit();
     }
@@ -36,6 +42,15 @@ public class TestStorageActivity extends Activity {
                 Toast.makeText(this, R.string.toast_permission_denied, Toast.LENGTH_LONG).show();
                 requestStoragePermission();
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_RUNTIME_SETUP) {
+            startActivity(new Intent(this, LauncherActivity.class));
+            finish();
         }
     }
 
@@ -65,6 +80,11 @@ public class TestStorageActivity extends Activity {
         LauncherPreferences.loadPreferences(this);
         AsyncAssetManager.unpackComponents(this);
         AsyncAssetManager.unpackSingleFiles(this);
+
+        if (!RuntimeSetupActivity.wasShown() && !MultiRTUtils.getRuntimesToDownload().isEmpty()) {
+            startActivityForResult(new Intent(this, RuntimeSetupActivity.class), REQUEST_RUNTIME_SETUP);
+            return;
+        }
 
         Intent intent =  new Intent(this, LauncherActivity.class);
         startActivity(intent);

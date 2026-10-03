@@ -1,6 +1,7 @@
 package net.kdt.pojavlaunch.multirt;
 
 import android.animation.ValueAnimator;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,6 +96,7 @@ public class RuntimeSetupActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         setContentView(R.layout.activity_runtime_setup);
 
         mCardContainer = findViewById(R.id.rs_card_container);

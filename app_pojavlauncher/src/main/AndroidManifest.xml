@@ -41,7 +41,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MissingStorageActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="sensorLandscape" />
 
         <!-- This advanced runtime setup flow retains its landscape-specific layout. -->
         <activity
@@ -65,7 +66,8 @@
             android:name=".TestStorageActivity"
             android:exported="true"
             android:label="@string/app_short_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -80,7 +82,8 @@
             android:theme="@style/ShortcutTrampolineTheme"
             android:excludeFromRecents="true"
             android:taskAffinity=""
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="sensorLandscape" />
 
         <!-- Receives confirmation that the home screen actually pinned a shortcut. -->
         <receiver
@@ -95,6 +98,7 @@
             android:name=".LauncherActivity"
             android:label="@string/app_short_name"
             android:hardwareAccelerated="true"
+            android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="adjustPan"/>
         <!-- adjustResize + FLAG_LAYOUT_NO_LIMITS got stuck after the IME closed:
              the window frame kept the shrunken height, so returning from
