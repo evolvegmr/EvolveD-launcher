@@ -11,28 +11,31 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import net.kdt.pojavlaunch.R;
+import net.kdt.pojavlaunch.PojavApplication;
 import net.kdt.pojavlaunch.performance.PlaytimeStore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** EvolveD Playtime dashboard backed by real Minecraft game-process sessions. */
 public class PlaytimeFragment extends Fragment {
-    private static final int BG = android.graphics.Color.rgb(8, 6, 13);
-    private static final int CARD = android.graphics.Color.rgb(22, 11, 36);
-    private static final int CARD2 = android.graphics.Color.rgb(28, 18, 43);
-    private static final int PURPLE = android.graphics.Color.rgb(139, 92, 246);
-    private static final int BRIGHT = android.graphics.Color.rgb(168, 85, 247);
+    private static final int BG = android.graphics.Color.rgb(11, 9, 7);
+    private static final int CARD = android.graphics.Color.rgb(23, 19, 14);
+    private static final int CARD2 = android.graphics.Color.rgb(30, 23, 15);
+    private static final int BRIGHT = android.graphics.Color.rgb(230, 184, 76);
     private static final int WHITE = android.graphics.Color.WHITE;
     private static final int MUTED = android.graphics.Color.rgb(174, 167, 193);
 
     private PlaytimeChart chart;
-    private TextView todayValue, avgToday, avgMonth, longest, daysPlayed, weekTotal;
+    private TextView todayValue, todayLabel, averageDaily, longest, trackedDays, weekValue;
+    private View titleView, heroView, graphTitle, emptyView;
+    private final AtomicInteger refreshGeneration = new AtomicInteger();
+    private boolean entrancePlayed;
 
     public PlaytimeFragment() {}
 
@@ -46,11 +49,11 @@ public class PlaytimeFragment extends Fragment {
         root.setPadding(dp(24), dp(18), dp(24), dp(24));
         root.setBackgroundColor(BG);
 
-        TextView title = text(c, "Playtime", 28, WHITE, true);
-        root.addView(title, lp(-1, -2));
+        titleView = text(c, "Playtime", 24, WHITE, true);
+        root.addView(titleView, lp(-1, -2));
 
         TextView subtitle = text(c, "Your real Minecraft session history", 13, MUTED, false);
-        subtitle.setPadding(0, dp(3), 0, dp(18));
+        subtitle.setPadding(0, dp(3), 0, dp(12));
         root.addView(subtitle, lp(-1, -2));
 
         LinearLayout scrollContent = new LinearLayout(c);
@@ -61,33 +64,36 @@ public class PlaytimeFragment extends Fragment {
         TextView eyebrow = text(c, "TODAY", 11, BRIGHT, true);
         eyebrow.setLetterSpacing(.14f);
         hero.addView(eyebrow, lp(-1, -2));
-        todayValue = text(c, "0m", 42, WHITE, true);
+        todayValue = text(c, "—", 36, WHITE, true);
         todayValue.setPadding(0, dp(2), 0, 0);
         hero.addView(todayValue, lp(-1, -2));
-        TextView todayLabel = text(c, "Total Minecraft playtime today", 12, MUTED, false);
+        todayLabel = text(c, "Total Minecraft playtime today", 12, MUTED, false);
         hero.addView(todayLabel, lp(-1, -2));
-        weekTotal = text(c, "Last 7 days  •  0m", 12, MUTED, false);
-        weekTotal.setPadding(0, dp(12), 0, 0);
-        hero.addView(weekTotal, lp(-1, -2));
+        heroView = hero;
         scrollContent.addView(hero, lp(-1, -2));
 
-        TextView graphTitle = text(c, "Last 7 days", 17, WHITE, true);
-        graphTitle.setPadding(0, dp(20), 0, dp(8));
+        graphTitle = text(c, "This week", 17, WHITE, true);
+        graphTitle.setPadding(0, dp(14), 0, dp(8));
         scrollContent.addView(graphTitle, lp(-1, -2));
 
         chart = new PlaytimeChart(c);
-        scrollContent.addView(chart, lp(-1, dp(190)));
+        scrollContent.addView(chart, lp(-1, dp(150)));
+
+        emptyView = text(c, "Start Minecraft to begin tracking your playtime.", 14, MUTED, false);
+        emptyView.setPadding(dp(4), dp(20), dp(4), dp(20));
+        emptyView.setVisibility(View.GONE);
+        scrollContent.addView(emptyView, lp(-1, -2));
 
         LinearLayout stats1 = new LinearLayout(c);
         stats1.setOrientation(LinearLayout.HORIZONTAL);
-        avgToday = statCard(c, stats1, "AVERAGE SESSION", "0m");
-        avgMonth = statCard(c, stats1, "MONTHLY AVERAGE / DAY", "0m");
+        averageDaily = statCard(c, stats1, "AVERAGE / DAY", "—");
+        longest = statCard(c, stats1, "MAXIMUM SESSION", "—");
         scrollContent.addView(stats1, lp(-1, -2));
 
         LinearLayout stats2 = new LinearLayout(c);
         stats2.setOrientation(LinearLayout.HORIZONTAL);
-        longest = statCard(c, stats2, "LONGEST SESSION", "0m");
-        daysPlayed = statCard(c, stats2, "DAYS PLAYED", "0");
+        weekValue = statCard(c, stats2, "THIS WEEK", "—");
+        trackedDays = statCard(c, stats2, "TRACKED DAYS", "—");
         scrollContent.addView(stats2, lp(-1, -2));
 
         android.widget.ScrollView sv = new android.widget.ScrollView(c);
@@ -106,17 +112,74 @@ public class PlaytimeFragment extends Fragment {
 
     private void refresh() {
         if (getContext() == null) return;
-        PlaytimeStore.Stats s = PlaytimeStore.stats(requireContext());
-        if (todayValue != null) todayValue.setText(PlaytimeStore.formatDuration(s.todayMs));
-        if (avgToday != null) avgToday.setText(PlaytimeStore.shortDuration(s.avgTodayMs));
-        if (avgMonth != null) avgMonth.setText(PlaytimeStore.shortDuration(s.avgMonthMs));
-        if (longest != null) longest.setText(PlaytimeStore.shortDuration(s.longestMs));
-        if (daysPlayed != null) daysPlayed.setText(String.valueOf(s.daysPlayed));
-        if (weekTotal != null) weekTotal.setText("Last 7 days  •  " + PlaytimeStore.formatDuration(s.weekMs));
-        if (chart != null) {
-            chart.values = s.dailyMs;
+        final int generation = refreshGeneration.incrementAndGet();
+        final Context app = requireContext().getApplicationContext();
+        final androidx.fragment.app.FragmentActivity activity = getActivity();
+        if (activity == null) return;
+        PojavApplication.sExecutorService.execute(() -> {
+            PlaytimeStore.Stats stats = PlaytimeStore.stats(app);
+            activity.runOnUiThread(() -> {
+                if (!isAdded() || generation != refreshGeneration.get()) return;
+                bindStats(stats);
+            });
+        });
+    }
+
+    private void bindStats(PlaytimeStore.Stats stats) {
+        if (!stats.hasData) {
+            todayValue.setText("No playtime data yet");
+            todayValue.setTextSize(18);
+            todayLabel.setText("Start Minecraft to begin tracking.");
+            chart.setVisibility(View.GONE);
+            graphTitle.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            averageDaily.setText("—");
+            longest.setText("—");
+            weekValue.setText("—");
+            trackedDays.setText("—");
+        } else {
+            todayValue.setText(PlaytimeStore.formatDuration(stats.todayMs));
+            todayValue.setTextSize(36);
+            todayLabel.setText("Total Minecraft playtime today");
+            chart.setVisibility(View.VISIBLE);
+            graphTitle.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+            averageDaily.setText(PlaytimeStore.shortDuration(stats.averageDailyMs));
+            longest.setText(PlaytimeStore.shortDuration(stats.longestMs));
+            weekValue.setText(PlaytimeStore.shortDuration(stats.weekMs));
+            trackedDays.setText(String.valueOf(stats.trackedDays));
+            chart.values = stats.dailyMs;
             chart.invalidate();
         }
+        if (!entrancePlayed) {
+            entrancePlayed = true;
+            animateIn(titleView, 0L, 0f);
+            animateIn(heroView, 45L, dp(5));
+            animateIn(graphTitle, 85L, dp(4));
+            animateIn(chart, 110L, dp(5));
+            animateIn(averageDaily, 145L, dp(4));
+            animateIn(longest, 180L, dp(4));
+            animateIn(weekValue, 215L, dp(4));
+            animateIn(trackedDays, 250L, dp(4));
+        }
+    }
+
+    private void animateIn(@Nullable View view, long delay, float offsetY) {
+        if (view == null || !net.kdt.pojavlaunch.utils.animation.MotionSpeed.isEnabled()) {
+            if (view != null) {
+                view.setAlpha(1f);
+                view.setTranslationY(0f);
+            }
+            return;
+        }
+        view.animate().cancel();
+        view.setAlpha(0f);
+        view.setTranslationY(offsetY);
+        view.animate().alpha(1f).translationY(0f)
+                .setStartDelay(delay)
+                .setDuration(190L)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f))
+                .start();
     }
 
     private TextView statCard(Context c, LinearLayout parent, String label, String value) {
@@ -135,7 +198,7 @@ public class PlaytimeFragment extends Fragment {
     private LinearLayout card(Context c, int color) {
         LinearLayout l = new LinearLayout(c);
         l.setOrientation(LinearLayout.VERTICAL);
-        l.setPadding(dp(16), dp(14), dp(16), dp(14));
+        l.setPadding(dp(14), dp(11), dp(14), dp(11));
         android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
         bg.setColor(color);
         bg.setCornerRadius(dp(14));
@@ -192,7 +255,10 @@ public class PlaytimeFragment extends Fragment {
             float bw = (w - dp(28) - gap * 6) / 7f;
             String[] labels = new String[7];
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_YEAR, -6);
+            int today = cal.get(Calendar.DAY_OF_WEEK);
+            int firstDay = cal.getFirstDayOfWeek();
+            int offset = (today - firstDay + 7) % 7;
+            cal.add(Calendar.DAY_OF_YEAR, -offset);
             SimpleDateFormat fmt = new SimpleDateFormat("EEE", Locale.US);
             for (int i = 0; i < 7; i++) {
                 labels[i] = fmt.format(cal.getTime()).substring(0, 3);
@@ -208,14 +274,21 @@ public class PlaytimeFragment extends Fragment {
                 canvas.drawRoundRect(bar, dp(6), dp(6), p);
 
                 label.setTextAlign(Paint.Align.CENTER);
-                label.setColor(i == 6 ? WHITE : MUTED);
+                boolean currentDay = calForIndexIsToday(i);
+                label.setColor(currentDay ? WHITE : MUTED);
                 canvas.drawText(labels[i], x + bw / 2f, h - dp(10), label);
 
-                if (values[i] > 0 && i == 6) {
+                if (values[i] > 0 && currentDay) {
                     label.setColor(WHITE);
                     canvas.drawText(PlaytimeStore.shortDuration(values[i]), x + bw/2f,
                             Math.max(dp(12), y - dp(5)), label);
                 }
+            }
+
+            private boolean calForIndexIsToday(int index) {
+                Calendar today = Calendar.getInstance();
+                int offset = (today.get(Calendar.DAY_OF_WEEK) - today.getFirstDayOfWeek() + 7) % 7;
+                return index == offset;
             }
         }
     }

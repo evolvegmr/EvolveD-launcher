@@ -348,6 +348,49 @@
             app:layout_constraintTop_toBottomOf="@id/lh_hero_name"
             app:layout_constraintBottom_toTopOf="@id/lh_library" />
 
+        <LinearLayout
+            android:id="@+id/lh_skin_loading"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lh_center_guide"
+            app:layout_constraintTop_toBottomOf="@id/lh_hero_name"
+            app:layout_constraintBottom_toTopOf="@id/lh_library">
+
+            <View
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_lh_skin_skeleton" />
+
+            <View
+                android:layout_width="64dp"
+                android:layout_height="66dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_lh_skin_skeleton" />
+
+            <ProgressBar
+                android:id="@+id/lh_skin_loading_progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:indeterminateTint="#D19A36"
+                android:contentDescription="Loading player skin" />
+
+            <TextView
+                android:id="@+id/lh_skin_loading_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Skin unavailable"
+                android:textColor="#C5BBA6"
+                android:textSize="10sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
         <!-- LAUNCH capsule + pencil. Bottom-anchored ABOVE the carousel with a
              fixed gap → clear separation, can NEVER cover New Instance. -->
         <!-- ═══ Download progress card — anchored to the SIDE (bottom-left),

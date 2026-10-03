@@ -117,7 +117,36 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     private QuickSettingSideDialog mQuickSettingSideDialog;
     private net.kdt.pojavlaunch.performance.AndroidGameStateController mGameStateController;
     private boolean mFirstGameFramePresented;
-    private final Runnable mFirstFrameWatcher=new Runnable(){@Override public void run(){if(isFinishing()||isDestroyed()||mFirstGameFramePresented)return;long frames=net.kdt.pojavlaunch.utils.FpsCounter.getTotalPresents();if(frames>0){mFirstGameFramePresented=true;if(mGameStateController!=null)mGameStateController.playing();if(mBootLog!=null)mBootLog.onGameVisible();return;}Tools.MAIN_HANDLER.postDelayed(this,250L);}};
+    private long mFirstFrameBaseline;
+    private boolean mPlaytimeStarted;
+    private String mLaunchProfileKey;
+    private final Runnable mPlaytimeCheckpoint = new Runnable() {
+        @Override public void run() {
+            if (!mPlaytimeStarted || isFinishing() || isDestroyed()) return;
+            net.kdt.pojavlaunch.performance.PlaytimeStore.checkpoint(MainActivity.this);
+            Tools.MAIN_HANDLER.postDelayed(this, 30_000L);
+        }
+    };
+    private final Runnable mFirstFrameWatcher = new Runnable() {
+        @Override public void run() {
+            if (isFinishing() || isDestroyed() || mFirstGameFramePresented) return;
+            long frames = net.kdt.pojavlaunch.utils.FpsCounter.getTotalPresents();
+            if (frames > mFirstFrameBaseline) {
+                mFirstGameFramePresented = true;
+                net.kdt.pojavlaunch.performance.PlaytimeStore.start(
+                        MainActivity.this,
+                        mLaunchProfileKey,
+                        mLaunchAccountName,
+                        minecraftProfile == null ? null : minecraftProfile.lastVersionId);
+                mPlaytimeStarted = true;
+                Tools.MAIN_HANDLER.postDelayed(mPlaytimeCheckpoint, 30_000L);
+                if (mGameStateController != null) mGameStateController.playing();
+                if (mBootLog != null) mBootLog.onGameVisible();
+                return;
+            }
+            Tools.MAIN_HANDLER.postDelayed(this, 250L);
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,6 +154,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         net.kdt.pojavlaunch.performance.GameSessionState.markActive(this);
         mGameStateController=new net.kdt.pojavlaunch.performance.AndroidGameStateController(this);mGameStateController.loading();
         net.kdt.pojavlaunch.performance.PerformanceEngine.onSessionCreate(this);
+        mFirstFrameBaseline = net.kdt.pojavlaunch.utils.FpsCounter.getTotalPresents();
         Tools.MAIN_HANDLER.post(mFirstFrameWatcher);
         if (LauncherPreferences.PREF_GAMEPAD_SDL_PASSTHRU) {
             // TODO: Use lower level HID capture that needs a dialogue box from the user for the
@@ -162,11 +192,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
                     LauncherPreferences.PREF_KEY_CURRENT_PROFILE, "default");
         }
         net.kdt.pojavlaunch.profiles.ProfileLogStore.setActiveProfileKey(launchProfileKey);
-        net.kdt.pojavlaunch.performance.PlaytimeStore.start(
-                this,
-                launchProfileKey,
-                mLaunchAccountName
-        );
+        mLaunchProfileKey = launchProfileKey;
 
         String gameDirPath = Tools.getGameDirPath(minecraftProfile).getAbsolutePath();
         MCOptionUtils.load(gameDirPath);
@@ -471,7 +497,8 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     protected void onDestroy() {
         super.onDestroy();
         net.kdt.pojavlaunch.performance.GameSessionState.clear();
-        net.kdt.pojavlaunch.performance.PlaytimeStore.stop(this);
+        Tools.MAIN_HANDLER.removeCallbacks(mPlaytimeCheckpoint);
+        if (mPlaytimeStarted) net.kdt.pojavlaunch.performance.PlaytimeStore.stop(this);
         Tools.MAIN_HANDLER.removeCallbacks(mFirstFrameWatcher);
         net.kdt.pojavlaunch.performance.PerformanceEngine.onSessionEnd(this);
         stopFpsTicker(); // CS Perf

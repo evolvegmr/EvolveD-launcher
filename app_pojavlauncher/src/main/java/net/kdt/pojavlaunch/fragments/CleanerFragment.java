@@ -2,214 +2,398 @@ package net.kdt.pojavlaunch.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import net.kdt.pojavlaunch.R;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-/**
- * EvolveD Cleaner.
- *
- * The cleaner intentionally operates only on Android app-cache locations. It never touches
- * Minecraft saves, versions, mods, modpacks, resource packs, shaders, runtimes, libraries,
- * accounts, screenshots, configs or user-created game files.
- */
+/** Removes files only from private Android cache directories owned by the launcher. */
 public class CleanerFragment extends Fragment {
-    private static final int BG = android.graphics.Color.rgb(8, 6, 13);
-    private static final int CARD = android.graphics.Color.rgb(22, 11, 36);
-    private static final int PURPLE = android.graphics.Color.rgb(255, 157, 0);
-    private static final int ORANGE = android.graphics.Color.rgb(245, 158, 11);
-    private static final int WHITE = android.graphics.Color.WHITE;
-    private static final int MUTED = android.graphics.Color.rgb(174, 167, 193);
+    private static final int BG = Color.rgb(11, 9, 7);
+    private static final int CARD = Color.rgb(23, 19, 14);
+    private static final int GOLD = Color.rgb(230, 184, 76);
+    private static final int WHITE = Color.WHITE;
+    private static final int MUTED = Color.rgb(184, 179, 170);
+    private static final ExecutorService IO = Executors.newSingleThreadExecutor(r -> {
+        Thread thread = new Thread(r, "EvolveD-Cleaner");
+        thread.setPriority(Thread.MIN_PRIORITY);
+        return thread;
+    });
 
-    private TextView cacheSize;
+    private enum State { IDLE, SCANNING, READY, CLEANING, COMPLETE, ERROR }
+
+    private TextView sizeValue;
+    private TextView categoryCache;
+    private TextView categoryTemporary;
+    private TextView categoryLogs;
     private TextView status;
+    private TextView stateIcon;
+    private ProgressBar progress;
+    private Button cleanButton;
+    private Snapshot snapshot;
+    private int operationId;
 
     public CleanerFragment() {}
 
     @Nullable
-    @Override public View onCreateView(@NonNull android.view.LayoutInflater inflater,
-                                       @Nullable android.view.ViewGroup container,
-                                       @Nullable Bundle state) {
-        Context c = requireContext();
-        LinearLayout root = new LinearLayout(c);
+    @Override
+    public View onCreateView(@NonNull android.view.LayoutInflater inflater,
+                             @Nullable android.view.ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        Context context = requireContext();
+        LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(24), dp(18), dp(24), dp(24));
+        root.setPadding(dp(20), dp(14), dp(20), dp(14));
         root.setBackgroundColor(BG);
 
-        TextView title = text(c, "Cleaner", 28, WHITE, true);
+        TextView title = text(context, "Cleaner", 24, WHITE, true);
         root.addView(title, lp(-1, -2));
-        TextView sub = text(c, "Remove safe temporary launcher cache only", 13, MUTED, false);
-        sub.setPadding(0, dp(3), 0, dp(18));
-        root.addView(sub, lp(-1, -2));
+        TextView subtitle = text(context, "Remove safe temporary launcher cache", 12, MUTED, false);
+        subtitle.setPadding(0, dp(3), 0, dp(12));
+        root.addView(subtitle, lp(-1, -2));
 
-        LinearLayout card = card(c);
-        TextView label = text(c, "SAFE TO CLEAN", 10, PURPLE, true);
-        label.setLetterSpacing(.12f);
-        card.addView(label, lp(-1, -2));
+        LinearLayout card = card(context);
+        LinearLayout header = new LinearLayout(context);
+        header.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        stateIcon = text(context, "⌕", 23, GOLD, true);
+        stateIcon.setGravity(android.view.Gravity.CENTER);
+        header.addView(stateIcon, lp(dp(36), dp(36)));
+        status = text(context, "Preparing cache scan…", 13, MUTED, false);
+        status.setPadding(dp(8), 0, 0, 0);
+        header.addView(status, new LinearLayout.LayoutParams(0, -2, 1f));
+        progress = new ProgressBar(context);
+        progress.setIndeterminate(true);
+        progress.setVisibility(View.GONE);
+        header.addView(progress, lp(dp(28), dp(28)));
+        card.addView(header, lp(-1, -2));
 
-        cacheSize = text(c, "Scanning…", 34, WHITE, true);
-        cacheSize.setPadding(0, dp(7), 0, 0);
-        card.addView(cacheSize, lp(-1, -2));
+        sizeValue = text(context, "Scanning…", 32, WHITE, true);
+        sizeValue.setPadding(0, dp(12), 0, dp(10));
+        card.addView(sizeValue, lp(-1, -2));
 
-        TextView desc = text(c,
-                "Launcher cache and temporary files. Your Minecraft worlds, versions, mods, modpacks, shaders, resource packs, accounts and runtimes are not included.",
+        categoryCache = text(context, "Cache       —", 13, MUTED, false);
+        categoryTemporary = text(context, "Temporary   —", 13, MUTED, false);
+        categoryLogs = text(context, "Cached logs —", 13, MUTED, false);
+        card.addView(categoryCache, lp(-1, -2));
+        card.addView(categoryTemporary, lp(-1, -2));
+        card.addView(categoryLogs, lp(-1, -2));
+
+        TextView protectedInfo = text(context,
+                "Only private Android cache directories are included. Worlds, versions, mods, "
+                        + "resource packs, screenshots, runtimes, accounts and game settings are protected.",
                 12, MUTED, false);
-        desc.setPadding(0, dp(5), 0, dp(14));
-        card.addView(desc, lp(-1, -2));
+        protectedInfo.setPadding(0, dp(12), 0, dp(14));
+        card.addView(protectedInfo, lp(-1, -2));
 
-        Button clean = new Button(c);
-        clean.setText("CLEAN SAFE CACHE");
-        clean.setTextColor(android.graphics.Color.rgb(14, 14, 17));
-        clean.setTextSize(12);
-        clean.setAllCaps(false);
-        android.graphics.drawable.GradientDrawable b = new android.graphics.drawable.GradientDrawable();
-        b.setColor(ORANGE);
-        b.setCornerRadius(dp(12));
-        clean.setBackground(b);
-        clean.setOnClickListener(v -> confirmClean());
-        card.addView(clean, lp(-1, dp(48)));
+        cleanButton = new Button(context);
+        cleanButton.setText("CLEAN SAFE CACHE");
+        cleanButton.setTextColor(Color.rgb(25, 18, 9));
+        cleanButton.setTextSize(12);
+        cleanButton.setAllCaps(false);
+        cleanButton.setMinHeight(dp(48));
+        GradientDrawable buttonBackground = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{0xFFFFD54A, 0xFFFF8A18});
+        buttonBackground.setCornerRadius(dp(8));
+        cleanButton.setBackground(buttonBackground);
+        cleanButton.setEnabled(false);
+        cleanButton.setOnClickListener(v -> confirmClean());
+        card.addView(cleanButton, lp(-1, dp(48)));
         root.addView(card, lp(-1, -2));
-
-        status = text(c, "Only Android cache directories are scanned.", 12, MUTED, false);
-        status.setPadding(0, dp(14), 0, 0);
-        root.addView(status, lp(-1, -2));
-
-        TextView protectedTitle = text(c, "Always protected", 17, WHITE, true);
-        protectedTitle.setPadding(0, dp(26), 0, dp(8));
-        root.addView(protectedTitle, lp(-1, -2));
-
-        TextView protectedList = text(c,
-                "✓ Worlds & saves\n✓ Installed Minecraft versions\n✓ Fabric / Forge / NeoForge / Quilt\n✓ Mods & modpacks\n✓ Resource packs & shaders\n✓ Java runtimes & libraries\n✓ Accounts, screenshots & configurations",
-                13, MUTED, false);
-        protectedList.setLineSpacing(dp(5), 1f);
-        root.addView(protectedList, lp(-1, -2));
-
-        refresh();
+        scan();
         return root;
     }
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
-        if (getView() != null) refresh();
+        if (getView() != null && (snapshot == null || state == State.COMPLETE)) scan();
     }
 
-    private void refresh() {
-        if (cacheSize == null || getContext() == null) return;
-        long size = safeCacheSize(requireContext());
-        cacheSize.setText(formatBytes(size));
-        if (status != null) status.setText(size == 0
-                ? "No removable app-cache files found."
-                : "Ready to remove " + formatBytes(size) + " of safe cache.");
+    private State state = State.IDLE;
+
+    private void scan() {
+        if (getContext() == null || sizeValue == null) return;
+        final int id = ++operationId;
+        final Context app = requireContext().getApplicationContext();
+        setState(State.SCANNING, "Scanning safe cache locations…");
+        sizeValue.setText("Scanning…");
+        cleanButton.setEnabled(false);
+        IO.execute(() -> {
+            try {
+                Snapshot result = scanSafeCache(app);
+                postResult(id, () -> {
+                    snapshot = result;
+                    categoryCache.setText("Cache       " + formatBytes(result.cacheBytes));
+                    categoryTemporary.setText("Temporary   " + formatBytes(result.temporaryBytes));
+                    categoryLogs.setText("Cached logs " + formatBytes(result.logBytes));
+                    sizeValue.setText(formatBytes(result.totalBytes));
+                    cleanButton.setText(result.totalBytes == 0L ? "SCAN AGAIN" : "CLEAN SAFE CACHE");
+                    cleanButton.setEnabled(true);
+                    setState(result.totalBytes == 0L ? State.READY : State.READY,
+                            result.totalBytes == 0L
+                                    ? "No removable app-cache files found."
+                                    : "Ready to remove the listed cache files.");
+                });
+            } catch (IOException e) {
+                android.util.Log.e("EvolveD-Cleaner", "Safe cache scan failed", e);
+                postResult(id, () -> {
+                    snapshot = null;
+                    setState(State.ERROR, "Unable to scan cache: " + e.getMessage());
+                    sizeValue.setText("Unavailable");
+                });
+            }
+        });
     }
 
     private void confirmClean() {
-        if (getContext() == null) return;
-        long size = safeCacheSize(requireContext());
-        if (size <= 0) {
-            refresh();
+        if (snapshot == null || snapshot.files.isEmpty() || getContext() == null) {
+            scan();
             return;
         }
+        final Snapshot selected = snapshot;
         new AlertDialog.Builder(requireContext())
                 .setTitle("Clean safe cache?")
-                .setMessage("This will remove " + formatBytes(size)
-                        + " from Android app-cache locations only. Minecraft data is protected.")
+                .setMessage("Delete " + formatBytes(selected.totalBytes)
+                        + " of files from Android cache directories only?")
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton("Clean", (d, w) -> {
-                    long removed = clearSafeCache(requireContext());
-                    if (status != null) status.setText("Cleaned " + formatBytes(removed) + ".");
-                    refresh();
-                })
+                .setPositiveButton("Clean", (dialog, which) -> clean(selected))
                 .show();
     }
 
-    private static long safeCacheSize(Context c) {
-        long total = sizeOf(c.getCacheDir());
-        try {
-            File ext = c.getExternalCacheDir();
-            if (ext != null) total += sizeOf(ext);
-        } catch (Throwable ignored) {}
-        return total;
+    private void clean(Snapshot selected) {
+        if (getContext() == null) return;
+        final int id = ++operationId;
+        final Context app = requireContext().getApplicationContext();
+        setState(State.CLEANING, "Removing scanned cache files…");
+        cleanButton.setEnabled(false);
+        progress.setVisibility(View.VISIBLE);
+        IO.execute(() -> {
+            long removedBytes = 0L;
+            int removedFiles = 0;
+            IOException failure = null;
+            for (ScannedFile scanned : selected.files) {
+                File file = scanned.file;
+                try {
+                    if (!file.exists()) continue;
+                    long size = Math.max(0L, file.length());
+                    if (file.delete()) {
+                        removedBytes += size;
+                        removedFiles++;
+                    } else if (file.exists()) {
+                        throw new IOException("Could not remove " + file.getName());
+                    }
+                } catch (IOException e) {
+                    if (failure == null) failure = e;
+                    else failure.addSuppressed(e);
+                }
+            }
+            final long actualRemoved = removedBytes;
+            final int actualRemovedFiles = removedFiles;
+            final IOException cleanFailure = failure;
+            Snapshot after = null;
+            IOException scanFailure = null;
+            try {
+                after = scanSafeCache(app);
+            } catch (IOException e) {
+                scanFailure = e;
+            }
+            final Snapshot remaining = after;
+            final IOException finalScanFailure = scanFailure;
+            postResult(id, () -> {
+                progress.setVisibility(View.GONE);
+                if (remaining != null) {
+                    snapshot = remaining;
+                    categoryCache.setText("Cache       " + formatBytes(remaining.cacheBytes));
+                    categoryTemporary.setText("Temporary   " + formatBytes(remaining.temporaryBytes));
+                    categoryLogs.setText("Cached logs " + formatBytes(remaining.logBytes));
+                    sizeValue.setText(formatBytes(remaining.totalBytes));
+                }
+                if (cleanFailure != null || finalScanFailure != null) {
+                    IOException error = cleanFailure != null ? cleanFailure : finalScanFailure;
+                    if (finalScanFailure != null && cleanFailure != null) error.addSuppressed(finalScanFailure);
+                    setState(State.ERROR, "Partial cleanup: removed " + formatBytes(actualRemoved)
+                            + " from " + actualRemovedFiles + " files. " + error.getMessage());
+                    cleanButton.setEnabled(remaining != null && !remaining.files.isEmpty());
+                } else {
+                    setState(State.COMPLETE, "Cleanup complete · "
+                            + formatBytes(actualRemoved) + " removed from "
+                            + actualRemovedFiles + " files.");
+                    cleanButton.setText(remaining != null && remaining.totalBytes > 0L
+                            ? "CLEAN REMAINING CACHE" : "SCAN AGAIN");
+                    cleanButton.setEnabled(true);
+                    animateSuccess();
+                }
+            });
+        });
     }
 
-    private static long clearSafeCache(Context c) {
-        long before = safeCacheSize(c);
-        deleteChildren(c.getCacheDir());
-        try {
-            File ext = c.getExternalCacheDir();
-            if (ext != null) deleteChildren(ext);
-        } catch (Throwable ignored) {}
-        return before - safeCacheSize(c);
+    private void postResult(int id, Runnable result) {
+        android.app.Activity activity = getActivity();
+        if (activity == null) return;
+        activity.runOnUiThread(() -> {
+            if (!isAdded() || id != operationId || getView() == null) return;
+            result.run();
+        });
     }
 
-    private static void deleteChildren(File dir) {
-        if (dir == null || !dir.isDirectory()) return;
-        File[] files = dir.listFiles();
-        if (files == null) return;
-        for (File f : files) deleteRecursively(f);
-    }
-
-    private static void deleteRecursively(File f) {
-        if (f == null) return;
-        if (f.isDirectory()) {
-            File[] children = f.listFiles();
-            if (children != null) for (File child : children) deleteRecursively(child);
+    private void setState(State next, String message) {
+        state = next;
+        if (status != null) status.setText(message);
+        if (progress != null) progress.setVisibility(
+                next == State.SCANNING || next == State.CLEANING ? View.VISIBLE : View.GONE);
+        if (cleanButton != null) cleanButton.setEnabled(next == State.READY
+                || next == State.COMPLETE);
+        if (stateIcon != null) {
+            stateIcon.setText(next == State.COMPLETE ? "✓" :
+                    next == State.ERROR ? "!" :
+                    next == State.SCANNING || next == State.CLEANING ? "…" : "⌕");
+            stateIcon.setTextColor(next == State.ERROR ? 0xFFFF7770
+                    : next == State.COMPLETE ? 0xFF9CBF91 : GOLD);
         }
-        try { f.delete(); } catch (Throwable ignored) {}
     }
 
-    private static long sizeOf(File f) {
-        if (f == null || !f.exists()) return 0;
-        if (f.isFile()) return Math.max(0, f.length());
-        long total = 0;
-        File[] children = f.listFiles();
-        if (children != null) for (File child : children) total += sizeOf(child);
-        return total;
+    private void animateSuccess() {
+        if (stateIcon == null || !net.kdt.pojavlaunch.utils.animation.MotionSpeed.isEnabled()) return;
+        stateIcon.setScaleX(0.7f);
+        stateIcon.setScaleY(0.7f);
+        stateIcon.setAlpha(0.5f);
+        stateIcon.animate().alpha(1f).scaleX(1f).scaleY(1f)
+                .setDuration(200L)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
     }
 
-    private LinearLayout card(Context c) {
-        LinearLayout l = new LinearLayout(c);
-        l.setOrientation(LinearLayout.VERTICAL);
-        l.setPadding(dp(16), dp(16), dp(16), dp(16));
-        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
-        bg.setColor(CARD);
-        bg.setCornerRadius(dp(14));
-        bg.setStroke(dp(1), android.graphics.Color.argb(35, 255, 255, 255));
-        l.setBackground(bg);
-        return l;
+    private static Snapshot scanSafeCache(Context context) throws IOException {
+        Snapshot result = new Snapshot();
+        Set<String> visited = new HashSet<>();
+        List<File> roots = new ArrayList<>();
+        File cache = context.getCacheDir();
+        if (cache != null) roots.add(cache);
+        File codeCache = context.getCodeCacheDir();
+        if (codeCache != null) roots.add(codeCache);
+        File externalCache = context.getExternalCacheDir();
+        if (externalCache != null) roots.add(externalCache);
+        for (File root : roots) {
+            if (!root.exists()) continue;
+            String canonicalRoot = root.getCanonicalPath();
+            collect(root, canonicalRoot, result, visited);
+        }
+        return result;
     }
 
-    private TextView text(Context c, String s, float size, int color, boolean bold) {
-        TextView t = new TextView(c);
-        t.setText(s);
-        t.setTextSize(size);
-        t.setTextColor(color);
-        t.setIncludeFontPadding(false);
-        if (bold) t.setTypeface(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD);
-        return t;
+    private static void collect(File file, String root, Snapshot result,
+                                Set<String> visited) throws IOException {
+        String canonical = file.getCanonicalPath();
+        if (!canonical.equals(root) && !canonical.startsWith(root + File.separator)) return;
+        if (file.isDirectory()) {
+            if (!visited.add(canonical)) return;
+            File[] children = file.listFiles();
+            if (children == null) throw new IOException("Unable to read " + file.getName());
+            for (File child : children) collect(child, root, result, visited);
+            return;
+        }
+        if (!file.isFile() || !visited.add(canonical)) return;
+        result.files.add(new ScannedFile(file, Math.max(0L, file.length()), category(file)));
+        result.totalBytes += Math.max(0L, file.length());
+        switch (category(file)) {
+            case TEMPORARY: result.temporaryBytes += Math.max(0L, file.length()); break;
+            case LOG: result.logBytes += Math.max(0L, file.length()); break;
+            default: result.cacheBytes += Math.max(0L, file.length()); break;
+        }
     }
 
-    private LinearLayout.LayoutParams lp(int w, int h) {
-        return new LinearLayout.LayoutParams(w, h);
+    private static Category category(File file) {
+        String path = file.getAbsolutePath().toLowerCase(Locale.ROOT);
+        String name = file.getName().toLowerCase(Locale.ROOT);
+        if (path.contains(File.separator + "tmp" + File.separator)
+                || path.contains(File.separator + "temp" + File.separator)
+                || path.contains(File.separator + "temporary" + File.separator)) {
+            return Category.TEMPORARY;
+        }
+        if (name.endsWith(".log")) return Category.LOG;
+        return Category.CACHE;
     }
 
-    private int dp(int v) {
-        return Math.round(v * getResources().getDisplayMetrics().density);
+    private enum Category { CACHE, TEMPORARY, LOG }
+
+    private static final class ScannedFile {
+        final File file;
+        final long scannedBytes;
+        final Category category;
+
+        ScannedFile(File file, long scannedBytes, Category category) {
+            this.file = file;
+            this.scannedBytes = scannedBytes;
+            this.category = category;
+        }
+    }
+
+    private static final class Snapshot {
+        final List<ScannedFile> files = new ArrayList<>();
+        long totalBytes;
+        long cacheBytes;
+        long temporaryBytes;
+        long logBytes;
+    }
+
+    private LinearLayout card(Context context) {
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(dp(15), dp(13), dp(15), dp(13));
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(CARD);
+        background.setCornerRadius(dp(12));
+        background.setStroke(dp(1), 0x443F3322);
+        layout.setBackground(background);
+        return layout;
+    }
+
+    private TextView text(Context context, String value, float size, int color, boolean bold) {
+        TextView view = new TextView(context);
+        view.setText(value);
+        view.setTextSize(size);
+        view.setTextColor(color);
+        view.setIncludeFontPadding(false);
+        if (bold) view.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        return view;
+    }
+
+    private LinearLayout.LayoutParams lp(int width, int height) {
+        return new LinearLayout.LayoutParams(width, height);
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
     }
 
     private static String formatBytes(long bytes) {
-        if (bytes < 1024) return bytes + " B";
-        if (bytes < 1024 * 1024) return String.format(Locale.US, "%.1f KB", bytes / 1024d);
-        if (bytes < 1024 * 1024 * 1024L) return String.format(Locale.US, "%.1f MB", bytes / (1024d * 1024d));
+        if (bytes < 1024L) return bytes + " B";
+        if (bytes < 1024L * 1024L) return String.format(Locale.US, "%.1f KB", bytes / 1024d);
+        if (bytes < 1024L * 1024L * 1024L) {
+            return String.format(Locale.US, "%.1f MB", bytes / (1024d * 1024d));
+        }
         return String.format(Locale.US, "%.2f GB", bytes / (1024d * 1024d * 1024d));
     }
 }

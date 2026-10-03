@@ -104,6 +104,10 @@ public class LauncherHomeFragment extends Fragment {
     private TextView mLaunchLabel;
     private TextView mHeroName;
     private TextView mInstanceVersion;
+    private View mSkinLoading;
+    private View mSkinLoadingProgress;
+    private View mSkinLoadingStatus;
+    private int mSkinLoadGeneration;
     private PremiumPlayButtonView mLaunchButton;
     private View mLaunchSpecs;
     private TextView mSpecJavaText;
@@ -154,6 +158,9 @@ public class LauncherHomeFragment extends Fragment {
         mSpecJavaText = view.findViewById(R.id.lh_spec_java_text);
         mSpecRamText = view.findViewById(R.id.lh_spec_ram_text);
         mHeroName = view.findViewById(R.id.lh_hero_name);
+        mSkinLoading = view.findViewById(R.id.lh_skin_loading);
+        mSkinLoadingProgress = view.findViewById(R.id.lh_skin_loading_progress);
+        mSkinLoadingStatus = view.findViewById(R.id.lh_skin_loading_status);
         mPlayer = view.findViewById(R.id.lh_player);
         setupPlayer();
         mAccountChip = view.findViewById(R.id.lh_account_chip);
@@ -489,6 +496,11 @@ public class LauncherHomeFragment extends Fragment {
     /** Loads the active account's skin into the shared renderer (async). */
     private void loadPlayerSkin() {
         if (mRenderer == null) return;
+        final int generation = ++mSkinLoadGeneration;
+        if (mPlayer != null) mPlayer.setVisibility(View.GONE);
+        if (mSkinLoading != null) mSkinLoading.setVisibility(View.VISIBLE);
+        if (mSkinLoadingProgress != null) mSkinLoadingProgress.setVisibility(View.VISIBLE);
+        if (mSkinLoadingStatus != null) mSkinLoadingStatus.setVisibility(View.GONE);
         final android.content.Context ctx = getContext() == null ? null : getContext().getApplicationContext();
         if (ctx == null) return;
         PojavApplication.sExecutorService.execute(() -> {
@@ -564,8 +576,26 @@ public class LauncherHomeFragment extends Fragment {
             final android.graphics.Bitmap fCape = cape;
             final String fName = name;
             Tools.runOnUiThread(() -> {
-                if (!isAdded() || mRenderer == null) return;
+                if (!isAdded() || mRenderer == null || generation != mSkinLoadGeneration) {
+                    if (fSkin != null && !fSkin.isRecycled()) fSkin.recycle();
+                    if (fCape != null && !fCape.isRecycled()) fCape.recycle();
+                    return;
+                }
+                if (fSkin == null || fSkin.isRecycled()) {
+                    if (mSkinLoadingProgress != null) mSkinLoadingProgress.setVisibility(View.GONE);
+                    if (mSkinLoadingStatus != null) mSkinLoadingStatus.setVisibility(View.VISIBLE);
+                    return;
+                }
                 mRenderer.setTexture(fSkin, fCape);
+                if (fName != null && mHeroName != null) mHeroName.setText(fName);
+                if (mSkinLoading != null) mSkinLoading.setVisibility(View.GONE);
+                if (mPlayer != null) {
+                    mPlayer.setAlpha(0f);
+                    mPlayer.setVisibility(View.VISIBLE);
+                    mPlayer.animate().alpha(1f).setDuration(220L)
+                            .setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f))
+                            .start();
+                }
                 // A fresh login writes the skin file a moment after the account
                 // appears; one delayed retry catches it without polling.
                 if (usedFallback && mSkinRetries < 3 && mPlayer != null) {
@@ -917,6 +947,7 @@ public class LauncherHomeFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        mSkinLoadGeneration++;
         stopPoseDriver();
         ExtraCore.removeExtraListenerFromValue(ExtraConstants.ACCOUNT_CHANGED, mAccountChangedListener);
         if (mMenu != null) { mMenu.dismiss(); mMenu = null; }
