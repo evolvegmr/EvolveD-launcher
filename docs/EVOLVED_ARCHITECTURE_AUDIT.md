@@ -6,13 +6,20 @@ This repository is a fork of the existing Android Minecraft launcher codebase bu
 ## Existing architecture
 - App namespace: `net.kdt.pojavlaunch`
 - Android application entrypoints: `PojavApplication`, `LauncherActivity`, `MainActivity`, `RuntimeSetupActivity`
-- Launcher navigation adapts to orientation: portrait phones use a five-item bottom bar; landscape retains the scrollable side dock.
-- The portrait Home screen gives the Launch action the available width and keeps the instance library reachable above navigation.
+- The launcher is locked to landscape at the Android activity level, with SDL orientation requests clamped to landscape. There is no portrait launcher layout.
+- The landscape Home screen keeps the instance library reachable above the persistent navigation dock.
 - Native launcher components: JNI under `app_pojavlauncher/src/main/jni/`
 - Runtime management: multi-runtime Java installation and launch configuration
 - Loader support: Fabric, Forge, NeoForge, Quilt, OptiFine, custom profiles, modpacks, and installer flows
 - Storage and game directory management: Android storage access + external game directory layout
 - Firebase: optional remote sync/notifications path guarded by config
+
+## EvolveD launcher features
+- The Home quick-action row contains only Memory, Cleaner, and Playtime.
+- Memory reads total and available system RAM from Android's `ActivityManager.MemoryInfo`.
+- Cleaner scans and removes files only beneath the app's private cache, code-cache, and external-cache directories.
+- Playtime persists actual Minecraft sessions and calculates calendar-day totals from session intervals, including sessions that cross midnight.
+- EvolveD's source logo is `EvolveD.png`; its identical packaged drawable is used for the app icon, startup screen, and launcher branding.
 
 ## Minecraft launch pipeline
 1. User selects account and profile.

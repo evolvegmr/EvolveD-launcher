@@ -247,9 +247,10 @@ public class CleanerFragment extends Fragment {
                             + " from " + actualRemovedFiles + " files. " + error.getMessage());
                     cleanButton.setEnabled(remaining != null && !remaining.files.isEmpty());
                 } else {
-                    setState(State.COMPLETE, "Cleanup complete · "
-                            + formatBytes(actualRemoved) + " removed from "
-                            + actualRemovedFiles + " files.");
+                    setState(State.COMPLETE, actualRemoved == 0L
+                            ? "Nothing to clean."
+                            : "Cleaned: " + formatBytes(actualRemoved) + " from "
+                                    + actualRemovedFiles + " files.");
                     cleanButton.setText(remaining != null && remaining.totalBytes > 0L
                             ? "CLEAN REMAINING CACHE" : "SCAN AGAIN");
                     cleanButton.setEnabled(true);

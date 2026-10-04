@@ -104,6 +104,7 @@ public class LauncherHomeFragment extends Fragment {
     private TextView mLaunchLabel;
     private TextView mHeroName;
     private TextView mInstanceVersion;
+    private TextView mMemoryCardValue;
     private View mSkinLoading;
     private View mSkinLoadingProgress;
     private View mSkinLoadingStatus;
@@ -154,6 +155,7 @@ public class LauncherHomeFragment extends Fragment {
         mLaunchButton = view.findViewById(R.id.lh_launch_button);
         mLaunchLabel = view.findViewById(R.id.lh_launch_label);
         mInstanceVersion = view.findViewById(R.id.lh_instance_version);
+        mMemoryCardValue = view.findViewById(R.id.lh_memory_value);
         mLaunchSpecs = view.findViewById(R.id.lh_launch_specs);
         mSpecJavaText = view.findViewById(R.id.lh_spec_java_text);
         mSpecRamText = view.findViewById(R.id.lh_spec_ram_text);
@@ -227,52 +229,19 @@ public class LauncherHomeFragment extends Fragment {
                     }).show());
         }
 
-        // Home quick actions use the same real destinations as persistent navigation.
-        View qMods = view.findViewById(R.id.lh_quick_mods);
-        View qPacks = view.findViewById(R.id.lh_quick_modpacks);
-        View qAccounts = view.findViewById(R.id.lh_quick_accounts);
+        // Home cards open their corresponding functional feature screens.
+        View qMemory = view.findViewById(R.id.lh_quick_memory);
         View qCleaner = view.findViewById(R.id.lh_quick_cleaner);
         View qPlaytime = view.findViewById(R.id.lh_quick_playtime);
-        View qSettings = view.findViewById(R.id.lh_quick_settings);
-        if (qMods != null) qMods.setOnClickListener(v -> {
-            Bundle a = new Bundle();
-            if (mPrimaryKey != null) a.putString(ManageModsFragment.BUNDLE_PROFILE_KEY, mPrimaryKey);
-            Tools.swapFragment(requireActivity(), ManageModsFragment.class, ManageModsFragment.TAG, a);
-        });
-        if (qPacks != null) qPacks.setOnClickListener(v ->
-                Tools.swapFragment(requireActivity(), ModpackCreateFragment.class, "MODPACKS", null));
-        if (qAccounts != null) qAccounts.setOnClickListener(v -> switchAccount());
+        if (qMemory != null) qMemory.setOnClickListener(v ->
+                Tools.swapFragment(requireActivity(), MemoryFragment.class, "MEMORY", null));
         if (qCleaner != null) qCleaner.setOnClickListener(v ->
                 Tools.swapFragment(requireActivity(), CleanerFragment.class, "CLEANER", null));
         if (qPlaytime != null) qPlaytime.setOnClickListener(v ->
                 Tools.swapFragment(requireActivity(), PlaytimeFragment.class, "PLAYTIME", null));
-        if (qSettings != null) qSettings.setOnClickListener(v ->
-                Tools.swapFragment(requireActivity(),
-                        net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment.class,
-                        "SETTINGS_FRAGMENT", null));
 
-        // ── Brand cluster (top-left, Phase 8): YouTube red / Discord blurple.
-        //    Slides in from the left while the account chip lands on the right;
-        //    the pills pop one after another (anime stagger). ──
-        View brand = view.findViewById(R.id.lh_brand_cluster);
-        View yt = view.findViewById(R.id.lh_btn_youtube);
-        View dc = view.findViewById(R.id.lh_btn_discord);
-        if (yt != null) yt.setOnClickListener(v -> {
-            net.kdt.pojavlaunch.Anime.pop(v);
-            v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-            net.kdt.pojavlaunch.CsLinks.open(v.getContext(), net.kdt.pojavlaunch.CsLinks.YOUTUBE);
-        });
-        if (dc != null) dc.setOnClickListener(v -> {
-            net.kdt.pojavlaunch.Anime.pop(v);
-            v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-            net.kdt.pojavlaunch.CsLinks.open(v.getContext(), net.kdt.pojavlaunch.CsLinks.DISCORD);
-        });
-        if (brand != null) {
-            net.kdt.pojavlaunch.Anime.in(brand, net.kdt.pojavlaunch.Anime.Fx.FADE_RIGHT, 80, 620, net.kdt.pojavlaunch.Anime.OUT_EXPO);
-            net.kdt.pojavlaunch.Anime.in(yt, net.kdt.pojavlaunch.Anime.Fx.POP, 420, 520, net.kdt.pojavlaunch.Anime.OUT_BACK);
-            net.kdt.pojavlaunch.Anime.in(dc, net.kdt.pojavlaunch.Anime.Fx.POP, 500, 520, net.kdt.pojavlaunch.Anime.OUT_BACK);
-            net.kdt.pojavlaunch.Anime.in(mAccountChip, net.kdt.pojavlaunch.Anime.Fx.FADE_LEFT, 80, 620, net.kdt.pojavlaunch.Anime.OUT_EXPO);
-        }
+        net.kdt.pojavlaunch.Anime.in(mAccountChip, net.kdt.pojavlaunch.Anime.Fx.FADE_LEFT,
+                80, 620, net.kdt.pojavlaunch.Anime.OUT_EXPO);
 
         // One pass of elastic press feedback for everything on the stage.
         UiMotion.attachTouchFeedback(view.findViewById(R.id.lh_content));
@@ -936,9 +905,32 @@ public class LauncherHomeFragment extends Fragment {
         LauncherProfiles.addUpdateListener(mProfilesWrittenListener);
         loadData();
         bindAccount();
+        updateMemoryCard();
         if (mPlayer != null) mPlayer.onResume();
         startPoseDriver();
         registerDlListeners();
+    }
+
+    private void updateMemoryCard() {
+        if (mMemoryCardValue == null || getContext() == null) return;
+        android.app.ActivityManager manager = (android.app.ActivityManager)
+                requireContext().getSystemService(Context.ACTIVITY_SERVICE);
+        if (manager == null) {
+            mMemoryCardValue.setText("Unavailable");
+            return;
+        }
+        android.app.ActivityManager.MemoryInfo info = new android.app.ActivityManager.MemoryInfo();
+        manager.getMemoryInfo(info);
+        if (info.totalMem <= 0L) {
+            mMemoryCardValue.setText("Unavailable");
+            return;
+        }
+        long total = info.totalMem;
+        long available = Math.min(total, Math.max(0L, info.availMem));
+        long used = total - available;
+        mMemoryCardValue.setText(String.format(Locale.US, "%.1f / %.1f GB used",
+                used / (1024d * 1024d * 1024d),
+                total / (1024d * 1024d * 1024d)));
     }
 
     @Override

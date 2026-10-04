@@ -93,7 +93,7 @@
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:contentDescription="@null"
-            android:src="@mipmap/ic_launcher_round" />
+            android:src="@drawable/evolved_icon" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

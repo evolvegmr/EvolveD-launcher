@@ -1,8 +1,5 @@
 package net.kdt.pojavlaunch.prefs.screens;
 
-import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
-import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -1472,7 +1469,6 @@ public class LauncherPreferenceFragment extends Fragment {
         Context context = requireContext();
         boolean prevEnglish = mDraftPrefs.getBoolean("force_english", false);
         boolean prevGradient = mDraftPrefs.getBoolean("enable_bg_gradient", false);
-        boolean prevLandscape = mDraftPrefs.getBoolean("force_landscape", false);
         boolean prevNotch = LauncherPreferences.PREF_IGNORE_NOTCH;
 
         SharedPreferences mainPrefs = context.getSharedPreferences("cslauncher_settings", Context.MODE_PRIVATE);
@@ -1501,7 +1497,6 @@ public class LauncherPreferenceFragment extends Fragment {
 
             boolean newEnglish = mDraftPrefs.getBoolean("force_english", false);
             boolean newGradient = mDraftPrefs.getBoolean("enable_bg_gradient", false);
-            boolean newLandscape = mDraftPrefs.getBoolean("force_landscape", false);
             boolean newNotch = LauncherPreferences.PREF_IGNORE_NOTCH;
 
             if (prevEnglish != newEnglish || prevGradient != newGradient || prevNotch != newNotch) {

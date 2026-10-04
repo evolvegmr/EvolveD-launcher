@@ -84,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <ImageView android:layout_width="38dp" android:layout_height="38dp" android:contentDescription="@null" android:src="@mipmap/ic_launcher_round" />
+        <ImageView android:layout_width="38dp" android:layout_height="38dp" android:contentDescription="@null" android:src="@drawable/evolved_icon" />
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:letterSpacing="0.16" android:text="WELCOME BACK" android:textColor="#FFFFFF" android:textSize="16sp" android:textStyle="bold" />
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="Your profiles are ready" android:textColor="#A0A0A4" android:textSize="9sp" />
     </LinearLayout>

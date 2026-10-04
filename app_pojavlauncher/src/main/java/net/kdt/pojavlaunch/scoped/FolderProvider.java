@@ -93,7 +93,7 @@ public class FolderProvider extends DocumentsProvider {
         row.add(Root.COLUMN_TITLE, applicationName);
         row.add(Root.COLUMN_MIME_TYPES, ALL_MIME_TYPES);
         row.add(Root.COLUMN_AVAILABLE_BYTES, BASE_DIR.getFreeSpace());
-        row.add(Root.COLUMN_ICON, R.mipmap.ic_launcher);
+        row.add(Root.COLUMN_ICON, R.drawable.evolved_icon);
         return result;
     }
 
@@ -338,7 +338,7 @@ public class FolderProvider extends DocumentsProvider {
         row.add(Document.COLUMN_MIME_TYPE, mimeType);
         row.add(Document.COLUMN_LAST_MODIFIED, file.lastModified());
         row.add(Document.COLUMN_FLAGS, flags);
-        row.add(Document.COLUMN_ICON, R.mipmap.ic_launcher);
+        row.add(Document.COLUMN_ICON, R.drawable.evolved_icon);
     }
 
     @Override

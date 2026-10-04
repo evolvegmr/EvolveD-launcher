@@ -62,7 +62,7 @@
                         android:layout_height="38dp"
                         android:layout_gravity="center"
                         android:contentDescription="@string/plus_welcome_title"
-                        android:src="@mipmap/ic_launcher" />
+                        android:src="@drawable/evolved_icon" />
                 </FrameLayout>
 
                 <LinearLayout

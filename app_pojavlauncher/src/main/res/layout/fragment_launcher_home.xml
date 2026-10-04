@@ -54,16 +54,12 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.43" />
 
-        <!-- ═══ BRAND CLUSTER (top-left, Phase 8) ═══
-             Launcher mark + name, then two community pills: YouTube (red)
-             and Discord (blurple). Mirrors the account chip on the right.
-             Links come from CsLinks (same URLs as the About page). -->
+        <!-- EvolveD brand mark and title. -->
         <LinearLayout
             android:id="@+id/lh_brand_cluster"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="4dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/bg_lh_glass"
             android:gravity="center_vertical"
@@ -71,7 +67,6 @@
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/lh_account_chip"
             app:layout_constraintTop_toTopOf="parent">
 
             <FrameLayout
@@ -85,15 +80,13 @@
                     android:layout_height="22dp"
                     android:layout_gravity="center"
                     android:contentDescription="@null"
-                    android:src="@drawable/evolved_mark" />
+                    android:src="@drawable/evolved_icon" />
             </FrameLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <!-- Phase 10: full brand on ONE line, "Made in India" + tricolour below -->
@@ -146,80 +139,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <View
-                android:id="@+id/lh_brand_social_divider"
-                android:layout_width="1dp"
-                android:layout_height="22dp"
-                android:layout_marginEnd="8dp"
-                android:visibility="gone"
-                android:background="#2EFFFFFF" />
-
-            <LinearLayout
-                android:id="@+id/lh_btn_youtube"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:visibility="gone"
-                android:background="@drawable/bg_lh_pill_youtube"
-                android:clickable="true"
-                android:contentDescription="Open the EvolveD Launcher YouTube channel"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="9dp"
-                android:paddingEnd="11dp">
-
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_brand_youtube" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:includeFontPadding="false"
-                    android:letterSpacing="0.04"
-                    android:text="YouTube"
-                    android:textColor="#FFFFFF"
-                    android:textSize="10.5sp"
-                    android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/lh_btn_discord"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:visibility="gone"
-                android:layout_marginStart="6dp"
-                android:background="@drawable/bg_lh_pill_discord"
-                android:clickable="true"
-                android:contentDescription="Join the EvolveD Launcher Discord"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="9dp"
-                android:paddingEnd="11dp">
-
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="12dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_brand_discord" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:includeFontPadding="false"
-                    android:letterSpacing="0.04"
-                    android:text="Discord"
-                    android:textColor="#FFFFFF"
-                    android:textSize="10.5sp"
-                    android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
-            </LinearLayout>
         </LinearLayout>
 
         <!-- ═══ ACCOUNT CHIP (top-right) ═══ -->
@@ -655,62 +574,144 @@
         <LinearLayout
             android:id="@+id/lh_quick_actions"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="14dp"
-            android:layout_marginBottom="6dp"
-            android:gravity="end|center_vertical"
+            android:layout_height="62dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             app:layout_constraintStart_toStartOf="@id/lh_center_guide"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/lh_library">
 
-            <FrameLayout
-                android:id="@+id/lh_quick_mods"
-                style="@style/EvolveDQuickAction"
-                android:contentDescription="Open mods">
-                <ImageView
-                    style="@style/EvolveDQuickActionIcon"
-                    android:src="@drawable/ic_nav_mods"
-                    app:tint="#E8C45B"
-                    android:contentDescription="@null" />
-            </FrameLayout>
+            <LinearLayout
+                android:id="@+id/lh_quick_memory"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_lh_glass"
+                android:clickable="true"
+                android:contentDescription="Open memory information"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="5dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_settings_performance"
+                        app:tint="#E8C45B"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="MEMORY"
+                        android:textColor="#F3E9D0"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/lh_memory_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:includeFontPadding="false"
+                    android:textColor="#B9B5C9"
+                    android:textSize="9sp" />
+            </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/lh_quick_playtime"
-                style="@style/EvolveDQuickAction"
-                android:layout_marginStart="7dp"
-                android:contentDescription="Open playtime">
-                <ImageView
-                    style="@style/EvolveDQuickActionIcon"
-                    android:src="@drawable/ic_clock_history"
-                    app:tint="#9A9AAA"
-                    android:contentDescription="@null" />
-            </FrameLayout>
-
-            <FrameLayout
+            <LinearLayout
                 android:id="@+id/lh_quick_cleaner"
-                style="@style/EvolveDQuickAction"
-                android:layout_marginStart="7dp"
-                android:contentDescription="Open cleaner">
-                <ImageView
-                    style="@style/EvolveDQuickActionIcon"
-                    android:src="@drawable/ic_menu_delete_forever"
-                    app:tint="#7DAD9A"
-                    android:contentDescription="@null" />
-            </FrameLayout>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_lh_glass"
+                android:clickable="true"
+                android:contentDescription="Open cleaner"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="5dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_menu_delete_forever"
+                        app:tint="#7DAD9A"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="CLEANER"
+                        android:textColor="#F3E9D0"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:includeFontPadding="false"
+                    android:text="SAFE CACHE"
+                    android:textColor="#B9B5C9"
+                    android:textSize="9sp" />
+            </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/lh_quick_settings"
-                style="@style/EvolveDQuickAction"
-                android:layout_marginStart="7dp"
-                android:contentDescription="Open settings">
-                <ImageView
-                    style="@style/EvolveDQuickActionIcon"
-                    android:src="@drawable/ic_menu_settings"
-                    app:tint="#B2A0B9"
-                    android:contentDescription="@null" />
-            </FrameLayout>
+            <LinearLayout
+                android:id="@+id/lh_quick_playtime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_lh_glass"
+                android:clickable="true"
+                android:contentDescription="Open playtime"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="5dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_clock_history"
+                        app:tint="#9A9AAA"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="PLAYTIME"
+                        android:textColor="#F3E9D0"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:includeFontPadding="false"
+                    android:text="SESSION HISTORY"
+                    android:textColor="#B9B5C9"
+                    android:textSize="9sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- ═══ INSTANCE LIBRARY CAROUSEL (above the persistent bottom nav) ═══ -->

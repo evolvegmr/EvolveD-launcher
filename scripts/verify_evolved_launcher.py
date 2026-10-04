@@ -2,6 +2,7 @@
 """Static release gate for EvolveD Launcher 1.0.0."""
 from pathlib import Path
 import sys
+import hashlib
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,12 +13,15 @@ def read(rel):
 FILES = {
     "build": read("app_pojavlauncher/build.gradle"),
     "activity": read("app_pojavlauncher/src/main/res/layout/activity_pojav_launcher.xml"),
-    "port_activity": read("app_pojavlauncher/src/main/res/layout-port/activity_pojav_launcher.xml"),
     "land_activity": read("app_pojavlauncher/src/main/res/layout-land/activity_pojav_launcher.xml"),
     "bottom_nav": read("app_pojavlauncher/src/main/res/layout/include_lh_bottom_nav.xml"),
     "dock": read("app_pojavlauncher/src/main/res/layout/include_lh_dock.xml"),
     "home": read("app_pojavlauncher/src/main/res/layout/fragment_launcher_home.xml"),
+    "home_land": read("app_pojavlauncher/src/main/res/layout-land/fragment_launcher_home.xml"),
     "manifest": read("app_pojavlauncher/src/main/AndroidManifest.xml"),
+    "memory": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/MemoryFragment.java"),
+    "home_fragment": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/LauncherHomeFragment.java"),
+    "sdl": read("app_pojavlauncher/src/main/java/org/libsdl/app/SDLActivity.java"),
     "updater": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/launch/GitHubReleaseUpdateManager.java"),
     "cleaner": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/CleanerFragment.java"),
     "playtime": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/PlaytimeFragment.java"),
@@ -37,13 +41,12 @@ FILES = {
 
 XML_FILES = [
     ROOT / "app_pojavlauncher/src/main/res/layout/activity_pojav_launcher.xml",
-    ROOT / "app_pojavlauncher/src/main/res/layout-port/activity_pojav_launcher.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout-land/activity_pojav_launcher.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout/include_lh_bottom_nav.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout/include_lh_dock.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout/dialog_launcher_update.xml",
     ROOT / "app_pojavlauncher/src/main/res/layout/fragment_launcher_home.xml",
-    ROOT / "app_pojavlauncher/src/main/res/drawable/evolved_mark.xml",
+    ROOT / "app_pojavlauncher/src/main/res/layout-land/fragment_launcher_home.xml",
     ROOT / "app_pojavlauncher/src/main/res/drawable/bg_hd_sidebar_item.xml",
     ROOT / "app_pojavlauncher/src/main/res/drawable/bg_lh_scrim.xml",
     ROOT / "app_pojavlauncher/src/main/res/values/dimens.xml",
@@ -61,25 +64,54 @@ def assertions():
     assert 'app:layout_constraintStart_toStartOf="parent"' in a
     assert 'app:layout_constraintStart_toEndOf="@+id/lh_dock"' not in a
     assert '#FF9D00' in d and '#FFB000' in FILES["sidebar"] and 'EvolveD' in d
-    assert 'android:text="EvolveD"' in h and 'evolved_mark' in h
+    assert 'android:text="EvolveD"' in h and '@drawable/evolved_icon' in h
+    assert 'android:icon="@drawable/evolved_icon"' in FILES["manifest"]
+    assert 'android:roundIcon="@drawable/evolved_icon"' in FILES["manifest"]
+    logo = ROOT / "EvolveD.png"
+    icon = ROOT / "app_pojavlauncher/src/main/res/drawable/evolved_icon.png"
+    assert hashlib.sha256(logo.read_bytes()).digest() == hashlib.sha256(icon.read_bytes()).digest()
     android_ns = "{http://schemas.android.com/apk/res/android}"
-    activities = {
-        item.get(android_ns + "name"): item
-        for item in ET.fromstring(FILES["manifest"]).findall("application/activity")
-    }
-    for name in (".TestStorageActivity", ".LauncherActivity"):
-        assert android_ns + "screenOrientation" not in activities[name].attrib
-    assert 'setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)' not in FILES["launcher_activity"]
+    manifest_root = ET.fromstring(FILES["manifest"])
+    activities = manifest_root.find("application").findall("activity")
+    assert activities and all(
+        activity.get(android_ns + "screenOrientation") == "landscape"
+        for activity in activities
+    )
+    assert manifest_root.find("application").get(android_ns + "resizeableActivity") == "false"
+    assert not list((ROOT / "app_pojavlauncher/src/main/res/layout-port").glob("*.xml"))
+    assert 'ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE' in FILES["sdl"]
+    assert 'SCREEN_ORIENTATION_PORTRAIT' not in FILES["sdl"]
     assert 'lh_nav_home' in FILES["bottom_nav"] and 'lh_nav_versions' in FILES["bottom_nav"]
     assert 'layout="@layout/include_lh_bottom_nav"' in FILES["land_activity"]
     assert 'app:layout_constraintBottom_toTopOf="@+id/lh_dock"' in FILES["land_activity"]
     assert 'include_lh_dock' not in FILES["land_activity"]
     assert 'app:layout_constraintGuide_percent="0.43"' in h
-    assert all(action in h for action in (
-        'lh_instance_version', 'lh_quick_mods', 'lh_quick_playtime',
-        'lh_quick_cleaner', 'lh_quick_settings'))
-    assert 'android:layout_height="48dp"' in h
+    feature_cards = ("lh_quick_memory", "lh_quick_cleaner", "lh_quick_playtime")
+    for home in (h, FILES["home_land"]):
+        assert all(action in home for action in feature_cards)
+        assert not any(old in home for old in (
+            "lh_quick_mods", "lh_quick_modpacks", "lh_quick_accounts", "lh_quick_settings"))
+        assert not any(social in home for social in (
+            "lh_btn_youtube", "lh_btn_discord", "YouTube", "Discord"))
+    assert 'lh_instance_version' in h and 'android:layout_height="62dp"' in h
     assert 'android:layout_width="0dp"' in h and 'android:layout_weight="1"' in h
+    for home in (
+        ROOT / "app_pojavlauncher/src/main/res/layout/fragment_launcher_home.xml",
+        ROOT / "app_pojavlauncher/src/main/res/layout-land/fragment_launcher_home.xml",
+    ):
+        root = ET.parse(home).getroot()
+        quick_actions = root.find(
+            ".//*[@android:id='@+id/lh_quick_actions']",
+            {"android": "http://schemas.android.com/apk/res/android"})
+        assert quick_actions is not None
+        assert [
+            child.get(android_ns + "id") for child in list(quick_actions)
+        ] == [f"@+id/{card}" for card in feature_cards]
+    assert "MemoryFragment.class" in FILES["home_fragment"]
+    assert "ActivityManager.MemoryInfo" in FILES["memory"]
+    assert "getMemoryInfo(info)" in FILES["memory"]
+    assert "totalMem" in FILES["memory"] and "availMem" in FILES["memory"]
+    assert "Nothing to clean." in c and "Cleaned: " in c
     assert 'HomeTutorial.maybeStart' not in lh and 'PlusWelcomeDialog.maybeShow' not in lh
     assert 'https://api.github.com/repos/evolvegmr/EvolveD-launcher/releases/latest' in u
     assert 'dialog.setCancelable(true)' in u and 'dialog.dismiss()' in u
@@ -92,8 +124,13 @@ def assertions():
     assert 'scanSafeCache' in c and 'getCacheDir()' in c and 'getExternalCacheDir()' in c
     assert 'getCodeCacheDir()' in c and 'getCanonicalPath()' in c
     assert 'Tools.DIR_GAME_NEW' not in c and 'mods/' not in c
-    assert 'No playtime data yet' in FILES["playtime"]
-    assert 'averageDailyMs' in FILES["playtime"] and 'MAXIMUM SESSION' in FILES["playtime"]
+    assert all(label in FILES["playtime"] for label in ('"TODAY"', '"AVERAGE"', '"MAXIMUM"', '"WEEKLY"'))
+    assert "maximumDailyMs" in FILES["playtime"]
+    assert 'text(context, "0m", 42' in FILES["playtime"]
+    assert 'text(context, "0m", 21' in FILES["playtime"]
+    assert "dateKey(dayStart.getTimeInMillis())" in FILES["playtime_store"]
+    assert "recordedDays == 0 ? 0L" in FILES["playtime_store"]
+    assert "maximumDailyMs" in FILES["playtime_store"]
     assert 'PlaytimeStore.start(' in FILES["game_activity"]
     assert 'frames > mFirstFrameBaseline' in FILES["game_activity"]
     assert 'checkpoint(Context context)' in FILES["playtime_store"]

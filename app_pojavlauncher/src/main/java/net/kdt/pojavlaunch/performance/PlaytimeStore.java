@@ -14,8 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /** Persistent local history of Minecraft sessions that reached a rendered game frame. */
 public final class PlaytimeStore {
@@ -168,7 +170,6 @@ public final class PlaytimeStore {
         long now = System.currentTimeMillis();
         JSONArray sessions = load(context);
         List<JSONObject> records = new ArrayList<>();
-        long earliest = Long.MAX_VALUE;
         for (int i = 0; i < sessions.length(); i++) {
             JSONObject session = sessions.optJSONObject(i);
             if (session == null) continue;
@@ -176,7 +177,6 @@ public final class PlaytimeStore {
             long end = session.optLong("end", 0L);
             if (start <= 0L || end <= start || end > now) continue;
             records.add(session);
-            earliest = Math.min(earliest, start);
         }
 
         SharedPreferences preferences = prefs(context);
@@ -190,7 +190,6 @@ public final class PlaytimeStore {
                         JSONObject live = new JSONObject(active.toString());
                         live.put("end", now);
                         records.add(live);
-                        earliest = Math.min(earliest, start);
                     } else {
                         closeStaleActive(context, active);
                         JSONObject recovered = toSession(active,
@@ -198,7 +197,6 @@ public final class PlaytimeStore {
                         long recoveredEnd = recovered.optLong("end", 0L);
                         if (recoveredEnd > start) {
                             records.add(recovered);
-                            earliest = Math.min(earliest, start);
                         }
                     }
                 }
@@ -211,48 +209,57 @@ public final class PlaytimeStore {
         Calendar today = Calendar.getInstance();
         Calendar todayStart = startOfDay(today);
         Calendar weekStart = startOfWeek(today);
-        long todayMs = 0L, weekMs = 0L, longestMs = 0L, totalMs = 0L;
+        long todayMs = 0L, weekMs = 0L, maximumDailyMs = 0L, totalMs = 0L;
         long[] daily = new long[7];
-        Calendar day = (Calendar) weekStart.clone();
-        for (int i = 0; i < daily.length; i++) {
-            long dayStart = day.getTimeInMillis();
-            day.add(Calendar.DAY_OF_YEAR, 1);
-            long dayEnd = Math.min(day.getTimeInMillis(), now);
-            if (dayStart < now) {
-                for (JSONObject record : records) {
-                    long start = record.optLong("start", 0L);
-                    long end = Math.min(record.optLong("end", now), now);
-                    daily[i] += overlap(start, end, dayStart, dayEnd);
-                }
-            }
-        }
-
+        Map<String, Long> dailyTotals = new HashMap<>();
         for (JSONObject record : records) {
             long start = record.optLong("start", 0L);
             long end = Math.min(record.optLong("end", now), now);
             if (start <= 0L || end <= start) continue;
-            long duration = end - start;
-            totalMs += duration;
-            longestMs = Math.max(longestMs, duration);
             todayMs += overlap(start, end, todayStart.getTimeInMillis(), now);
             weekMs += overlap(start, end, weekStart.getTimeInMillis(), now);
+
+            Calendar day = Calendar.getInstance();
+            day.setTimeInMillis(start);
+            while (day.getTimeInMillis() < end) {
+                Calendar dayStart = startOfDay(day);
+                Calendar nextDay = (Calendar) dayStart.clone();
+                nextDay.add(Calendar.DAY_OF_YEAR, 1);
+                long dayDuration = overlap(start, end,
+                        dayStart.getTimeInMillis(), nextDay.getTimeInMillis());
+                if (dayDuration > 0L) {
+                    String date = dateKey(dayStart.getTimeInMillis());
+                    Long previous = dailyTotals.get(date);
+                    dailyTotals.put(date, (previous == null ? 0L : previous) + dayDuration);
+                }
+                day = nextDay;
+            }
         }
 
-        int trackedDays = 0;
-        if (earliest != Long.MAX_VALUE) {
-            Calendar firstDay = Calendar.getInstance();
-            firstDay.setTimeInMillis(earliest);
-            firstDay = startOfDay(firstDay);
-            Calendar cursor = (Calendar) firstDay.clone();
-            while (cursor.before(todayStart)) {
-                trackedDays++;
-                cursor.add(Calendar.DAY_OF_YEAR, 1);
+        Calendar weekDay = (Calendar) weekStart.clone();
+        for (int i = 0; i < daily.length; i++) {
+            long dayStart = weekDay.getTimeInMillis();
+            weekDay.add(Calendar.DAY_OF_YEAR, 1);
+            long dayEnd = Math.min(weekDay.getTimeInMillis(), now);
+            Long dayDuration = dailyTotals.get(dateKey(dayStart));
+            if (dayDuration != null && dayStart < now) {
+                daily[i] = Math.min(dayDuration, Math.max(0L, dayEnd - dayStart));
             }
-            trackedDays++;
         }
-        return new Stats(records.size() > 0, todayMs,
-                trackedDays == 0 ? 0L : totalMs / trackedDays,
-                longestMs, weekMs, daily, trackedDays);
+
+        for (long dayDuration : dailyTotals.values()) {
+            totalMs += dayDuration;
+            maximumDailyMs = Math.max(maximumDailyMs, dayDuration);
+        }
+        int recordedDays = dailyTotals.size();
+        long averageDailyMs = recordedDays == 0 ? 0L : totalMs / recordedDays;
+        return new Stats(recordedDays > 0, todayMs, averageDailyMs,
+                maximumDailyMs, weekMs, daily, recordedDays);
+    }
+
+    private static String dateKey(long timestamp) {
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
+                .format(new Date(timestamp));
     }
 
     private static long overlap(long start, long end, long rangeStart, long rangeEnd) {
@@ -305,17 +312,17 @@ public final class PlaytimeStore {
         public final boolean hasData;
         public final long todayMs;
         public final long averageDailyMs;
-        public final long longestMs;
+        public final long maximumDailyMs;
         public final long weekMs;
         public final long[] dailyMs;
         public final int trackedDays;
 
-        Stats(boolean hasData, long todayMs, long averageDailyMs, long longestMs,
+        Stats(boolean hasData, long todayMs, long averageDailyMs, long maximumDailyMs,
               long weekMs, long[] dailyMs, int trackedDays) {
             this.hasData = hasData;
             this.todayMs = todayMs;
             this.averageDailyMs = averageDailyMs;
-            this.longestMs = longestMs;
+            this.maximumDailyMs = maximumDailyMs;
             this.weekMs = weekMs;
             this.dailyMs = dailyMs;
             this.trackedDays = trackedDays;

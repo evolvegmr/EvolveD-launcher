@@ -32,30 +32,31 @@
         android:allowNativeHeapPointerTagging="false"
         android:appCategory="game"
         android:hasFragileUserData="true"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/evolved_icon"
+        android:roundIcon="@drawable/evolved_icon"
         android:isGame="true"
         android:label="@string/app_name"
         android:process=":launcher"
-        android:resizeableActivity="true"
+        android:resizeableActivity="false"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MissingStorageActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
 
         <!-- This advanced runtime setup flow retains its landscape-specific layout. -->
         <activity
             android:name=".multirt.RuntimeSetupActivity"
             android:exported="false"
             android:launchMode="singleTop"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="landscape" />
 
         <!-- Server Hub keeps its existing landscape-specific layout. -->
         <activity
             android:name=".servers.ServerHubActivity"
             android:exported="false"
             android:launchMode="singleTop"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="landscape" />
 
         <meta-data
             android:name="android.max_aspect"
@@ -65,7 +66,8 @@
             android:name=".TestStorageActivity"
             android:exported="true"
             android:label="@string/app_short_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -80,7 +82,8 @@
             android:theme="@style/ShortcutTrampolineTheme"
             android:excludeFromRecents="true"
             android:taskAffinity=""
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="landscape" />
 
         <!-- Receives confirmation that the home screen actually pinned a shortcut. -->
         <receiver
@@ -95,7 +98,8 @@
             android:name=".LauncherActivity"
             android:label="@string/app_short_name"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="landscape" />
         <!-- adjustResize + FLAG_LAYOUT_NO_LIMITS got stuck after the IME closed:
              the window frame kept the shrunken height, so returning from
              Settings left the home screen partially resized/compressed.
@@ -105,7 +109,8 @@
             android:configChanges="keyboard|keyboardHidden"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:windowSoftInputMode="stateVisible">
+            android:windowSoftInputMode="stateVisible"
+            android:screenOrientation="landscape">
             <intent-filter
                 android:label="@string/import_control_label"
                 android:scheme="content"
@@ -124,35 +129,38 @@
             android:name=".FatalErrorActivity"
             android:process=":crash"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
         <activity
             android:name=".CrashActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ProfileLogActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
             android:exported="false"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="landscape" />
 
         <activity android:name=".ShowErrorActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
         <activity
             android:name=".ExitActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
         <activity
             android:process=":gui_installer"
             android:name=".JavaGUILauncherActivity"
             android:theme="@style/AppTheme"
             android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation|uiMode"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".CustomControlsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
             android:exported="false"
-            android:screenOrientation="sensorLandscape">
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name=".CustomControlsActivity" />
 
@@ -164,7 +172,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation|uiMode"
             android:launchMode="singleTop"
             android:process=":game"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="landscape" />
 
         <provider
             android:name=".scoped.FolderProvider"
