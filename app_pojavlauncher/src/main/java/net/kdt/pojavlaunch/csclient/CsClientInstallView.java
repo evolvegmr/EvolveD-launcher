@@ -52,7 +52,7 @@ public final class CsClientInstallView extends View {
 
     public CsClientInstallView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLogo = BitmapFactory.decodeResource(getResources(), R.drawable.cs_logo);
+        mLogo = BitmapFactory.decodeResource(getResources(), R.drawable.evolved_icon);
         init();
     }
 

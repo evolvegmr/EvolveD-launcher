@@ -279,7 +279,7 @@ public class ModDetailFragment extends Fragment implements ModVersionSheet.Liste
         switch (apiSource) {
             case Constants.SOURCE_CURSEFORGE: return R.drawable.ic_curseforge;
             case Constants.SOURCE_MODRINTH: return R.drawable.ic_modrinth;
-            default: return R.mipmap.ic_launcher_foreground;
+            default: return R.drawable.evolved_icon;
         }
     }
 

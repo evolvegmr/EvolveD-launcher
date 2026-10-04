@@ -89,11 +89,18 @@ def assertions():
     feature_cards = ("lh_quick_memory", "lh_quick_cleaner", "lh_quick_playtime")
     for home in (h, FILES["home_land"]):
         assert all(action in home for action in feature_cards)
+        assert '<androidx.core.widget.NestedScrollView' in home[:1000]
+        assert 'android:fillViewport="true"' in home
+        assert 'android:scrollbars="vertical"' in home
+        assert 'android:overScrollMode="ifContentScrolls"' in home
+        assert 'android:minHeight="@dimen/lh_home_min_content_height"' in home
         assert not any(old in home for old in (
             "lh_quick_mods", "lh_quick_modpacks", "lh_quick_accounts", "lh_quick_settings"))
         assert not any(social in home for social in (
             "lh_btn_youtube", "lh_btn_discord", "YouTube", "Discord"))
     assert 'lh_instance_version' in h and 'android:layout_height="62dp"' in h
+    assert '<dimen name="lh_home_min_content_height">600dp</dimen>' in read(
+        "app_pojavlauncher/src/main/res/values/dimens.xml")
     assert 'android:layout_width="0dp"' in h and 'android:layout_weight="1"' in h
     for home in (
         ROOT / "app_pojavlauncher/src/main/res/layout/fragment_launcher_home.xml",

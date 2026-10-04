@@ -16,6 +16,7 @@ This repository is a fork of the existing Android Minecraft launcher codebase bu
 
 ## EvolveD launcher features
 - The Home quick-action row contains only Memory, Cleaner, and Playtime.
+- The complete Home composition lives in a vertical `NestedScrollView`; a minimum content height preserves the full landscape composition on short viewports, while `fillViewport` keeps it fitted on larger screens.
 - Memory reads total and available system RAM from Android's `ActivityManager.MemoryInfo`.
 - Cleaner scans and removes files only beneath the app's private cache, code-cache, and external-cache directories.
 - Playtime persists actual Minecraft sessions and calculates calendar-day totals from session intervals, including sessions that cross midnight.

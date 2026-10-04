@@ -294,9 +294,9 @@ public class VersionCreateFragment extends Fragment implements CropperUtils.Crop
             case LDR_FORGE:    return R.drawable.ic_forge;
             case LDR_NEOFORGE: return R.drawable.ic_neoforge_profile;
             case LDR_VANILLA:  return R.drawable.img_crafting_table;
-            case LDR_JAR:      return R.drawable.cs_logo;
+            case LDR_JAR:      return R.drawable.evolved_icon;
             case LDR_OPTIFINE: return R.drawable.ic_optifine;
-            default:           return R.drawable.cs_logo;
+            default:           return R.drawable.evolved_icon;
         }
     }
 
@@ -307,7 +307,7 @@ public class VersionCreateFragment extends Fragment implements CropperUtils.Crop
         mIconView.setImageResource(res);
         mIconView.setColorFilter(null);
         float d = getResources().getDisplayMetrics().density;
-        int pad = (int) ((res == R.drawable.cs_logo ? 10 : 8) * d);
+        int pad = (int) ((res == R.drawable.evolved_icon ? 10 : 8) * d);
         mIconView.setPadding(pad, pad, pad, pad);
         mIconView.setScaleType(ImageView.ScaleType.FIT_CENTER);
     }

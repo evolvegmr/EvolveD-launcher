@@ -18,7 +18,7 @@
         android:layout_height="@dimen/_65sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/ic_launcher_foreground" />
+        tools:src="@drawable/evolved_icon" />
 
     <!-- Source badge (Modrinth/CurseForge icon) -->
     <ImageView

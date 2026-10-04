@@ -85,8 +85,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:contentDescription="CS Client"
-                    android:src="@drawable/cs_logo"
-                    app:tint="#D2D6DE" />
+                    android:src="@drawable/evolved_icon" />
             </FrameLayout>
         </LinearLayout>
 
@@ -188,8 +187,7 @@
                                     android:layout_height="34dp"
                                     android:layout_gravity="center"
                                     android:contentDescription="CS Client"
-                                    android:src="@drawable/cs_logo"
-                                    app:tint="#E6E9EF" />
+                                    android:src="@drawable/evolved_icon" />
                             </FrameLayout>
 
                             <LinearLayout

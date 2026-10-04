@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:contentDescription="@null"
-            tools:src="@mipmap/ic_launcher_foreground" />
+            tools:src="@drawable/evolved_icon" />
     </FrameLayout>
 
     <!-- Name / version / status -->

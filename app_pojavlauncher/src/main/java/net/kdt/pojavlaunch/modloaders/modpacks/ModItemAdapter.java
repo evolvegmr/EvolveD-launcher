@@ -574,7 +574,7 @@ public class ModItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     bitmap -> {
                         if (mCurrentItem == item) {
                             if (bitmap != null) mIconView.setImageBitmap(bitmap);
-                            else mIconView.setImageResource(R.mipmap.ic_launcher_foreground);
+                            else mIconView.setImageResource(R.drawable.evolved_icon);
                         }
                     },
                     item.getIconCacheTag(),

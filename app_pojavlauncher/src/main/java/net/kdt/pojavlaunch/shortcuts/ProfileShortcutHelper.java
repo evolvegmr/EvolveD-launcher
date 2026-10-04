@@ -456,7 +456,7 @@ public final class ProfileShortcutHelper {
 
     /** Pick a loader badge drawable from a version id such as "1.20.1-fabric". */
     public static int resolveLoaderIcon(@Nullable String lastVersionId) {
-        if (lastVersionId == null) return R.drawable.ic_cs_logo_placeholder;
+        if (lastVersionId == null) return R.drawable.evolved_icon;
         String lower = lastVersionId.toLowerCase();
         if (lower.contains("fabric")) return R.drawable.ic_fabric;
         if (lower.contains("quilt")) return R.drawable.ic_quilt;
