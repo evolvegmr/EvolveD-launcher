@@ -729,6 +729,19 @@ public class LauncherActivity extends BaseActivity {
         // Handle window insets properly to prevent navigation bar space reservation
         View contentRoot = findViewById(android.R.id.content);
         ViewCompat.setOnApplyWindowInsetsListener(contentRoot, (v, insets) -> {
+            View fragmentContainer = findViewById(R.id.container_fragment);
+            if (fragmentContainer != null) {
+                int statusBarTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+                ViewGroup.LayoutParams rawParams = fragmentContainer.getLayoutParams();
+                if (rawParams instanceof ViewGroup.MarginLayoutParams) {
+                    ViewGroup.MarginLayoutParams params =
+                            (ViewGroup.MarginLayoutParams) rawParams;
+                    if (params.topMargin != statusBarTop) {
+                        params.topMargin = statusBarTop;
+                        fragmentContainer.setLayoutParams(params);
+                    }
+                }
+            }
             View dock = findViewById(R.id.lh_dock);
             if (dock != null && findViewById(R.id.lh_dock_scroll) == null) {
                 Insets safeInsets = insets.getInsets(

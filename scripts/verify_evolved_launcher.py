@@ -65,6 +65,7 @@ def assertions():
     assert 'app:layout_constraintStart_toEndOf="@+id/lh_dock"' not in a
     assert '#FF9D00' in d and '#FFB000' in FILES["sidebar"] and 'EvolveD' in d
     assert 'android:text="EvolveD"' in h and '@drawable/evolved_icon' in h
+    assert 'android:id="@+id/lh_search_bar"' in h
     assert 'android:icon="@drawable/evolved_icon"' in FILES["manifest"]
     assert 'android:roundIcon="@drawable/evolved_icon"' in FILES["manifest"]
     logo = ROOT / "EvolveD.png"
@@ -131,6 +132,7 @@ def assertions():
     assert all(label in FILES["playtime"] for label in ('"TODAY"', '"AVERAGE"', '"MAXIMUM"', '"WEEKLY"'))
     assert "NestedScrollView" in FILES["playtime"] and "setFillViewport(true)" in FILES["playtime"]
     assert "dp(960)" in FILES["playtime"]
+    assert "WindowInsetsCompat.Type.statusBars()" in FILES["launcher_activity"]
     assert "maximumDailyMs" in FILES["playtime"]
     assert 'text(context, "0m", 42' in FILES["playtime"]
     assert 'text(context, "0m", 21' in FILES["playtime"]
