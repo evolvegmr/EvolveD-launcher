@@ -6,6 +6,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Gravity;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.core.widget.NestedScrollView;
 
 import net.kdt.pojavlaunch.PojavApplication;
 import net.kdt.pojavlaunch.performance.PlaytimeStore;
@@ -40,10 +43,31 @@ public class PlaytimeFragment extends Fragment {
                              @Nullable android.view.ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         Context context = requireContext();
+        NestedScrollView scrollView = new NestedScrollView(context);
+        scrollView.setFillViewport(true);
+        scrollView.setClipToPadding(false);
+
+        FrameLayout page = new FrameLayout(context);
+        scrollView.addView(page, new NestedScrollView.LayoutParams(-1, -2));
+
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(dp(24), dp(18), dp(24), dp(18));
         root.setBackgroundColor(BACKGROUND);
+        FrameLayout.LayoutParams rootParams = new FrameLayout.LayoutParams(
+                -1, -2, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        page.addView(root, rootParams);
+
+        page.addOnLayoutChangeListener((view, left, top, right, bottom,
+                                       oldLeft, oldTop, oldRight, oldBottom) -> {
+            int availableWidth = right - left;
+            int contentWidth = Math.min(availableWidth, dp(960));
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) root.getLayoutParams();
+            if (params.width != contentWidth) {
+                params.width = contentWidth;
+                root.setLayoutParams(params);
+            }
+        });
 
         TextView title = text(context, "Playtime", 24, WHITE, true);
         root.addView(title, new LinearLayout.LayoutParams(-1, -2));
@@ -54,7 +78,7 @@ public class PlaytimeFragment extends Fragment {
         LinearLayout content = new LinearLayout(context);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setGravity(android.view.Gravity.CENTER_VERTICAL);
-        LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(-1, 0, 1f);
+        LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(-1, -2);
         root.addView(content, contentParams);
 
         LinearLayout hero = card(context, HERO);
@@ -76,7 +100,7 @@ public class PlaytimeFragment extends Fragment {
         weeklyValue = statCard(context, secondary, "WEEKLY");
 
         refresh();
-        return root;
+        return scrollView;
     }
 
     @Override

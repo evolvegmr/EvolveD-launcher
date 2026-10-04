@@ -77,7 +77,7 @@ def assertions():
         activity.get(android_ns + "screenOrientation") == "landscape"
         for activity in activities
     )
-    assert manifest_root.find("application").get(android_ns + "resizeableActivity") == "false"
+    assert manifest_root.find("application").get(android_ns + "resizeableActivity") == "true"
     assert not list((ROOT / "app_pojavlauncher/src/main/res/layout-port").glob("*.xml"))
     assert 'ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE' in FILES["sdl"]
     assert 'SCREEN_ORIENTATION_PORTRAIT' not in FILES["sdl"]
@@ -87,7 +87,8 @@ def assertions():
     assert 'include_lh_dock' not in FILES["land_activity"]
     assert 'app:layout_constraintGuide_percent="0.43"' in h
     feature_cards = ("lh_quick_memory", "lh_quick_cleaner", "lh_quick_playtime")
-    for home in (h, FILES["home_land"]):
+    assert 'layout="@layout/fragment_launcher_home"' in FILES["home_land"]
+    for home in (h,):
         assert all(action in home for action in feature_cards)
         assert '<androidx.core.widget.NestedScrollView' in home[:1000]
         assert 'android:fillViewport="true"' in home
@@ -99,21 +100,17 @@ def assertions():
         assert not any(social in home for social in (
             "lh_btn_youtube", "lh_btn_discord", "YouTube", "Discord"))
     assert 'lh_instance_version' in h and 'android:layout_height="62dp"' in h
-    assert '<dimen name="lh_home_min_content_height">600dp</dimen>' in read(
+    assert '<dimen name="lh_home_min_content_height">320dp</dimen>' in read(
         "app_pojavlauncher/src/main/res/values/dimens.xml")
     assert 'android:layout_width="0dp"' in h and 'android:layout_weight="1"' in h
-    for home in (
-        ROOT / "app_pojavlauncher/src/main/res/layout/fragment_launcher_home.xml",
-        ROOT / "app_pojavlauncher/src/main/res/layout-land/fragment_launcher_home.xml",
-    ):
-        root = ET.parse(home).getroot()
-        quick_actions = root.find(
-            ".//*[@android:id='@+id/lh_quick_actions']",
-            {"android": "http://schemas.android.com/apk/res/android"})
-        assert quick_actions is not None
-        assert [
-            child.get(android_ns + "id") for child in list(quick_actions)
-        ] == [f"@+id/{card}" for card in feature_cards]
+    root = ET.parse(ROOT / "app_pojavlauncher/src/main/res/layout/fragment_launcher_home.xml").getroot()
+    quick_actions = root.find(
+        ".//*[@android:id='@+id/lh_quick_actions']",
+        {"android": "http://schemas.android.com/apk/res/android"})
+    assert quick_actions is not None
+    assert [
+        child.get(android_ns + "id") for child in list(quick_actions)
+    ] == [f"@+id/{card}" for card in feature_cards]
     assert "MemoryFragment.class" in FILES["home_fragment"]
     assert "ActivityManager.MemoryInfo" in FILES["memory"]
     assert "getMemoryInfo(info)" in FILES["memory"]
@@ -132,6 +129,8 @@ def assertions():
     assert 'getCodeCacheDir()' in c and 'getCanonicalPath()' in c
     assert 'Tools.DIR_GAME_NEW' not in c and 'mods/' not in c
     assert all(label in FILES["playtime"] for label in ('"TODAY"', '"AVERAGE"', '"MAXIMUM"', '"WEEKLY"'))
+    assert "NestedScrollView" in FILES["playtime"] and "setFillViewport(true)" in FILES["playtime"]
+    assert "dp(960)" in FILES["playtime"]
     assert "maximumDailyMs" in FILES["playtime"]
     assert 'text(context, "0m", 42' in FILES["playtime"]
     assert 'text(context, "0m", 21' in FILES["playtime"]

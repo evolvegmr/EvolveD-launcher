@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="lh_home_min_content_height">600dp</dimen>
+    <dimen name="lh_home_min_content_height">320dp</dimen>
     <dimen name="text_handle_min_size">40dp</dimen>
     
     <!-- Default screen margins, per the Android Design guidelines. -->
