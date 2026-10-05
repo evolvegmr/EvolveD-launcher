@@ -1066,11 +1066,10 @@ public class LauncherActivity extends BaseActivity {
         } catch (Throwable t) {
             android.util.Log.w("LauncherActivity", "firebase sync skipped", t);
         }
-        // EvolveD self-update: checks GitHub Releases and only shows a dialog
-        // when a newer stable release is actually available. The check is
-        // throttled internally so opening the launcher does not hammer GitHub.
+        // Start one immediate metadata check followed by non-overlapping
+        // 25-second checks while the launcher is in the foreground.
         try {
-            net.kdt.pojavlaunch.launch.GitHubReleaseUpdateManager.checkOnLauncherOpen(this);
+            net.kdt.pojavlaunch.launch.MinecraftUpdateManager.startPeriodicChecks(this);
         } catch (Throwable t) {
             android.util.Log.w("LauncherActivity", "EvolveD update check skipped", t);
         }
@@ -1101,6 +1100,7 @@ public class LauncherActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
+        net.kdt.pojavlaunch.launch.MinecraftUpdateManager.stopPeriodicChecks(this);
         super.onPause();
         ContextExecutor.clearActivity();
         mInstallTracker.detach();

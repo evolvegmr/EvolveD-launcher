@@ -92,6 +92,7 @@
                     android:layout_height="22dp"
                     android:layout_gravity="center"
                     android:contentDescription="@null"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/evolved_icon" />
             </FrameLayout>
 

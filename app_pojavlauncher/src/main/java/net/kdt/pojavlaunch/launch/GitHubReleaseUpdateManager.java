@@ -10,7 +10,6 @@ import android.content.pm.Signature;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -34,8 +33,14 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * EvolveD Launcher self-updater backed by GitHub Releases.
@@ -49,10 +54,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class GitHubReleaseUpdateManager {
     private static final String TAG = "EvolveDUpdater";
     private static final String API_URL =
-            "https://api.github.com/repos/evolvegmr/EvolveD-launcher/releases/latest";
+            "https://api.github.com/repos/evolvegmr/EvolveD-launcher/releases";
     private static final String PREFS = "evolved_github_updater";
-    private static final String KEY_LAST_CHECK = "last_check_ms";
-    private static final long CHECK_INTERVAL_MS = 30L * 60L * 1000L;
+    private static final String KEY_LAST_NOTIFIED_VERSION = "last_notified_version";
 
     private static final AtomicBoolean CHECKING = new AtomicBoolean(false);
 
@@ -60,11 +64,7 @@ public final class GitHubReleaseUpdateManager {
 
     public static void checkOnLauncherOpen(@NonNull Activity activity) {
         if (activity.isFinishing() || activity.isDestroyed()) return;
-        if (!isCheckDue(activity)) return;
         if (!CHECKING.compareAndSet(false, true)) return;
-
-        activity.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .edit().putLong(KEY_LAST_CHECK, System.currentTimeMillis()).apply();
 
         new Thread(() -> {
             try {
@@ -73,6 +73,13 @@ public final class GitHubReleaseUpdateManager {
 
                 activity.runOnUiThread(() -> {
                     if (activity.isFinishing() || activity.isDestroyed()) return;
+                    android.content.SharedPreferences preferences =
+                            activity.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+                    String lastNotified = preferences.getString(KEY_LAST_NOTIFIED_VERSION, "");
+                    if (!TextUtils.isEmpty(lastNotified)
+                            && !isNewerVersion(release.version, lastNotified)) return;
+                    preferences.edit().putString(KEY_LAST_NOTIFIED_VERSION,
+                            release.version.replaceFirst("(?i)^v", "").split("\\+", 2)[0]).apply();
                     showUpdateDialog(activity, release);
                 });
             } catch (Exception t) {
@@ -130,12 +137,6 @@ public final class GitHubReleaseUpdateManager {
                 .show();
     }
 
-    private static boolean isCheckDue(Context ctx) {
-        long last = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getLong(KEY_LAST_CHECK, 0L);
-        return System.currentTimeMillis() - last >= CHECK_INTERVAL_MS;
-    }
-
     @Nullable
     private static Release fetchLatestRelease() throws Exception {
         HttpURLConnection conn = null;
@@ -155,37 +156,130 @@ public final class GitHubReleaseUpdateManager {
             }
 
             String json = readAll(conn.getInputStream(), 512 * 1024);
-            JSONObject root = new JSONObject(json);
-            if (root.optBoolean("draft", false) || root.optBoolean("prerelease", false)) return null;
-
-            String tag = root.optString("tag_name", "").trim();
-            if (tag.isEmpty()) throw new IOException("GitHub release metadata did not include a tag.");
-
-            String apkUrl = "";
-            JSONArray assets = root.optJSONArray("assets");
-            if (assets != null) {
-                for (int i = 0; i < assets.length(); i++) {
-                    JSONObject asset = assets.optJSONObject(i);
-                    if (asset == null) continue;
-                    String name = asset.optString("name", "");
-                    String browserUrl = asset.optString("browser_download_url", "");
-                    if (name.toLowerCase().endsWith(".apk") && !browserUrl.isEmpty()) {
-                        apkUrl = browserUrl;
-                        break;
-                    }
+            JSONArray releases = new JSONArray(json);
+            Release newest = null;
+            for (int i = 0; i < releases.length(); i++) {
+                JSONObject releaseObject = releases.optJSONObject(i);
+                if (releaseObject == null) continue;
+                Release release = parseRelease(releaseObject);
+                if (release != null && !TextUtils.isEmpty(release.apkUrl)
+                        && (newest == null || isNewerVersion(release.version, newest.version))) {
+                    newest = release;
                 }
             }
-
-            return new Release(
-                    tag,
-                    root.optString("name", tag),
-                    root.optString("body", ""),
-                    root.optString("html_url", "https://github.com/evolvegmr/EvolveD-launcher/releases"),
-                    apkUrl
-            );
+            return newest;
         } finally {
             if (conn != null) conn.disconnect();
         }
+    }
+
+    @Nullable
+    private static Release parseRelease(@NonNull JSONObject root) {
+        if (root.optBoolean("draft", false) || root.optBoolean("prerelease", false)) return null;
+
+        String tag = root.optString("tag_name", "").trim();
+        if (!isStableReleaseVersion(tag)) return null;
+
+        String apkUrl = "";
+        String apkDigest = "";
+        JSONArray assets = root.optJSONArray("assets");
+        if (assets != null) {
+            JSONObject bestAsset = chooseCompatibleAsset(assets);
+            if (bestAsset != null) {
+                apkUrl = bestAsset.optString("browser_download_url", "");
+                apkDigest = normalizeDigest(bestAsset.optString("digest", ""));
+                if (TextUtils.isEmpty(apkDigest)) {
+                    apkDigest = normalizeDigest(bestAsset.optString("checksum", ""));
+                }
+            }
+        }
+
+        return new Release(
+                tag,
+                root.optString("name", tag),
+                root.optString("body", ""),
+                root.optString("html_url", "https://github.com/evolvegmr/EvolveD-launcher/releases"),
+                apkUrl,
+                apkDigest
+        );
+    }
+
+    @Nullable
+    private static JSONObject chooseCompatibleAsset(@NonNull JSONArray assets) {
+        JSONObject best = null;
+        int bestScore = Integer.MIN_VALUE;
+        String[] supported = Build.SUPPORTED_ABIS;
+
+        for (int i = 0; i < assets.length(); i++) {
+            JSONObject asset = assets.optJSONObject(i);
+            if (asset == null) continue;
+
+            String name = asset.optString("name", "").trim();
+            if (TextUtils.isEmpty(name)) continue;
+            String lowerName = name.toLowerCase(Locale.US);
+            String browserUrl = asset.optString("browser_download_url", "");
+
+            if (!lowerName.endsWith(".apk") || !isOfficialReleaseAssetUrl(browserUrl)) continue;
+            if (lowerName.contains("debug") || lowerName.contains("symbol")
+                    || lowerName.contains("source") || lowerName.contains("mapping")
+                    || lowerName.contains("unsigned")) {
+                continue;
+            }
+
+            int score = platformAssetScore(lowerName, supported);
+            if (score < 0) continue;
+
+            if (best == null || score > bestScore) {
+                best = asset;
+                bestScore = score;
+            }
+        }
+
+        return best;
+    }
+
+    private static boolean isOfficialReleaseAssetUrl(String value) {
+        try {
+            URL url = new URL(value);
+            return "https".equalsIgnoreCase(url.getProtocol())
+                    && "github.com".equalsIgnoreCase(url.getHost())
+                    && url.getUserInfo() == null
+                    && url.getPath().startsWith("/evolvegmr/EvolveD-launcher/releases/download/");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static int platformAssetScore(String name, String[] supportedAbis) {
+        String normalizedName = name.replace('_', '-');
+        int best = -1;
+        for (int i = 0; i < supportedAbis.length; i++) {
+            String abi = supportedAbis[i].toLowerCase(Locale.US).replace('_', '-');
+            if (normalizedName.contains(abi)) best = Math.max(best, 100 - i);
+            if ("arm64-v8a".equals(abi) && normalizedName.contains("aarch64")) best = Math.max(best, 100 - i);
+            if ("armeabi-v7a".equals(abi)
+                    && (normalizedName.contains("armv7") || normalizedName.contains("armeabi"))) {
+                best = Math.max(best, 100 - i);
+            }
+            if ("x86-64".equals(abi) && normalizedName.contains("x64")) best = Math.max(best, 100 - i);
+        }
+        if (best >= 0) return best;
+
+        boolean namesArchitecture = normalizedName.contains("arm64") || normalizedName.contains("aarch64")
+                || normalizedName.contains("armeabi") || normalizedName.contains("armv7")
+                || normalizedName.contains("x86") || normalizedName.contains("x64")
+                || normalizedName.contains("riscv");
+        if (namesArchitecture) return -1;
+        return name.contains("universal") ? 10 : 1;
+    }
+
+    private static String normalizeDigest(@NonNull String digest) {
+        String cleaned = digest.trim();
+        if (cleaned.isEmpty()) return "";
+        if (cleaned.regionMatches(true, 0, "sha256:", 0, "sha256:".length())) {
+            cleaned = cleaned.substring("sha256:".length());
+        }
+        return cleaned.trim();
     }
 
     private static void showUpdateDialog(@NonNull Activity act, @NonNull Release release) {
@@ -206,7 +300,10 @@ public final class GitHubReleaseUpdateManager {
             TextView update = dialog.findViewById(R.id.btn_update_now);
 
             if (title != null) title.setText("EVOLVED LAUNCHER UPDATE");
-            if (version != null) version.setText("New version available: " + release.version);
+            if (version != null) {
+                version.setText("Current version: " + BuildConfig.VERSION_NAME
+                        + "\nNew version: " + release.version);
+            }
             if (changelog != null) {
                 String body = release.body == null ? "" : release.body.trim();
                 changelog.setText(TextUtils.isEmpty(body)
@@ -251,27 +348,43 @@ public final class GitHubReleaseUpdateManager {
         if (progressBar != null) progressBar.setProgress(0);
 
         new Thread(() -> {
-            File apk = null;
+            File partialApk = null;
             try {
-                File dir = act.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-                if (dir == null) dir = act.getCacheDir();
+                File dir = new File(act.getCacheDir(), "launcher-updates");
                 if (!dir.exists() && !dir.mkdirs()) throw new IllegalStateException("Could not create download directory");
-                apk = new File(dir, "EvolveD-Launcher-" + safeFilePart(release.version) + ".apk");
-                if (apk.exists()) apk.delete();
+                partialApk = File.createTempFile("evolved-update-", ".part", dir);
 
+                if (!isOfficialReleaseAssetUrl(release.apkUrl)) {
+                    throw new IOException("The release APK URL is not an official EvolveD GitHub asset.");
+                }
                 HttpURLConnection conn = (HttpURLConnection) new URL(release.apkUrl).openConnection();
                 conn.setConnectTimeout(15000);
                 conn.setReadTimeout(30000);
                 conn.setRequestProperty("User-Agent", "EvolveD-Launcher-Updater");
                 conn.connect();
-                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    throw new IllegalStateException("Download failed: HTTP " + conn.getResponseCode());
+                int responseCode;
+                try {
+                    responseCode = conn.getResponseCode();
+                } catch (IOException e) {
+                    conn.disconnect();
+                    throw e;
+                }
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    conn.disconnect();
+                    throw new IllegalStateException("Download failed: HTTP " + responseCode);
+                }
+                String downloadHost = conn.getURL().getHost();
+                if (!"github.com".equalsIgnoreCase(downloadHost)
+                        && !"release-assets.githubusercontent.com".equalsIgnoreCase(downloadHost)
+                        && !"objects.githubusercontent.com".equalsIgnoreCase(downloadHost)) {
+                    conn.disconnect();
+                    throw new IOException("The launcher update was redirected to an untrusted host.");
                 }
 
                 int total = conn.getContentLength();
                 long read = 0;
                 int lastPercent = -1;
-                try (InputStream in = conn.getInputStream(); FileOutputStream out = new FileOutputStream(apk)) {
+                try (InputStream in = conn.getInputStream(); FileOutputStream out = new FileOutputStream(partialApk)) {
                     byte[] buffer = new byte[16 * 1024];
                     int n;
                     while ((n = in.read(buffer)) != -1) {
@@ -292,19 +405,34 @@ public final class GitHubReleaseUpdateManager {
                 } finally {
                     conn.disconnect();
                 }
+                if (total > 0 && read != total) {
+                    throw new IOException("The launcher update download did not complete.");
+                }
 
-                File finalApk = apk;
+                File downloadedApk = partialApk;
                 act.runOnUiThread(() -> {
                     if (progressBar != null) progressBar.setProgress(100);
                     if (progressText != null) progressText.setText("Verifying downloaded APK...");
                 });
-                verifyDownloadedApk(act, finalApk);
+                verifyDownloadedApk(act, downloadedApk, release.apkDigest, release.version);
+                File finalApk = new File(dir,
+                        "EvolveD-Launcher-" + safeFilePart(release.version) + ".apk");
+                if (finalApk.exists() && !finalApk.delete()) {
+                    throw new IOException("Could not replace the temporary launcher update file.");
+                }
+                if (!downloadedApk.renameTo(finalApk)) {
+                    throw new IOException("Could not finalize the verified launcher update.");
+                }
+                partialApk = null;
                 act.runOnUiThread(() -> {
                     if (progressText != null) progressText.setText("APK verified. Opening Android installer...");
                     installApk(act, finalApk);
 
                 });
             } catch (Throwable t) {
+                if (partialApk != null && partialApk.exists() && !partialApk.delete()) {
+                    Log.w(TAG, "Could not remove incomplete launcher update file " + partialApk);
+                }
                 Log.e(TAG, "Update download failed", t);
                 String message = t.getMessage() == null ? "Download failed" : t.getMessage();
                 act.runOnUiThread(() -> {
@@ -336,9 +464,19 @@ public final class GitHubReleaseUpdateManager {
         }
     }
 
-    private static void verifyDownloadedApk(Context context, File apk) throws Exception {
+    private static void verifyDownloadedApk(Context context, File apk,
+                                             @Nullable String expectedDigest,
+                                             String expectedVersion) throws Exception {
         if (apk == null || !apk.isFile() || apk.length() < 1024) {
             throw new IOException("The downloaded update file is missing or invalid.");
+        }
+
+        if (!TextUtils.isEmpty(expectedDigest)) {
+            String actualDigest = sha256(apk);
+            if (!expectedDigest.equalsIgnoreCase(actualDigest)) {
+                if (apk.exists()) apk.delete();
+                throw new IOException("The downloaded APK failed SHA-256 verification.");
+            }
         }
 
         PackageManager packageManager = context.getPackageManager();
@@ -348,11 +486,21 @@ public final class GitHubReleaseUpdateManager {
         if (candidate == null || !context.getPackageName().equals(candidate.packageName)) {
             throw new IOException("The downloaded APK is not an EvolveD Launcher package.");
         }
+        if (!normalizeVersion(candidate.versionName).equals(normalizeVersion(expectedVersion))) {
+            throw new IOException("The downloaded APK version does not match the selected GitHub release.");
+        }
 
         long candidateVersion = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
                 ? candidate.getLongVersionCode() : candidate.versionCode;
         if (candidateVersion <= BuildConfig.VERSION_CODE) {
             throw new IOException("The downloaded APK does not have a newer version code.");
+        }
+
+        Set<String> installedAbis = apkAbis(new File(context.getApplicationInfo().sourceDir));
+        Set<String> candidateAbis = apkAbis(apk);
+        candidateAbis.retainAll(installedAbis);
+        if (candidateAbis.isEmpty()) {
+            throw new IOException("The downloaded APK does not support this installed launcher platform.");
         }
 
         PackageInfo installed = packageManager.getPackageInfo(context.getPackageName(),
@@ -361,6 +509,38 @@ public final class GitHubReleaseUpdateManager {
         if (!hasCompatibleSigningIdentity(installed, candidate)) {
             throw new IOException("The downloaded APK is not signed with a compatible launcher signing key.");
         }
+    }
+
+    private static Set<String> apkAbis(File apk) throws IOException {
+        Set<String> abis = new HashSet<>();
+        try (ZipFile zip = new ZipFile(apk)) {
+            java.util.Enumeration<? extends ZipEntry> entries = zip.entries();
+            while (entries.hasMoreElements()) {
+                String name = entries.nextElement().getName();
+                if (!name.startsWith("lib/")) continue;
+                int end = name.indexOf('/', 4);
+                if (end > 4) abis.add(name.substring(4, end));
+            }
+        }
+        return abis;
+    }
+
+    @NonNull
+    private static String sha256(@NonNull File file) throws Exception {
+        MessageDigest digester = MessageDigest.getInstance("SHA-256");
+        byte[] buffer = new byte[8192];
+        try (InputStream in = new java.io.FileInputStream(file)) {
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                digester.update(buffer, 0, read);
+            }
+        }
+        byte[] digest = digester.digest();
+        StringBuilder sb = new StringBuilder(digest.length * 2);
+        for (byte value : digest) {
+            sb.append(String.format(Locale.US, "%02x", value & 0xff));
+        }
+        return sb.toString();
     }
 
     private static boolean hasCompatibleSigningIdentity(PackageInfo installed, PackageInfo candidate) {
@@ -415,6 +595,16 @@ public final class GitHubReleaseUpdateManager {
 
     private static String safeFilePart(String value) {
         return value.replaceAll("[^A-Za-z0-9._-]", "_");
+    }
+
+    private static String normalizeVersion(String value) {
+        if (value == null) return "";
+        return value.trim().replaceFirst("(?i)^v", "").split("\\+", 2)[0];
+    }
+
+    private static boolean isStableReleaseVersion(String version) {
+        return version != null
+                && version.matches("(?i)^v?\\d+(?:\\.\\d+){1,3}(?:\\+[0-9a-z.-]+)?$");
     }
 
     public static boolean isNewerVersion(String remote, String local) {
@@ -477,13 +667,15 @@ public final class GitHubReleaseUpdateManager {
         final String body;
         final String htmlUrl;
         final String apkUrl;
+        final String apkDigest;
 
-        Release(String version, String name, String body, String htmlUrl, String apkUrl) {
+        Release(String version, String name, String body, String htmlUrl, String apkUrl, String apkDigest) {
             this.version = version;
             this.name = name;
             this.body = body;
             this.htmlUrl = htmlUrl;
             this.apkUrl = apkUrl;
+            this.apkDigest = apkDigest;
         }
     }
 }

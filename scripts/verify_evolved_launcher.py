@@ -23,6 +23,7 @@ FILES = {
     "home_fragment": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/LauncherHomeFragment.java"),
     "sdl": read("app_pojavlauncher/src/main/java/org/libsdl/app/SDLActivity.java"),
     "updater": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/launch/GitHubReleaseUpdateManager.java"),
+    "minecraft_updater": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/launch/MinecraftUpdateManager.java"),
     "cleaner": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/CleanerFragment.java"),
     "playtime": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/fragments/PlaytimeFragment.java"),
     "playtime_store": read("app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/performance/PlaytimeStore.java"),
@@ -66,8 +67,12 @@ def assertions():
     assert '#FF9D00' in d and '#FFB000' in FILES["sidebar"] and 'EvolveD' in d
     assert 'android:text="EvolveD"' in h and '@drawable/evolved_icon' in h
     assert 'android:id="@+id/lh_search_bar"' in h
-    assert 'android:icon="@drawable/evolved_icon"' in FILES["manifest"]
-    assert 'android:roundIcon="@drawable/evolved_icon"' in FILES["manifest"]
+    assert 'android:icon="@mipmap/ic_launcher"' in FILES["manifest"]
+    assert 'android:roundIcon="@mipmap/ic_launcher_round"' in FILES["manifest"]
+    for adaptive_icon in ("ic_launcher.xml", "ic_launcher_round.xml"):
+        icon_xml = read(f"app_pojavlauncher/src/main/res/mipmap-anydpi-v26/{adaptive_icon}")
+        assert '@drawable/evolved_icon_adaptive' in icon_xml
+    assert 'android:scaleType="fitCenter"' in h
     logo = ROOT / "EvolveD.png"
     icon = ROOT / "app_pojavlauncher/src/main/res/drawable/evolved_icon.png"
     assert hashlib.sha256(logo.read_bytes()).digest() == hashlib.sha256(icon.read_bytes()).digest()
@@ -118,10 +123,19 @@ def assertions():
     assert "totalMem" in FILES["memory"] and "availMem" in FILES["memory"]
     assert "Nothing to clean." in c and "Cleaned: " in c
     assert 'HomeTutorial.maybeStart' not in lh and 'PlusWelcomeDialog.maybeShow' not in lh
-    assert 'https://api.github.com/repos/evolvegmr/EvolveD-launcher/releases/latest' in u
+    assert 'https://api.github.com/repos/evolvegmr/EvolveD-launcher/releases' in u
     assert 'dialog.setCancelable(true)' in u and 'dialog.dismiss()' in u
-    assert 'verifyDownloadedApk(act, finalApk)' in u
+    assert 'verifyDownloadedApk(act, downloadedApk, release.apkDigest, release.version)' in u
     assert 'hasCompatibleSigningIdentity' in u and 'BuildConfig.VERSION_CODE' in u
+    assert 'isStableReleaseVersion' in u and 'isOfficialReleaseAssetUrl' in u
+    assert 'apkAbis' in u and 'KEY_LAST_NOTIFIED_VERSION' in u
+    checker = FILES["minecraft_updater"]
+    assert 'CHECK_INTERVAL_MS = 25_000L' in checker
+    assert 'PERIODIC_CHECK.run()' in checker
+    assert 'MAIN.postDelayed(this, CHECK_INTERVAL_MS)' in checker
+    assert 'putStringSet(KEY_AVAILABLE_OFFERS, available)' in checker
+    assert not any(item in checker for item in (
+        'AlertDialog', 'Toast', 'Notification', 'showNewOffers'))
     assert 'GitHubReleaseUpdateManager' in FILES["settings"] and 'checkManually(requireActivity())' in FILES["settings"]
     assert 'refresh_minecraft_versions' in FILES["settings"] and 'refreshNow' in FILES["settings"]
     assert 'FirebaseSyncManager.checkForUpdateManual' not in FILES["settings"]
