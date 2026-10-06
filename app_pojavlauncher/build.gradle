@@ -62,6 +62,10 @@ android {
 
     compileSdk = 34
 
+    sourceSets {
+        main.res.srcDir(layout.buildDirectory.dir("generated/evolvedLauncher/res"))
+    }
+
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
@@ -187,6 +191,83 @@ android {
     }
 
     buildToolsVersion = '34.0.0'
+}
+
+def evolvedLogoFile = rootProject.file('EvolveD.png')
+def generatedEvolvedResources = layout.buildDirectory.dir('generated/evolvedLauncher/res')
+
+tasks.register('generateEvolvedLauncherIcons') {
+    inputs.file(evolvedLogoFile)
+    outputs.dir(generatedEvolvedResources)
+
+    doLast {
+        if (!evolvedLogoFile.isFile()) {
+            throw new GradleException("The canonical launcher logo is missing: ${evolvedLogoFile}")
+        }
+
+        def source = javax.imageio.ImageIO.read(evolvedLogoFile)
+        if (source == null || source.width <= 0 || source.height <= 0) {
+            throw new GradleException("The canonical launcher logo is not a readable image: ${evolvedLogoFile}")
+        }
+
+        def resourceRoot = generatedEvolvedResources.get().asFile
+        def savePng = { java.awt.image.BufferedImage image, File destination ->
+            destination.parentFile.mkdirs()
+            if (!javax.imageio.ImageIO.write(image, 'png', destination)) {
+                throw new GradleException("Could not write generated launcher icon: ${destination}")
+            }
+        }
+        def resize = { java.awt.image.BufferedImage input, int width, int height ->
+            def image = new java.awt.image.BufferedImage(
+                    width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+            def graphics = image.createGraphics()
+            graphics.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
+                    java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+            graphics.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
+                    java.awt.RenderingHints.VALUE_RENDER_QUALITY)
+            graphics.drawImage(input, 0, 0, width, height, null)
+            graphics.dispose()
+            image
+        }
+
+        def logoResource = new File(resourceRoot, 'drawable/evolved_icon.png')
+        logoResource.parentFile.mkdirs()
+        java.nio.file.Files.copy(evolvedLogoFile.toPath(), logoResource.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+
+        def adaptiveCanvas = new java.awt.image.BufferedImage(
+                512, 512, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+        def adaptiveGraphics = adaptiveCanvas.createGraphics()
+        adaptiveGraphics.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
+                java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+        adaptiveGraphics.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
+                java.awt.RenderingHints.VALUE_RENDER_QUALITY)
+        int adaptiveSize = 336
+        int left = (512 - adaptiveSize) / 2
+        int top = (512 - adaptiveSize) / 2
+        adaptiveGraphics.drawImage(source, left, top, left + adaptiveSize,
+                top + adaptiveSize, 0, 0, source.width, source.height, null)
+        adaptiveGraphics.dispose()
+        savePng(adaptiveCanvas,
+                new File(resourceRoot, 'drawable-nodpi/evolved_icon_adaptive.png'))
+
+        [
+                'mipmap-mdpi'   : 48,
+                'mipmap-hdpi'   : 72,
+                'mipmap-xhdpi'  : 96,
+                'mipmap-xxhdpi' : 144,
+                'mipmap-xxxhdpi': 192
+        ].each { density, size ->
+            def icon = resize(source, size, size)
+            ['ic_launcher.png', 'ic_launcher_round.png', 'ic_launcher_foreground.png'].each { name ->
+                savePng(icon, new File(resourceRoot, "${density}/${name}"))
+            }
+        }
+    }
+}
+
+tasks.named('preBuild').configure {
+    dependsOn tasks.named('generateEvolvedLauncherIcons')
 }
 
 afterEvaluate {

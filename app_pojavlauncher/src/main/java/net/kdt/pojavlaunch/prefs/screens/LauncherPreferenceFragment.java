@@ -3,11 +3,14 @@ package net.kdt.pojavlaunch.prefs.screens;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +35,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.kdt.pojavlaunch.FastClientHelper;
+import net.kdt.pojavlaunch.JavaGUILauncherActivity;
 import net.kdt.pojavlaunch.LauncherActivity;
 import net.kdt.pojavlaunch.PojavProfile;
 import net.kdt.pojavlaunch.R;
@@ -160,6 +164,9 @@ public class LauncherPreferenceFragment extends Fragment {
             registerForActivityResult(new OpenDocumentWithExtension("xz"), (data) -> {
                 if (data != null) Tools.installRuntimeFromUri(getContext(), data);
             });
+
+    private final ActivityResultLauncher<Object> mExecuteJarPicker =
+            registerForActivityResult(new OpenDocumentWithExtension("jar"), this::confirmExecuteJar);
 
     // Custom background picker launcher
     private final ActivityResultLauncher<String> mImagePickerLauncher =
@@ -970,6 +977,10 @@ public class LauncherPreferenceFragment extends Fragment {
                     List<SettingItem> javaItems = new ArrayList<>();
                     javaItems.add(new SettingItem("perf_presets_java", SettingItem.TYPE_PRESET_PANEL, "Performance Presets", "", null));
                     javaItems.add(new SettingItem("install_jre", SettingItem.TYPE_ACTION, getString(R.string.multirt_title), getString(R.string.multirt_subtitle), null).setAction(this::openMultiRTDialog));
+                    javaItems.add(new SettingItem("execute_jar_action", SettingItem.TYPE_ACTION,
+                            getString(R.string.execute_jar_title),
+                            getString(R.string.execute_jar_subtitle), null)
+                            .setAction(() -> mExecuteJarPicker.launch(null)));
                     javaItems.add(new SettingItem("javaArgs", SettingItem.TYPE_INPUT, getString(R.string.mcl_setting_title_javaargs), getString(R.string.mcl_setting_subtitle_javaargs), ""));
 
                     int maxRAM = Tools.getMaximumRamAllocation(requireContext());
@@ -1129,6 +1140,101 @@ public class LauncherPreferenceFragment extends Fragment {
                     categories.add(new SettingCategory("Official Sponsors", sponsorItems));
                     break;
             }
+    }
+
+    private void confirmExecuteJar(@Nullable Uri uri) {
+            if (uri == null || !isAdded()) return;
+            String displayName;
+            try (Cursor cursor = requireContext().getContentResolver().query(
+                    uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+                displayName = cursor != null && cursor.moveToFirst()
+                        ? cursor.getString(0) : uri.getLastPathSegment();
+            } catch (RuntimeException e) {
+                Tools.showError(requireContext(), e);
+                return;
+            }
+            if (displayName == null || !displayName.toLowerCase(java.util.Locale.ROOT).endsWith(".jar")) {
+                Toast.makeText(requireContext(), R.string.execute_jar_not_jar, Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            EditText arguments = new EditText(requireContext());
+            arguments.setSingleLine(true);
+            arguments.setInputType(InputType.TYPE_CLASS_TEXT);
+            arguments.setHint(R.string.execute_jar_arguments_hint);
+            int inset = (int) (20 * getResources().getDisplayMetrics().density);
+            LinearLayout argumentContainer = new LinearLayout(requireContext());
+            argumentContainer.setOrientation(LinearLayout.VERTICAL);
+            argumentContainer.setPadding(inset, 0, inset, 0);
+            argumentContainer.addView(arguments);
+
+            AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.execute_jar_title)
+                    .setMessage(getString(R.string.execute_jar_confirm, displayName))
+                    .setView(argumentContainer)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(R.string.execute_jar_run, null)
+                    .create();
+            dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setOnClickListener(view -> {
+                        final ArrayList<String> parsedArguments;
+                        try {
+                            parsedArguments = parseJarArguments(arguments.getText().toString());
+                        } catch (IllegalArgumentException e) {
+                            arguments.setError(getString(R.string.execute_jar_arguments_invalid));
+                            return;
+                        }
+                        Intent intent = new Intent(requireContext(), JavaGUILauncherActivity.class);
+                        intent.putExtra(JavaGUILauncherActivity.EXTRA_EXECUTE_JAR, true);
+                        intent.putExtra("modUri", uri);
+                        intent.putStringArrayListExtra(
+                                JavaGUILauncherActivity.EXTRA_JAR_ARGUMENTS, parsedArguments);
+                        intent.putExtra("openLogOutput", true);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }));
+            dialog.show();
+    }
+
+    private static ArrayList<String> parseJarArguments(String input) {
+            ArrayList<String> result = new ArrayList<>();
+            StringBuilder token = new StringBuilder();
+            boolean singleQuoted = false;
+            boolean doubleQuoted = false;
+            boolean escaped = false;
+            boolean tokenStarted = false;
+            for (int i = 0; i < input.length(); i++) {
+                char current = input.charAt(i);
+                if (escaped) {
+                    token.append(current);
+                    escaped = false;
+                    tokenStarted = true;
+                } else if (current == '\\' && !singleQuoted) {
+                    escaped = true;
+                    tokenStarted = true;
+                } else if (current == '\'' && !doubleQuoted) {
+                    singleQuoted = !singleQuoted;
+                    tokenStarted = true;
+                } else if (current == '"' && !singleQuoted) {
+                    doubleQuoted = !doubleQuoted;
+                    tokenStarted = true;
+                } else if (Character.isWhitespace(current) && !singleQuoted && !doubleQuoted) {
+                    if (tokenStarted) {
+                        result.add(token.toString());
+                        token.setLength(0);
+                        tokenStarted = false;
+                    }
+                } else {
+                    token.append(current);
+                    tokenStarted = true;
+                }
+            }
+            if (escaped || singleQuoted || doubleQuoted) {
+                throw new IllegalArgumentException("Unterminated escape or quoted argument.");
+            }
+            if (tokenStarted) result.add(token.toString());
+            return result;
     }
 
     private void setupSettingsList() {

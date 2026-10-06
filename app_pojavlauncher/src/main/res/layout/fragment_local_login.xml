@@ -172,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="monospace"
-                    android:text="CS LAUNCHER PLUS  ·  NO PASSWORD"
+                    android:text="EvolveD Launcher  ·  NO PASSWORD"
                     android:textColor="#4F5460"
                     android:textSize="8.5sp" />
 

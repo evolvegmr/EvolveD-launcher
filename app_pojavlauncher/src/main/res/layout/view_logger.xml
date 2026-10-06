@@ -392,7 +392,7 @@
                             android:gravity="center"
                             android:letterSpacing="0.22"
                             android:maxLines="1"
-                            android:text="CS LAUNCHER"
+                            android:text="EvolveD Launcher"
                             android:textColor="#FFFFFF"
                             android:textSize="19sp"
                             android:textStyle="bold"

@@ -44,7 +44,7 @@
 					android:layout_height="wrap_content"
 					android:layout_marginTop="16dp"
 					android:letterSpacing="0.22"
-					android:text="CS LAUNCHER PLUS"
+					android:text="EvolveD Launcher"
 					android:textColor="#B9BBC4"
 					android:textSize="10sp"
 					android:textStyle="bold" />

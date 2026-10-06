@@ -583,6 +583,13 @@ Third-party components (GL4ES, MobileGlues, ANGLE, Zink/Mesa, LWJGL, OpenJDK, SD
     <string name="log_view_button_output_on">LOG</string>
     <string name="log_view_label_log_output">EVOLVED LAUNCHER • LIVE GAME LOG</string>
     <string name="cs_cli_ascii_logo" translatable="false">   ██████╗ ███████╗\n  ██╔════╝ ██╔════╝\n  ██║      ███████╗\n  ╚██████╗ ███████║\n   ╚═════╝ ╚══════╝</string>
+    <string name="execute_jar_title">Execute JAR</string>
+    <string name="execute_jar_subtitle">Choose a JAR and run it with an installed Java runtime.</string>
+    <string name="execute_jar_confirm">Run %1$s using an installed Java runtime?</string>
+    <string name="execute_jar_run">Run JAR</string>
+    <string name="execute_jar_arguments_hint">Optional program arguments</string>
+    <string name="execute_jar_arguments_invalid">Close the quotes or escape at the end of the arguments.</string>
+    <string name="execute_jar_not_jar">Choose a file with the .jar extension.</string>
     <string name="execute_jar_failed_to_read_file">Failed to read the .jar file</string>
     <string name="execute_jar_incompatible_runtime">Execute .jar feature is not compatible with Java %d</string>
     <string name="controller_button_a">A</string>

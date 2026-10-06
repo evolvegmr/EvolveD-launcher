@@ -45,6 +45,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouchListener {
+    public static final String EXTRA_EXECUTE_JAR = "execute_jar";
+    public static final String EXTRA_JAR_ARGUMENTS = "execute_jar_arguments";
 
     private AWTCanvasView mTextureView;
     private LoggerView mLoggerView;
@@ -55,6 +57,8 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
     private GestureDetector mGestureDetector;
 
     private boolean mIsVirtualMouseEnabled;
+    private boolean mExecuteJar;
+    private File mExecuteJarCacheFile;
     
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -161,14 +165,24 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
             }
             final String javaArgs = extras.getString("javaArgs");
             final Uri resourceUri = (Uri) extras.getParcelable("modUri");
+            mExecuteJar = extras.getBoolean(EXTRA_EXECUTE_JAR, false);
+            final ArrayList<String> programArguments =
+                    extras.getStringArrayList(EXTRA_JAR_ARGUMENTS);
             if(extras.getBoolean("openLogOutput", false)) openLogOutput(null);
             if (javaArgs != null) {
                 startModInstaller(null, javaArgs);
             }else if(resourceUri != null) {
                 ProgressDialog barrierDialog = Tools.getWaitingDialog(this, R.string.multirt_progress_caching);
                 PojavApplication.sExecutorService.execute(()->{
-                    startModInstallerWithUri(resourceUri);
-                    runOnUiThread(barrierDialog::dismiss);
+                    try {
+                        if (mExecuteJar) {
+                            startModInstallerWithUri(resourceUri, programArguments);
+                        } else {
+                            startModInstallerWithUri(resourceUri);
+                        }
+                    } finally {
+                        runOnUiThread(barrierDialog::dismiss);
+                    }
                 });
             }
         } catch (Throwable th) {
@@ -185,16 +199,28 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
     }
 
     private void startModInstallerWithUri(Uri uri) {
+        startModInstallerWithUri(uri, null);
+    }
+
+    private void startModInstallerWithUri(Uri uri, List<String> programArguments) {
+        File cacheFile = null;
         try {
-            File cacheFile = new File(getCacheDir(), "mod-installer-temp");
-            InputStream contentStream = getContentResolver().openInputStream(uri);
-            if(contentStream == null) throw new IOException("Failed to open content stream");
-            try (FileOutputStream fileOutputStream = new FileOutputStream(cacheFile)) {
-                IOUtils.copy(contentStream, fileOutputStream);
+            cacheFile = mExecuteJar
+                    ? File.createTempFile("evolved-execute-", ".jar", getCacheDir())
+                    : new File(getCacheDir(), "mod-installer-temp");
+            try (InputStream contentStream = getContentResolver().openInputStream(uri)) {
+                if (contentStream == null) throw new IOException("Failed to open the selected JAR.");
+                try (FileOutputStream fileOutputStream = new FileOutputStream(cacheFile)) {
+                    IOUtils.copy(contentStream, fileOutputStream);
+                }
             }
-            contentStream.close();
-            startModInstaller(cacheFile, null);
+            if (!cacheFile.isFile() || cacheFile.length() == 0) {
+                throw new IOException("The selected JAR is empty or could not be copied.");
+            }
+            if (mExecuteJar) mExecuteJarCacheFile = cacheFile;
+            startModInstaller(cacheFile, null, programArguments);
         }catch (IOException e) {
+            if (cacheFile != null && mExecuteJar) cacheFile.delete();
             Tools.showError(this, e, true);
         }
     }
@@ -257,25 +283,35 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
     }
 
     private void startModInstaller(File modFile, String javaArgs) {
+        startModInstaller(modFile, javaArgs, null);
+    }
+
+    private void startModInstaller(File modFile, String javaArgs, List<String> programArguments) {
         new Thread(() -> {
-            // Maybe replace with more advanced arg parsing logic later
-            List<String> argList = javaArgs != null ? Arrays.asList(javaArgs.split(" ")) : null;
-            File selectedMod = modFile;
-            if(selectedMod == null && argList != null) {
-                // If modFile is not specified directly, try to extract the -jar argument from the javaArgs
-                selectedMod = findModPath(argList);
+            try {
+                // Maybe replace with more advanced arg parsing logic later
+                List<String> argList = javaArgs != null ? Arrays.asList(javaArgs.split(" ")) : null;
+                File selectedMod = modFile;
+                if(selectedMod == null && argList != null) {
+                    // Look for the -jar argument in an existing installer invocation.
+                    selectedMod = findModPath(argList);
+                }
+                Runtime selectedRuntime;
+                if(selectedMod == null || (!mExecuteJar
+                        && DEFAULT_PREF.getBoolean("disable_autojre_select", false))) {
+                    selectedRuntime = MultiRTUtils.forceReread(LauncherPreferences.PREF_DEFAULT_RUNTIME);
+                }else {
+                    selectedRuntime = selectRuntime(selectedMod);
+                    if(selectedRuntime == null) {
+                        deleteExecuteJarCacheFile();
+                        return;
+                    }
+                }
+                launchJavaRuntime(selectedRuntime, modFile, argList, programArguments);
+            } catch (Throwable throwable) {
+                deleteExecuteJarCacheFile();
+                runOnUiThread(() -> Tools.showError(JavaGUILauncherActivity.this, throwable, true));
             }
-            Runtime selectedRuntime;
-            if(selectedMod == null || DEFAULT_PREF.getBoolean("disable_autojre_select", false)) {
-                // If we are unable to find out the path to the mod or the user explicitly desires so, we use the default runtime
-                selectedRuntime = MultiRTUtils.forceReread(LauncherPreferences.PREF_DEFAULT_RUNTIME);
-            }else {
-                // Autoselect it properly in the other case.
-                selectedRuntime = selectRuntime(selectedMod);
-                // If the selection failed, just return. The autoselect function has already shown the dialog.
-                if(selectedRuntime == null) return;
-            }
-            launchJavaRuntime(selectedRuntime, modFile, argList);
         }, "JREMainThread").start();
     }
 
@@ -378,6 +414,11 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
     }
 
     public void launchJavaRuntime(Runtime runtime, File modFile, List<String> javaArgs) {
+        launchJavaRuntime(runtime, modFile, javaArgs, null);
+    }
+
+    private void launchJavaRuntime(Runtime runtime, File modFile, List<String> javaArgs,
+                                   List<String> programArguments) {
         JREUtils.redirectAndPrintJRELog();
         try {
             List<String> javaArgList = new ArrayList<>();
@@ -389,6 +430,7 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
             if(modFile != null) {
                 javaArgList.add("-jar");
                 javaArgList.add(modFile.getAbsolutePath());
+                if (programArguments != null) javaArgList.addAll(programArguments);
             }
             
             if (LauncherPreferences.PREF_JAVA_SANDBOX) {
@@ -404,6 +446,16 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
             JREUtils.launchJavaVM(this, runtime,null,javaArgList, LauncherPreferences.PREF_CUSTOM_JAVA_ARGS);
         } catch (Throwable th) {
             Tools.showError(this, th, true);
+        } finally {
+            deleteExecuteJarCacheFile();
+        }
+    }
+
+    private void deleteExecuteJarCacheFile() {
+        File cacheFile = mExecuteJarCacheFile;
+        mExecuteJarCacheFile = null;
+        if (cacheFile != null && cacheFile.exists() && !cacheFile.delete()) {
+            Log.w("JavaGUILauncher", "Could not remove temporary Execute JAR: " + cacheFile);
         }
     }
 
